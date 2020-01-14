@@ -1,6 +1,14 @@
 from app import app
+from flask import render_template
+from app.forms import LoginForm
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return "hello world"
+	user = {'name' : 'kori', 'username' : 'ksefeane'}
+	return render_template('index.html', title='home', user=user)
+
+@app.route('/login')
+def login():
+	form = LoginForm()
+	return render_template('login.html', title='log in', form=form)
