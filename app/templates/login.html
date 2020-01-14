@@ -4,18 +4,12 @@
 <h1> Log in </h1>
 <form action="" method=POST novalidate>
 {{ form.hidden_tag() }}
-<p>
 {{ form.username.label }}<br>
-{{ form.username(size=20) }}
-</p>
+{{ form.username(size=20) }}</p>
 
-<p>
 {{ form.password.label }}<br>
-{{ form.password(size=20) }}
-</p>
+{{ form.password(size=20) }}</p>
 
-<p>
 {{ form.submit() }}
-</p>
 </form>
 {% endblock %}
