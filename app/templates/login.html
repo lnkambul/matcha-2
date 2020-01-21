@@ -4,6 +4,7 @@
 <h1> Log in </h1>
 <form action="" method=POST novalidate>
 {{ form.hidden_tag() }}
+
 {{ form.username.label }}<br>
 {{ form.username(size=20) }}
 {% for error in form.username.errors %}

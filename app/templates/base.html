@@ -7,7 +7,12 @@
 matcha - 
 <a href="{{ url_for('index') }}">home</a>
 <a href="{{ url_for('login') }}">login</a>
-</div>
+<a href="{{ url_for('sign_up') }}">sign_up</a>
+<a href="{{ url_for('profile') }}">profile</a>
+<a href="{{ url_for('browse') }}">browse</a>
+<a href="{{ url_for('matches') }}">matches</a>
+<a href="{{ url_for('chat') }}">chat</a>
+</div><hr>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul>
@@ -18,5 +23,4 @@ matcha -
 {% endif %}
 {% endwith %}
 {% block content %}{% endblock %}
-</h1>
 </html>
