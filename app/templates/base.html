@@ -6,7 +6,11 @@
 <div>
 matcha - 
 <a href="{{ url_for('index') }}">home</a>
+{% if current_user.is_anonymous %}
 <a href="{{ url_for('login') }}">login</a>
+{% else %}
+<a href="{{ url_for('logout') }}">logout</a>
+{% endif %}
 <a href="{{ url_for('sign_up') }}">sign_up</a>
 <a href="{{ url_for('profile') }}">profile</a>
 <a href="{{ url_for('browse') }}">browse</a>
