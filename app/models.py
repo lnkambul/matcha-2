@@ -8,11 +8,13 @@ class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(64), index=True, unique=True)
 	email = db.Column(db.String(120), index=True, unique=True)
+	first_name = db.Column(db.String(64))
+	last_name = db.Column(db.String(64))
 	password_hash = db.Column(db.String(128))
 	images = db.relationship('Image', backref='user', lazy='dynamic')
 
 	def __repr__(self):
-		return '<User -> {}\nemail -> {}\npassword_hash -> {}>'.format(self.username, self.email, self.password_hash)
+		return 'user -> {}\nemail -> {}\nfirst_name -> {}\nlast_name -> {}\npassword_hash -> {}\n\n'.format(self.username, self.email, self.first_name, self.last_name, self.password_hash)
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)

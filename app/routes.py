@@ -1,17 +1,18 @@
 from app import app
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, SignupForm
 from flask_login import current_user, login_user, logout_user
 from app.models import User
 from werkzeug.urls import url_parse
 from flask_login import login_required
+from app.forms import LoginForm
+from app.forms import SignupForm
+from app import db
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-	user = {'name' : 'kori', 'username' : 'ksefeane'}
-	return render_template('index.html', title='home', user=user)
+	return render_template('index.html', title='home')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -37,27 +38,34 @@ def logout():
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
+	if current_user.is_authenticated:
+		return redirect(url_for('index'))
 	form = SignupForm()
 	if form.validate_on_submit():
-		return redirect(url_for('index'))
+		user = User(username=form.username.data, email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data)
+		user.set_password(form.password.data)
+		db.session.add(user)
+		db.session.commit()
+		flash('welcome to matcha! your partner awaits!')
+		return redirect(url_for('login'))
 	return render_template('sign_up.html', title='sign_up', form=form)
 
 @app.route('/profile')
+@login_required
 def profile():
-	user = {'name' : 'kori', 'username' : 'ksefeane'}
-	return render_template('profile.html', title='profile', user=user)
+	return render_template('profile.html', title='profile')
 
 @app.route('/browse')
+@login_required
 def browse():
-	user = {'name' : 'kori', 'username' : 'ksefeane'}
-	return render_template('browse.html', title='browse', user=user)
+	return render_template('browse.html', title='browse')
 
 @app.route('/matches')
+@login_required
 def matches():
-	user = {'name' : 'kori', 'username' : 'ksefeane'}
-	return render_template('matches.html', title='matches', user=user)
+	return render_template('matches.html', title='matches')
 
 @app.route('/chat')
+@login_required
 def chat():
-	user = {'name' : 'kori', 'username' : 'ksefeane'}
-	return render_template('chat.html', title='chat', user=user)
+	return render_template('chat.html', title='chat')
