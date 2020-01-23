@@ -54,10 +54,6 @@ def sign_up():
 @login_required
 def u(username):
 	user = User.query.filter_by(username=username).first_or_404()
-	return render_template('profile.html', title='profile', user=user)
+	return render_template('user.html', title='profile', user=user)
 
-@app.route('/profile')
-@login_required
-def profile():
-	return render_template('profile.html', title='profile')
 
