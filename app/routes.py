@@ -50,22 +50,14 @@ def sign_up():
 		return redirect(url_for('login'))
 	return render_template('sign_up.html', title='sign_up', form=form)
 
+@app.route('/u/<username>')
+@login_required
+def u(username):
+	user = User.query.filter_by(username=username).first_or_404()
+	return render_template('profile.html', title='profile', user=user)
+
 @app.route('/profile')
 @login_required
 def profile():
 	return render_template('profile.html', title='profile')
 
-@app.route('/browse')
-@login_required
-def browse():
-	return render_template('browse.html', title='browse')
-
-@app.route('/matches')
-@login_required
-def matches():
-	return render_template('matches.html', title='matches')
-
-@app.route('/chat')
-@login_required
-def chat():
-	return render_template('chat.html', title='chat')
