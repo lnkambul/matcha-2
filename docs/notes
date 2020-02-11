@@ -1,0 +1,5 @@
+wtchomebrewfix tolsadus
+brew services start mysql/mysql.server start
+mysql -u root -p
+[enter password]
+pip install mysql-connector-python --user
