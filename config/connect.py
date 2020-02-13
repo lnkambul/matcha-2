@@ -24,6 +24,7 @@ except mysql.connector.Error as err:
 			create_database(cursor)
 			print("Database {} created successfully".format(DB_NAME))
 			cnx.databse = DB_NAME
+			cursor.execute("USE {}".format(DB_NAME))
 		else:
 			print(err)
 			exit(1)
