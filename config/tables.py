@@ -1,5 +1,12 @@
 DB_NAME = 'matcha_db'
 
+def create_database(cursor):
+	try:
+		cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(DB_NAME))
+	except mysql.connector.Error as err:
+		print("Failed to create database: {}".format(err))
+		exit(1)
+
 TABLES = {}
 
 TABLES['users'] = (
