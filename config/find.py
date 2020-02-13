@@ -8,10 +8,9 @@ cnx = mysql.connector.connect(
 		database=DB)
 cursor = cnx.cursor()
 
-add_user = ("INSERT INTO users (username, email) VALUES ('joe', 'joe@gmail.com')")
-print("user added")
-cursor.execute(add_user)
-cnx.commit()
+user = ("SELECT id, username, email FROM users WHERE username='joe'")
+cursor.execute(user)
+data = cursor.fetchall()
 
 cursor.close()
 cnx.close()
