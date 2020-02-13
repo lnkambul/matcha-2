@@ -27,3 +27,20 @@ except mysql.connector.Error as err:
 		else:
 			print(err)
 			exit(1)
+
+for table_name in TABLES:
+	description = TABLES[table_name]
+	try:
+		print("Creating table {}".format(table_name, end=''))
+		cursor.execute(description)
+	except mysql.connector.Error as err:
+		if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+			print("already exists")
+		else:
+			print(err.msg)
+
+	else:
+		print("OK")
+
+cursor.close()
+cnx.close()
