@@ -2,13 +2,10 @@ import mysql.connector
 
 mydb = mysql.connector.connect(
       host="localhost",
-      user="root",
+      user="ksefeane",
       password="qamagru",
-      database="test"
 )
-
 mycursor = mydb.cursor()
-mycursor.execute("SELECT * FROM user")
-
-for x in mycursor.fetchall():
-    print(x[0], " ", x[1])
+mycursor.execute("CREATE DATABASE matcha_db")
+print("database created")
+mycursor.execute("show databases")
