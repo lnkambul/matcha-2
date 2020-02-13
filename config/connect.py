@@ -15,4 +15,3 @@ cnx.commit()
 
 cursor.close()
 cnx.close()
-
