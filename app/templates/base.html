@@ -3,7 +3,22 @@
 <title>{{ title }}</title>
 </head>
 <body>
-<h3> welcome {{ user.username }} </h3>
+
+<div>
+<h3> welcome to matcha - 
+<a href="{{ url_for('index') }}">home</a> 
+<a href="{{ url_for('login') }}">login</a></h3>
+</div></hr>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+{% for msg in messages %}
+<li> {{ msg }} </li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 
 {% block content %}
 {% endblock %}
