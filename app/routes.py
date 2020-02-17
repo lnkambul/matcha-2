@@ -1,11 +1,14 @@
 from flask import render_template, flash, redirect, url_for
-from app import app
+from app import app, mysql
 from app.forms import LoginForm
 
 @app.route('/')
 @app.route('/index')
 def index():
-	return render_template('index.html', title='home')
+	cursor = mysql.connect().cursor()
+	cursor.execute("SELECT * FROM users")
+	data = cursor.fetchone()
+	return render_template('index.html', title='home', data=data)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
