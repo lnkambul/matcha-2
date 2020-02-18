@@ -8,7 +8,7 @@ app.config.from_object(Config)
 mysql.init_app(app)
 
 def connect_db():
-	cx = mysql.connect().cursor()
+	cx = mysql.get_db().cursor()
 	return cx
 
 from app import routes

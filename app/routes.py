@@ -1,13 +1,13 @@
 from flask import render_template, flash, redirect, url_for
 from app import app, connect_db
 from app.forms import LoginForm
+from app.db import get_db
+from flask import current_app
 
 @app.route('/')
 @app.route('/index')
 def index():
-	cx = connect_db()
-	cx.execute("SELECT * FROM users")
-	data = cx.fetchall()
+	data = get_db()
 	return render_template('index.html', title='home', data=data)
 
 @app.route('/login', methods=['GET', 'POST'])
