@@ -6,3 +6,8 @@ class Config(object):
     MYSQL_DATABASE_PASSWORD = 'qamagru'
     MYSQL_DATABASE_HOST = 'localhost'
     MYSQL_DATABASE_DB = 'matcha_db'
+
+    DB = {
+    	'user': 'ksefeane',
+    	'host': 'localhost',
+    	'password': 'qamagru'}
