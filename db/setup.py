@@ -1,12 +1,19 @@
 import mysql.connector
 from mysql.connector import errorcode
 from tables import DB_NAME, TABLES, create_database
+from admin import values
 
-cnx = mysql.connector.connect(
-		user='ksefeane',
-		password='qamagru',
-		host='localhost')
+cnx = mysql.connector.connect(**values)
 cursor = cnx.cursor()
+
+def conn():
+	cnx = mysql.connector.connect(**values, db=DB_NAME)
+	return cnx
+
+def close():
+	cursor.close()
+	cnx.close()
+
 
 try:
 	cursor.execute("USE {}".format(DB_NAME))
@@ -35,6 +42,8 @@ for table_name in TABLES:
 
 	else:
 		print("(created)")
+
+cursor.execute("USE {}".format(DB_NAME))
 
 cursor.close()
 cnx.close()
