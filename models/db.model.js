@@ -49,7 +49,6 @@ class DB{
 				console.log (`DB: ${this.db} -> (connected)`);
 			}
 		});
-		return ;
 	}
 
 	create_t() {
@@ -71,12 +70,12 @@ class DB{
 		}
 	}
 
-	async insert(sql, values) {
+	insert(sql, values) {
 		this.dbc.query(sql, values, (err, res) => {
 			if (err)
 				console.log (err);
 		});
-		return ;
+		
 	}
 
 }
