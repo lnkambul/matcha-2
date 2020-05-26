@@ -8,23 +8,26 @@ class DB{
 	constructor(config) {
 		this.logins = config.logins;
 		this.db = config.db;
+		this.tables = tables;
 		this.dbc = mysql.createConnection(conf.logins, conf.db);
 		this.dbc.connect((err) => {
 			if (err) {
-				console.log (err.sqlMessage);
-			}
-			else {
 				this.dbc = mysql.createConnection(conf.logins);
 				this.dbc.connect((err) => {
-					if (err) {
+					if (err)
 						console.log (err.sqlMessage);
-					}
 				});
 			}
 		});
-		this.tables = tables;
+		this.init_db();
 	}
-	
+
+	configure() {
+		this.create_db();
+		this.init_db();
+		this.create_t();
+	}
+
 	create_db() {
 		this.dbc.query(`CREATE DATABASE ${this.db}`, (err, res) => {
 			if (err) {
@@ -37,18 +40,18 @@ class DB{
 	};
 
 	init_db() {
-		this.create_db();
 		this.dbc.query(`USE ${this.db}`, (err, res) => {
 			if (err) {
-				this.create_db();
+				console.log (`DB: ${this.db} -> (not found)`);
+				this.configure();
 			}
-			else
+			else {
 				console.log (`DB: ${this.db} -> (connected)`);
+			}
 		});
 	}
 
 	create_t() {
-		this.init_db();
 		for (let t_name in this.tables) {
 			var sql = this.tables[t_name];
 			this.dbc.query(sql, (err, res) => {
@@ -65,18 +68,16 @@ class DB{
 				console.log (msg);
 			});
 		}
+		this.setup = 1;
 	}
 
 	insert(sql, values) {
 		this.dbc.query(sql, values, (err, res) => {
 			if (err)
 				console.log (err);
-			else
-				console.log (res);
 		});
 	}
 
 }
 var db = new DB(conf);
-db.init_db();
-db.insert("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", ['kori', 'sefeane', 'gmail']);
+db.insert("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", ['boy', 'serv', 'email']);
