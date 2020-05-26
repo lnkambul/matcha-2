@@ -1,18 +1,18 @@
 'use strict';
 
 const mysql = require('mysql');
-const conf = require ('../config/config');
 const tables = require('../config/tables');
+const config = require('../config/config');
 
 class DB{
-	constructor(config) {
+	constructor() {
 		this.logins = config.logins;
 		this.db = config.db;
 		this.tables = tables;
-		this.dbc = mysql.createConnection(conf.logins, conf.db);
+		this.dbc = mysql.createConnection(this.logins, this.db);
 		this.dbc.connect((err) => {
 			if (err) {
-				this.dbc = mysql.createConnection(conf.logins);
+				this.dbc = mysql.createConnection(this.logins);
 				this.dbc.connect((err) => {
 					if (err)
 						console.log (err.sqlMessage);
@@ -49,6 +49,7 @@ class DB{
 				console.log (`DB: ${this.db} -> (connected)`);
 			}
 		});
+		return ;
 	}
 
 	create_t() {
@@ -68,16 +69,16 @@ class DB{
 				console.log (msg);
 			});
 		}
-		this.setup = 1;
 	}
 
-	insert(sql, values) {
+	async insert(sql, values) {
 		this.dbc.query(sql, values, (err, res) => {
 			if (err)
 				console.log (err);
 		});
+		return ;
 	}
 
 }
-var db = new DB(conf);
-db.insert("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", ['boy', 'serv', 'email']);
+
+module.exports = DB;
