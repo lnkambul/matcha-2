@@ -1,83 +1,72 @@
 'use strict';
 
-const mysql = require('mysql');
 const tables = require('../config/tables');
 const config = require('../config/config');
+const dbc = require('./conn.model');
 
-class DB{
-	constructor() {
-		this.logins = config.logins;
-		this.db = config.db;
-		this.tables = tables;
-		this.dbc = mysql.createConnection(this.logins, this.db);
-		this.dbc.connect((err) => {
-			if (err) {
-				this.dbc = mysql.createConnection(this.logins);
-				this.dbc.connect((err) => {
-					if (err)
-						console.log (err.sqlMessage);
-				});
-			}
-		});
-		this.init_db();
-	}
+var DB = function() {
+	this.name = config.db;
+}
 
-	configure() {
-		this.create_db();
-		this.init_db();
-		this.create_t();
-	}
-
-	create_db() {
-		this.dbc.query(`CREATE DATABASE ${this.db}`, (err, res) => {
-			if (err) {
-				console.log (`DB: ${this.db} -> (found)`);
-			}
-			else {
-				console.log (`DB: ${this.db} -> (created)`);
-			}
-		});
-	};
-
-	init_db() {
-		this.dbc.query(`USE ${this.db}`, (err, res) => {
-			if (err) {
-				console.log (`DB: ${this.db} -> (not found)`);
-				this.configure();
-			}
-			else {
-				console.log (`DB: ${this.db} -> (connected)`);
-			}
-		});
-	}
-
-	create_t() {
-		for (let t_name in this.tables) {
-			var sql = this.tables[t_name];
-			this.dbc.query(sql, (err, res) => {
-				var msg = `T: ${t_name} -> `;
-				if (err) {
-					if (err.errno === 1050)
-						msg += "(found)";
-					else
-						console.log (err)
-				}
-				else {
-					msg += "(created)";
-				}
-				console.log (msg);
-			});
+DB.create = function () {
+	dbc.query(`CREATE DATABASE ${config.db}`, (err, res) => {
+		if (err) {
+			console.log (`DB: ${config.db} -> (found)`);
+			return (0);
 		}
-	}
+		else {
+			console.log (`DB: ${config.db} -> (created)`);
+			return (1);
+		}
+	});
+};
 
-	insert(sql, values) {
-		this.dbc.query(sql, values, (err, res) => {
-			if (err)
-				console.log (err);
+DB.tables = function () {
+	for (let t_name in tables) {
+		var sql = tables[t_name];
+		dbc.query(sql, (err, res) => {
+			var msg = `T: ${t_name} -> `;
+			if (err) {
+				if (err.errno === 1050)
+					msg += "(found)";
+				else
+					console.log (err)
+			}
+			else {
+				msg += "(created)";
+			}
+			console.log (msg);
 		});
-		
 	}
+}
 
+DB.configure = function () {
+	DB.create();
+	DB.init();
+	DB.tables();
+}
+
+DB.init = function () {
+	dbc.query(`USE ${config.db}`, (err, res) => {
+		if (err) {
+			console.log (`DB: ${config.db} -> (not found)`);
+			DB.configure();
+			return (0);
+		}
+		else {
+			console.log (`DB: ${config.db} -> (connected)`);
+			return (1);
+		}
+	});
+}
+
+DB.insert = function (sql, values) {
+	dbc.query(sql, values, (err, res) => {
+		if (err)
+			console.log (err);
+		else
+			console.log (res.insertId);
+	});
 }
 
 module.exports = DB;

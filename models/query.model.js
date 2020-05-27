@@ -1,25 +1,19 @@
 'use strict';
 
 const DB = require('./db.model');
+const dbc = require('./conn.model');
 
-class query {
-	constructor(db) {
-		this.db = db;
-	}
+const newDB = new DB();
+DB.init();
 
-	insert (t_name, params, values) {
+var insert = function (t_name, params, values) {
 		var v = '';
 		for (let p in params)
 			v += '?, ';
 		v = v.slice(0, -2);
 		var sql = "INSERT INTO " + t_name + " (" + params.join() + ") " +
 				"VALUES " + "(" + v + ")";
-		this.db.insert(sql, values);
-		console.log ("inserted into user");
+		DB.insert(sql, values);
 	}
-}
 
-var db = new DB();
-var q = new query(db);
-q.insert("users", ['username', 'email', 'password'], ['janet', 'janet@mail', 'jackson']);
-
+insert("users", ['username', 'email', 'password'], ['janet', 'janet@mail', 'jackson']);
