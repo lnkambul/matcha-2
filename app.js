@@ -1,5 +1,12 @@
 const express = require('express')
 const path = require('path')
+
+//database connection
+const dbc = require('./models/connModel')
+
+//init models
+let user = require('./models/connModel')
+
 //init app
 const app = express()
 const port = 5000
@@ -10,26 +17,15 @@ app.set('view engine', 'pug')
 
 //home route
 app.get('/', (req, res) => {
-		let users = [
-		{
-			id:1,
-			username:'kori',
-			email:'gmail'
-		},
-		{
-			id:2,
-			username:'james',
-			email:'gmail'
-		},
-		{
-			id:3,
-			username:'billy',
-			email:'gmail'
+	user.query("SELECT * FROM users", (err, result, fields) => {
+		if (err)
+			console.log(err)
+		else {
+			res.render('index', {
+				title : 'matcha v1',
+				users : result
+			})
 		}
-		]
-	res.render('index', {
-		title : 'matcha v1',
-		users : users
 	})
 })
 //register route

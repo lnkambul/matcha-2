@@ -2,6 +2,6 @@ extends layout
 
 block content
 	h1 #{title}
-	ul
-		each user, i in users
-			li= user.id + " " + user.username + " " + user.email
+	each user in users
+		ul
+			li= user.id + " " + user.username
