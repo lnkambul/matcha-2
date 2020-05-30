@@ -13,7 +13,15 @@ const port = 5000
 
 //load view engine
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'pug')
+app.set('view engine', 'ejs')
+
+//set public folder
+app.use(express.static(path.join(__dirname, 'public')))
+
+//load body parser middleware
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 //home route
 app.get('/', (req, res) => {
@@ -33,6 +41,23 @@ app.get('/signup', (req, res) => {
 	res.render('signup', {
 		message : 'user registration'
 	})
+})
+
+app.post('/signup', (req, res) => {
+//	let user = new user();
+		let u = {
+username: '',
+email: '',
+password: ''
+		}
+	u.username = req.body.username
+	u.email = req.body.email
+	u.password = req.body.password
+	user.query("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", [u.username, u.email, u.password], (err, res) => {
+			if (err)
+				console.log(err)
+			})
+		return ;
 })
 
 //start server
