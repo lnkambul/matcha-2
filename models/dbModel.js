@@ -60,13 +60,22 @@ DB.init = function () {
 	});
 }
 
-DB.insert = function (sql, values) {
+DB.insert = function (sql, values, callback) {
 	dbc.query(sql, values, (err, res) => {
 		if (err)
-			console.log (err);
+			callback(err, null);
 		else
-			console.log (res.insertId);
+			callback (null, res);
 	});
+}
+
+DB.fetch = (sql, callback) => {
+	var r = dbc.query(sql, (err, result, fields) => {
+		if (err)
+			callback(err, null)
+		else
+			callback(null, result)
+	})
 }
 
 module.exports = DB;

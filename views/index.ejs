@@ -1,5 +1,5 @@
 <%- include ('partials/header') %>
-<%for (let i in users) {%>
-	<li class="list-group-item"><%=users[i].username%> - <%=users[i].email%></li>
-		<%}%>
+<% for (let i in users) {%>
+	<li class="list-group-item"><%= users[i].username %> - <%= users[i].email%></li>
+<%}%>
 <%- include ('partials/footer') %>

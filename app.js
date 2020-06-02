@@ -23,26 +23,15 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-//home route
-app.get('/', (req, res) => {
-	user.query("SELECT * FROM users", (err, result, fields) => {
-		if (err)
-			console.log(err)
-		else {
-			res.render('index', {
-				title : 'matcha v1',
-				users : result
-			})
-		}
-	})
-})
 
 app.get('/edit', (req, res) => {
 	res.render('edit')
 })
 
 //routes
+let index = require('./routes/index')
 let signup = require('./routes/signup')
+app.use('/', index)
 app.use('/signup', signup)
 
 //start server
