@@ -36,29 +36,14 @@ app.get('/', (req, res) => {
 		}
 	})
 })
-//register route
-app.get('/signup', (req, res) => {
-	res.render('signup', {
-		message : 'user registration'
-	})
+
+app.get('/edit', (req, res) => {
+	res.render('edit')
 })
 
-app.post('/signup', (req, res) => {
-//	let user = new user();
-		let u = {
-username: '',
-email: '',
-password: ''
-		}
-	u.username = req.body.username
-	u.email = req.body.email
-	u.password = req.body.password
-	user.query("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", [u.username, u.email, u.password], (err, res) => {
-			if (err)
-				console.log(err)
-			})
-		return ;
-})
+//routes
+let signup = require('./routes/signup')
+app.use('/signup', signup)
 
 //start server
 app.listen(port, () => {
