@@ -17,12 +17,20 @@ exports.registerUser = (req, res) => {
 			res.redirect('/signup')
 		}
 		else {
-			User.create(newUser, (err, result) => {
-				if (err)
-					console.log(err)
+			User.check(newUser, (err, result) => {
+				if (err) {
+					console.log("login failed", err)
+					res.redirect('/signup')
+				}
 				else {
-					console.log("login successful", result)
-					res.redirect('/')
+					User.create(newUser, (err, result) => {
+						if (err)
+							console.log(err)
+						else {
+							console.log("login successful")
+							res.redirect('/')
+						}
+					})
 				}
 			})
 		}

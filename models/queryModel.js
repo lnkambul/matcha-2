@@ -42,6 +42,15 @@ query.fetchall = (t_name, callback) => {
 	})
 }
 
-
+query.fetchone = (t_name, val, params, pval, callback) => {
+	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "+params+"=\'"+pval+"\'"
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
 
 module.exports = query
