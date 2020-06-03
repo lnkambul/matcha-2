@@ -17,6 +17,21 @@ query.insert = (t_name, params, values, callback) => {
 	})
 }
 
+query.update = (t_name, sets, values, param, pval, callback) => {
+	var z = ''
+	for (let s in sets)
+		z += sets[s]+"=?, "
+	z = z.slice(0, -2)
+	var sql = "UPDATE "+t_name+" SET "+z+" WHERE "+param+"="+pval
+	DB.insert(sql, values, (err, res) => {
+		if (err)
+			callback(err, null)
+		else
+			callback(null, res)
+	})
+}
+
+
 query.fetchall = (t_name, callback) => {
 	var sql = "SELECT * FROM " + t_name
 	DB.fetch(sql, (err, res) => {
@@ -26,5 +41,7 @@ query.fetchall = (t_name, callback) => {
 			callback(null, res)
 	})
 }
+
+
 
 module.exports = query

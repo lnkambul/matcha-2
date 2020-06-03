@@ -2,10 +2,11 @@ const express = require('express')
 const path = require('path')
 
 //database connection
-const dbc = require('./models/connModel')
+//const dbc = require('./models/connModel')
 
-//init models
-let user = require('./models/connModel')
+//init database
+const db = require('./models/dbModel')
+db.init()
 
 //init app
 const app = express()

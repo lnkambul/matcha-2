@@ -8,9 +8,5 @@ dbc.connect((err) => {
 	if (err) throw err
 	console.log (`MySQL -> (connected)`)
 })
-dbc.query(`USE ${config.db}`, (err) => {
-	if (err) throw err
-	console.log(`DB: ${config.db} -> (connect)`)
-})
 
 module.exports = dbc
