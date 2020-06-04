@@ -58,10 +58,16 @@ User.create = (user, callback) => {
 }
 
 User.login = (user, callback) => {
-	Q.fetchone("users", 'username', 'username', user.username, (err, res) => {
-		if (res.length > 0)
-			callback(null, res[0])
-		else
+	Q.fetchone("users", ['username', 'password'], 'username', user.username, (err, res) => {
+		if (res.length > 0) {
+			S.findHash(user.password, res[0].password, (err, result) => {
+				if (err)
+					callback(err, null)
+				else
+					callback(null, result)
+			})
+		} 
+		else 
 			callback(user.username+" not found", null)
 	})
 }

@@ -44,7 +44,13 @@ Secure.createHash = (pass, callback) => {
 	})
 }
 
-Secure.checkHash = (pass, callback) => {
-	
+Secure.findHash = (pass, hash, callback) => {
+	bcrypt.compare(pass, hash, (err, res) => {
+		if (res == true) 
+			callback(null, "success")
+		else 
+			callback("wrong password", null)
+	})
 }
+
 module.exports = Secure
