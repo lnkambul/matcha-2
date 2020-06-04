@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 var Secure = function(){}
 
 Secure.password = (pass, callback) => {
@@ -34,4 +35,16 @@ Secure.email = (addr, callback) => {
 		callback(null, "valid email")
 }
 
+Secure.createHash = (pass, callback) => {
+	bcrypt.hash(pass, 10, (err, hash) => {
+		if (err)
+			callback(err)
+		else
+			callback(null, hash)
+	})
+}
+
+Secure.checkHash = (pass, callback) => {
+	
+}
 module.exports = Secure

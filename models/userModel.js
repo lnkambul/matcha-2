@@ -43,11 +43,26 @@ User.check = (user, callback) => {
 }
 
 User.create = (user, callback) => {
-	Q.insert("users", ['username', 'email', 'password'], [user.username, user.email, user.password], (err, res) => {
+	S.createHash(user.password, (err, hash) => {
 		if (err)
-			callback(err, null)
+			callback(err)
+		else {
+			Q.insert("users", ['username', 'email', 'password'], [user.username, user.email, hash], (err, res) => {
+				if (err)
+					callback(err, null)
+				else
+					callback(null, res)
+			})
+		}
+	})
+}
+
+User.login = (user, callback) => {
+	Q.fetchone("users", 'username', 'username', user.username, (err, res) => {
+		if (res.length > 0)
+			callback(null, res[0])
 		else
-			callback(null, res)
+			callback(user.username+" not found", null)
 	})
 }
 

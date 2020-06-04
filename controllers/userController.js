@@ -36,3 +36,17 @@ exports.registerUser = (req, res) => {
 		}
 	})
 }
+
+exports.loginUser = (req, res) => {
+	const newUser = new User(req.body)
+	User.login(newUser, (err, result) => {
+		if (err) {
+			console.log(err)
+			res.redirect('/login')
+		}
+		else {
+			console.log(result)
+			res.redirect('/')
+		}
+	})
+}

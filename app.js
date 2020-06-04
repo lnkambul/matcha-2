@@ -32,8 +32,10 @@ app.get('/edit', (req, res) => {
 //routes
 let index = require('./routes/index')
 let signup = require('./routes/signup')
+let login = require('./routes/login')
 app.use('/', index)
 app.use('/signup', signup)
+app.use('/login', login)
 
 //start server
 app.listen(port, () => {
