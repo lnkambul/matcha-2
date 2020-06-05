@@ -9,4 +9,3 @@ router.get('/', (req, res) => {
 router.post('/', userController.loginUser)
 
 module.exports = router
-

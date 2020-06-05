@@ -13,13 +13,13 @@ exports.registerUser = (req, res) => {
 	const newUser = new User(req.body)
 	User.validate(newUser, (err, result) => {
 		if (err) {
-			console.log("login failed", err)
+			console.log("registration failed", err)
 			res.redirect('/signup')
 		}
 		else {
 			User.check(newUser, (err, result) => {
 				if (err) {
-					console.log("login failed", err)
+					console.log("registration failed", err)
 					res.redirect('/signup')
 				}
 				else {
@@ -27,7 +27,7 @@ exports.registerUser = (req, res) => {
 						if (err)
 							console.log(err)
 						else {
-							console.log("login successful")
+							console.log("registration successful")
 							res.redirect('/')
 						}
 					})
@@ -39,6 +39,7 @@ exports.registerUser = (req, res) => {
 
 exports.loginUser = (req, res) => {
 	const newUser = new User(req.body)
+	var log = req.session
 	User.login(newUser, (err, result) => {
 		if (err) {
 			console.log(err)
@@ -46,7 +47,17 @@ exports.loginUser = (req, res) => {
 		}
 		else {
 			console.log(result)
+			log.user = newUser.username
 			res.redirect('/')
 		}
+	})
+}
+
+exports.logoutUser = (req, res) => {
+	req.session.destroy((err) => {
+		if (err)
+			res.send('404 homie')
+		else
+			res.redirect('/')
 	})
 }

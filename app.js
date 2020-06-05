@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const session = require('express-session')
 
 //database connection
 //const dbc = require('./models/connModel')
@@ -24,18 +25,19 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-
-app.get('/edit', (req, res) => {
-	res.render('edit')
-})
+//init session
+const sess = require('./config/secret')
+app.use(session(sess))
 
 //routes
 let index = require('./routes/index')
 let signup = require('./routes/signup')
 let login = require('./routes/login')
+let logout = require('./routes/logout')
 app.use('/', index)
 app.use('/signup', signup)
 app.use('/login', login)
+app.use('/logout', logout)
 
 //start server
 app.listen(port, () => {

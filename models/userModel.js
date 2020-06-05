@@ -60,11 +60,14 @@ User.create = (user, callback) => {
 User.login = (user, callback) => {
 	Q.fetchone("users", ['username', 'password'], 'username', user.username, (err, res) => {
 		if (res.length > 0) {
+			S.createToken(user.username)
 			S.findHash(user.password, res[0].password, (err, result) => {
 				if (err)
 					callback(err, null)
-				else
+				else {
 					callback(null, result)
+				}
+				
 			})
 		} 
 		else 

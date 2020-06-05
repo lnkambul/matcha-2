@@ -1,4 +1,6 @@
 const bcrypt = require('bcrypt')
+const crypto = require('crypto-js')
+
 var Secure = function(){}
 
 Secure.password = (pass, callback) => {
@@ -51,6 +53,11 @@ Secure.findHash = (pass, hash, callback) => {
 		else 
 			callback("wrong password", null)
 	})
+}
+
+Secure.createToken = (username, callback) => {
+	var c = crypto.AES.encrypt(username, 'test')
+	console.log('encrypted -> '+c)
 }
 
 module.exports = Secure
