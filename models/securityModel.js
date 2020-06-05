@@ -55,9 +55,9 @@ Secure.findHash = (pass, hash, callback) => {
 	})
 }
 
-Secure.createToken = (username, callback) => {
-	var c = crypto.AES.encrypt(username, 'test')
-	console.log('encrypted -> '+c)
+Secure.createToken = (pass, callback) => {
+	var c = crypto.AES.encrypt(pass+Date.now(), 'test').toString()
+	callback(c)
 }
 
 module.exports = Secure

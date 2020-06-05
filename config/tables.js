@@ -13,7 +13,7 @@ var tables = {
 	),
 	profiles : (
 		"CREATE TABLE `profiles` (" +
-		" `id` int(11) NOT NULL UNIQUE," +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `user_id` int(11)," +
 		" `first_name` varchar(25) NOT NULL," +
 		" `last_name` varchar(25) NOT NULL," +
@@ -22,24 +22,25 @@ var tables = {
 		" `preference` varchar(240) NOT NULL," +
 		" `interests` varchar(200) NOT NULL," +
 		" `bio` varchar(255)," +
-		" FOREIGN KEY (`user_id`) REFERENCES users(`id`)" +
+		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
 	images : (
 		"CREATE TABLE `images` (" +
-		" `id` int(11) NOT NULL UNIQUE," +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `user_id` int(11)," +
 		" `img_src` varchar(250) NOT NULL," +
 		" `pro_pic` varchar(250) NOT NULL," +
-		" FOREIGN KEY (`user_id`) REFERENCES users(`id`)" +
+		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
 	tokens : (
 		"CREATE TABLE `tokens` (" +
-		" `id` int(11) NOT NULL UNIQUE," +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `user_id` int(11)," +
-		" `token` varchar(100) NOT NULL," +
-		" FOREIGN KEY (`user_id`) REFERENCES users(`id`)" +
+		" `type` varchar(20) NOT NULL," +
+		" `token` varchar(250) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	)
 }

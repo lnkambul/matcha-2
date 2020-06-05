@@ -58,16 +58,22 @@ User.create = (user, callback) => {
 }
 
 User.login = (user, callback) => {
-	Q.fetchone("users", ['username', 'password'], 'username', user.username, (err, res) => {
+	Q.fetchone("users", ['id', 'username', 'password'], 'username', user.username, (err, res) => {
 		if (res.length > 0) {
-			S.createToken(user.username)
 			S.findHash(user.password, res[0].password, (err, result) => {
 				if (err)
 					callback(err, null)
 				else {
 					callback(null, result)
+					S.createToken(res[0].password, (token) => {
+						Q.insert("tokens", ['user_id', 'type', 'token'], [res[0].id, 'login', token], (err, success) => {
+							if (err)
+								console.log(err)
+							else
+								console.log(success)
+						})
+					})
 				}
-				
 			})
 		} 
 		else 
