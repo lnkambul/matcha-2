@@ -39,15 +39,13 @@ exports.registerUser = (req, res) => {
 
 exports.loginUser = (req, res) => {
 	const newUser = new User(req.body)
-	var log = req.session
 	User.login(newUser, (err, result) => {
 		if (err) {
 			console.log(err)
 			res.redirect('/login')
 		}
 		else {
-			console.log(result)
-			log.user = newUser.username
+			req.session.user = result
 			res.redirect('/')
 		}
 	})

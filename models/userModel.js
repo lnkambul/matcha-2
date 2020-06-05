@@ -64,13 +64,12 @@ User.login = (user, callback) => {
 				if (err)
 					callback(err, null)
 				else {
-					callback(null, result)
 					S.createToken(res[0].password, (token) => {
 						Q.insert("tokens", ['user_id', 'type', 'token'], [res[0].id, 'login', token], (err, success) => {
 							if (err)
-								console.log(err)
+								callback(err, null)
 							else
-								console.log(success)
+								callback(null, token)
 						})
 					})
 				}
