@@ -50,8 +50,16 @@ User.create = (user, callback) => {
 			Q.insert("users", ['username', 'email', 'password'], [user.username, user.email, hash], (err, res) => {
 				if (err)
 					callback(err, null)
-				else
-					callback(null, res)
+				else {
+					S.createToken(hash, (token) => {
+						Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'signup', token], (err, success) => {
+							if (err)
+								callback(err, null)
+							else
+								callback(null, success)
+						})
+					})
+				}
 			})
 		}
 	})
@@ -65,7 +73,7 @@ User.login = (user, callback) => {
 					callback(err, null)
 				else {
 					S.createToken(res[0].password, (token) => {
-						Q.insert("tokens", ['user_id', 'type', 'token'], [res[0].id, 'login', token], (err, success) => {
+						Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'login', token], (err, success) => {
 							if (err)
 								callback(err, null)
 							else

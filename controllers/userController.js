@@ -41,11 +41,12 @@ exports.loginUser = (req, res) => {
 	const newUser = new User(req.body)
 	User.login(newUser, (err, result) => {
 		if (err) {
-			console.log(err)
+			console.log("login failed")
 			res.redirect('/login')
 		}
 		else {
 			req.session.user = result
+			console.log("login successful")
 			res.redirect('/')
 		}
 	})

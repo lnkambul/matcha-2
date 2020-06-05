@@ -37,7 +37,7 @@ var tables = {
 	tokens : (
 		"CREATE TABLE `tokens` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `user_id` int(11)," +
+		" `username` varchar(20)," +
 		" `type` varchar(20) NOT NULL," +
 		" `token` varchar(250) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
