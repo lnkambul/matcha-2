@@ -60,3 +60,19 @@ exports.logoutUser = (req, res) => {
 			res.redirect('/')
 	})
 }
+
+exports.verifyUser = (req, res) => {
+	var token = req.params.token
+	Q.fetchone("tokens", 'token', 'token', token, (err, result) => {
+		if (result.length > 0) {
+			console.log("user verified")
+//			res.redirect('/login')
+			res.send("user verified")
+		}
+		else {
+			console.log("failure")
+			res.send("failure")
+		//	res.redirect('/signup')
+		}
+	})
+}

@@ -1,5 +1,6 @@
 const Q = require('./queryModel')
 const S = require('./securityModel')
+const E = require('./emailModel')
 
 var User = function(user) {
 	this.username = user.username
@@ -47,19 +48,28 @@ User.create = (user, callback) => {
 		if (err)
 			callback(err)
 		else {
-			Q.insert("users", ['username', 'email', 'password'], [user.username, user.email, hash], (err, res) => {
-				if (err)
-					callback(err, null)
-				else {
-					S.createToken(hash, (token) => {
-						Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'signup', token], (err, success) => {
+			S.createToken(hash, (token) => {
+				var link = `<p>welcome to matcha ${user.username}</p><br><a href='http://localhost:5000/v/${token}'>`+
+				`click here to complete registration</a>`
+				E.sendMail({from: 'matcha@matcha.com', to: user.email, subject: 'verification', text: link}, (err, info) => {
+					if (err)
+						callback('signup failed (email verification error)')
+					else {
+						Q.insert("users", ['username', 'email', 'password'], [user.username, user.email, hash], (err, res) => {
 							if (err)
 								callback(err, null)
-							else
-								callback(null, success)
+							else {
+								Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'signup', token], (err, success) => {
+									if (err)
+										callback(err, null)
+									else {
+										callback(null, info)
+									}
+								})
+							}
 						})
-					})
-				}
+					}
+				})
 			})
 		}
 	})
