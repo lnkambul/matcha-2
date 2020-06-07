@@ -35,11 +35,13 @@ let signup = require('./routes/signup')
 let login = require('./routes/login')
 let logout = require('./routes/logout')
 let verify = require('./routes/verify')
+let resetpassword = require('./routes/resetpassword')
 app.use('/', index)
 app.use('/signup', signup)
 app.use('/login', login)
 app.use('/logout', logout)
 app.use('/v', verify)
+app.use('/resetpassword', resetpassword)
 
 //start server
 app.listen(port, (err, res) => {

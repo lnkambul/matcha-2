@@ -2,11 +2,13 @@ const Q = require('../models/queryModel')
 const User = require('../models/userModel')
 
 exports.list_users = (req, res) => {
+	var log = req.session.user
 	Q.fetchall("users", (err, data) => {
-		if (err)
-			res.send(err)
-		res.send(data)
-	});
+		res.render('index', {
+			users: data,
+			logged: log
+		})
+	})
 }
 
 exports.registerUser = (req, res) => {
@@ -75,4 +77,8 @@ exports.verifyUser = (req, res) => {
 			res.redirect('/login')
 		}
 	})
+}
+
+exports.resetPassword = (req, res) => {
+	res.send('forgot password controller')
 }
