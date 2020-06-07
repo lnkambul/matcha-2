@@ -80,7 +80,7 @@ User.login = (user, callback) => {
 		if (res.length > 0) {
 			S.findHash(user.password, res[0].password, (err, result) => {
 				if (err)
-					callback(err, null)
+					callback("username or password incorrect", null)
 				else {
 					S.createToken(res[0].password, (token) => {
 						Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'login', token], (err, success) => {
@@ -94,7 +94,29 @@ User.login = (user, callback) => {
 			})
 		} 
 		else 
-			callback(user.username+" not found", null)
+			callback("username or password incorrect", null)
+	})
+}
+
+User.verify = (token, callback) => {
+	Q.fetchone("tokens", ['username', 'token'], 'token', token, (err, res) => {
+		if (res.length > 0) {
+			Q.update("users", ['verified'], 1, 'username', res[0].username, (er, result) => {
+				if (err)
+					callback(err, null)
+				else {
+					Q.delone("tokens", 'token', token, (err, results) => {
+						if (err)
+							callback(err, null)
+						else
+							callback(null, results)
+					})
+				}
+			})
+		}
+		else {
+			callback("wrong token", null)
+		}
 	})
 }
 

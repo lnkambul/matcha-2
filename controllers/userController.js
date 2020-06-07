@@ -41,7 +41,7 @@ exports.loginUser = (req, res) => {
 	const newUser = new User(req.body)
 	User.login(newUser, (err, result) => {
 		if (err) {
-			console.log("login failed")
+			console.log(err)
 			res.redirect('/login')
 		}
 		else {
@@ -56,23 +56,23 @@ exports.logoutUser = (req, res) => {
 	req.session.destroy((err) => {
 		if (err)
 			res.send('404 homie')
-		else
+		else {
+			console.log("log out successful")
 			res.redirect('/')
+		}
 	})
 }
 
 exports.verifyUser = (req, res) => {
 	var token = req.params.token
-	Q.fetchone("tokens", 'token', 'token', token, (err, result) => {
-		if (result.length > 0) {
-			console.log("user verified")
-//			res.redirect('/login')
-			res.send("user verified")
+	User.verify(token, (err, result) => {
+		if (err) {
+			console.log("verification failed")
+			res.redirect('/signup')
 		}
 		else {
-			console.log("failure")
-			res.send("failure")
-		//	res.redirect('/signup')
+			console.log("user verified")
+			res.redirect('/login')
 		}
 	})
 }

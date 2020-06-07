@@ -56,7 +56,7 @@ Secure.findHash = (pass, hash, callback) => {
 }
 
 Secure.createToken = (pass, callback) => {
-	var c = crypto.AES.encrypt(pass+Date.now(), 'test').toString()
+	var c = crypto.SHA256(pass+Date.now(), 'test').toString()
 	callback(c)
 }
 

@@ -17,17 +17,27 @@ query.insert = (t_name, params, values, callback) => {
 	})
 }
 
+query.delone = (t_name, params, pval, callback) => {
+	var sql = "DELETE FROM "+t_name+" WHERE "+params+"=\'"+pval+"\'"
+	DB.insert(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else
+			callback(null, res)
+	})
+}
+
 query.update = (t_name, sets, values, param, pval, callback) => {
 	var z = ''
 	for (let s in sets)
 		z += sets[s]+"=?, "
 	z = z.slice(0, -2)
-	var sql = "UPDATE "+t_name+" SET "+z+" WHERE "+param+"="+pval
+	var sql = "UPDATE "+t_name+" SET "+z+" WHERE "+param+"=\'"+pval+"\'"
 	DB.insert(sql, values, (err, res) => {
 		if (err)
-			callback(err, null)
+			callback("failed to delete", null)
 		else
-			callback(null, res)
+			callback(null, "deleted")
 	})
 }
 

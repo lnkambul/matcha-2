@@ -34,12 +34,14 @@ let index = require('./routes/index')
 let signup = require('./routes/signup')
 let login = require('./routes/login')
 let logout = require('./routes/logout')
+let verify = require('./routes/verify')
 app.use('/', index)
 app.use('/signup', signup)
 app.use('/login', login)
 app.use('/logout', logout)
+app.use('/v', verify)
 
 //start server
-app.listen(port, () => {
-	console.log(`server listening on port ${port}`)
+app.listen(port, (err, res) => {
+		console.log(`server listening on port ${port}...`)
 })

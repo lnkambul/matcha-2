@@ -7,7 +7,7 @@ var tables = {
 		" `username` varchar(20) NOT NULL," +
 		" `email` varchar(60) NOT NULL," +
 		" `password` varchar(100) NOT NULL," +
-		" `verified` bit NOT NULL DEFAULT 0," +
+		" `verified` int(2) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
