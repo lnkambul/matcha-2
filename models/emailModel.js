@@ -1,12 +1,8 @@
-var nodemailer = require('nodemailer');
+const conf = require('../../emailconfig')
+const nodemailer = require('nodemailer');
 
-var email = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'msefeane@gmail.com',
-    pass: 'pass'
-  }
-});
+const email = nodemailer.createTransport(conf)
+
 /*
 var mailOptions = {
   from: 'kori@matcha.com',

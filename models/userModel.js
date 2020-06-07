@@ -61,7 +61,7 @@ User.create = (user, callback) => {
 				`click here to complete registration</a>`
 				E.sendMail({from: 'matcha@matcha.com', to: user.email, subject: 'verification', text: link}, (err, info) => {
 					if (err)
-						callback('signup failed (email verification error)')
+						callback('signup failed (email verification error)'+err)
 					else {
 						Q.insert("users", ['username', 'first_name', 'last_name', 'email', 'password'], [user.username, user.first_name, user.last_name, user.email, hash], (err, res) => {
 							if (err)
