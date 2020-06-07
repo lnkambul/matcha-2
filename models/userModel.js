@@ -4,23 +4,31 @@ const E = require('./emailModel')
 
 var User = function(user) {
 	this.username = user.username
+	this.first_name = user.first_name
+	this.last_name = user.last_name
 	this.email = user.email
 	this.password = user.password
 }
 
 User.validate = (user, callback) => {
-	var e = {username: null, email: null, password: null}
-	var result = {username: null, email: null, password: null}
+	var e = {username: null, first_name: null, last_name: null, email: null, password: null}
+	var result = {username: null, first_name: null, last_name: null, email: null, password: null}
 	S.string("username", user.username, (err, res) => {
 		e.username = err
 		result.username = res})
+	S.string("first_name", user.first_name, (err, res) => {
+		e.first_name = err
+		result.first_name = res})
+	S.string("last_name", user.last_name, (err, res) => {
+		e.last_name = err
+		result.last_name = res})
 	S.email(user.email, (err, res) => {
 		e.email = err
 		result.email = res})
 	S.password(user.password, (err, res) => {
 		e.password = err
 		result.password = res})
-	if (e.username || e.email || e.password)
+	if (e.username || e.first_name || e.last_name || e.email || e.password)
 		callback(e, result)
 	else
 		callback(null, result)
@@ -55,7 +63,7 @@ User.create = (user, callback) => {
 					if (err)
 						callback('signup failed (email verification error)')
 					else {
-						Q.insert("users", ['username', 'email', 'password'], [user.username, user.email, hash], (err, res) => {
+						Q.insert("users", ['username', 'first_name', 'last_name', 'email', 'password'], [user.username, user.first_name, user.last_name, user.email, hash], (err, res) => {
 							if (err)
 								callback(err, null)
 							else {
