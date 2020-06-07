@@ -84,23 +84,27 @@ User.create = (user, callback) => {
 }
 
 User.login = (user, callback) => {
-	Q.fetchone("users", ['id', 'username', 'password'], 'username', user.username, (err, res) => {
+	Q.fetchone("users", ['id', 'username', 'password', 'verified'], 'username', user.username, (err, res) => {
 		if (res.length > 0) {
-			S.findHash(user.password, res[0].password, (err, result) => {
-				if (err)
-					callback("username or password incorrect", null)
-				else {
-					S.createToken(res[0].password, (token) => {
-						Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'login', token], (err, success) => {
-							if (err)
-								callback(err, null)
-							else
-								callback(null, token)
+			if (res[0].verified > 0) {
+				S.findHash(user.password, res[0].password, (err, result) => {
+					if (err)
+						callback("username or password incorrect", null)
+					else {
+						S.createToken(res[0].password, (token) => {
+							Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'login', token], (err, success) => {
+								if (err)
+									callback(err, null)
+								else
+									callback(null, token)
+							})
 						})
-					})
-				}
-			})
-		} 
+					}
+				})
+			} 
+			else
+				callback("please verify account")
+		}
 		else 
 			callback("username or password incorrect", null)
 	})
