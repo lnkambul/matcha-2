@@ -1,7 +1,8 @@
-const conf = require('../../emailconfig')
-const nodemailer = require('nodemailer');
+const conf = require('../config/emailconfig')
+const pvt = require('../../emailconfig')
+const nodemailer = require('nodemailer')
 
-const email = nodemailer.createTransport(conf)
+const email = nodemailer.createTransport(pvt)
 
 /*
 var mailOptions = {

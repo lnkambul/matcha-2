@@ -1,5 +1,6 @@
 const Q = require('../models/queryModel')
 const User = require('../models/userModel')
+const pass = require('../models/passwordModel')
 
 exports.list_users = (req, res) => {
 	var log = req.session.user
@@ -77,8 +78,4 @@ exports.verifyUser = (req, res) => {
 			res.redirect('/login')
 		}
 	})
-}
-
-exports.resetPassword = (req, res) => {
-	res.send('forgot password controller')
 }
