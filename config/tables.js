@@ -17,11 +17,13 @@ var tables = {
 		"CREATE TABLE `profiles` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `user_id` int(11)," +
+		" `age` int(11)," +
 		" `gender` varchar(25) NOT NULL," +
 		" `orientation` varchar(25) NOT NULL," +
 		" `preference` varchar(240) NOT NULL," +
 		" `interests` varchar(200) NOT NULL," +
-		" `bio` varchar(255)," +
+		" `location` varchar(200) NOT NULL," +
+		" `bio` varchar(300)," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),

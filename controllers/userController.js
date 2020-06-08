@@ -3,11 +3,11 @@ const User = require('../models/userModel')
 const pass = require('../models/passwordModel')
 
 exports.list_users = (req, res) => {
-	var log = req.session.user
+	var token = req.session.token
 	Q.fetchall("users", (err, data) => {
 		res.render('index', {
-			users: data,
-			logged: log
+			token: token,
+			users: data
 		})
 	})
 }
@@ -48,7 +48,7 @@ exports.loginUser = (req, res) => {
 			res.redirect('/login')
 		}
 		else {
-			req.session.user = result
+			req.session.token = result
 			console.log("login successful")
 			res.redirect('/')
 		}

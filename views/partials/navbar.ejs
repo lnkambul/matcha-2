@@ -7,9 +7,13 @@
 
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="/signup">signup</a>
-      <a class="nav-item nav-link" href="/login">login</a>
-      <a class="nav-item nav-link" href="/logout">logout</a>
+	 	<% if (token) { %>
+      	<a class="nav-item nav-link" href="/p">profile</a>
+      	<a class="nav-item nav-link" href="/logout">logout</a>
+	 	<%}else { %>
+      	<a class="nav-item nav-link" href="/signup">signup</a>
+      	<a class="nav-item nav-link" href="/login">login</a>
+		<% } %>
     </div>
   </div>
 </nav>

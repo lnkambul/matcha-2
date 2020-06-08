@@ -28,6 +28,7 @@ app.use(bodyParser.json())
 //init session
 const sess = require('./config/secret')
 app.use(session(sess))
+global.token = null
 
 //routes
 let index = require('./routes/index')
@@ -36,12 +37,14 @@ let login = require('./routes/login')
 let logout = require('./routes/logout')
 let verify = require('./routes/verify')
 let forgotpassword = require('./routes/forgotpassword')
+let profile = require('./routes/profile.js')
 app.use('/', index)
 app.use('/signup', signup)
 app.use('/login', login)
 app.use('/logout', logout)
 app.use('/v', verify)
 app.use('/f', forgotpassword)
+app.use('/p', profile)
 
 //start server
 app.listen(port, (err, res) => {
