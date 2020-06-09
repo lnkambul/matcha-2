@@ -6,7 +6,7 @@ var tables = {
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
 		" `first_name` varchar(25) NOT NULL," +
-		" `last_name` varchar(25) NOT NULL," +
+		" `last_name` varchar(25) NOT NULL," + 
 		" `email` varchar(60) NOT NULL," +
 		" `password` varchar(100) NOT NULL," +
 		" `verified` int(2) NOT NULL DEFAULT 0," +
@@ -16,8 +16,8 @@ var tables = {
 	profiles : (
 		"CREATE TABLE `profiles` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `user_id` int(11)," +
-		" `age` int(11)," +
+		" `username` varchar(20) NOT NULL," +
+		" `age` varchar(3)," +
 		" `gender` varchar(25) NOT NULL," +
 		" `orientation` varchar(25) NOT NULL," +
 		" `preference` varchar(240) NOT NULL," +

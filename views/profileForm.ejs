@@ -1,27 +1,39 @@
 <%- include ('partials/header') %>
-<h2>profile</h2><br>
 <form action="/p" method="post">
 	<label for="age">age</label><br>
 	<input type="text" id="age" name="age"><br>		
 	
-	<label for="gender">gender</label><br>
-	<input type="text" id="gender" name="gender"><br>		
+	<label for="gender">gender:</label>
+	<input type="radio" id="male" name="gender" value="male">
+	<label for="male">male</label>
+	<input type="radio" id="female" name="gender" value="female">
+	<label for="female">female</label><br>
 	
-	<label for="sexual_orientation">sexual orientation</label><br>
-	<input type="text" id="sexual_orientation" name="sexual_orientation"><br>		
+	<label for="sexual_orientation">sexual orientation:</label>
+	<input type="radio" id="heterosexual" name="sexual_orientation" value="heterosexual">
+	<label for="heterosexual">heterosexual</label>
+	<input type="radio" id="homosexual" name="sexual_orientation" value="homosexual">
+	<label for="homosexual">homosexual</label>
+	<input type="radio" id="bisexual" name="sexual_orientation" value="bisexual">
+	<label for="bisexual">bisexual</label><br>
 	
-	<label for="preference">preference</label><br>
-	<input type="text" id="preference" name="preference"><br>		
+	<label for="preference">preference:</label>
+	<input type="radio" id="men" name="preference" value="men">
+	<label for="men">men</label>
+	<input type="radio" id="women" name="preference" value="women">
+	<label for="women">women</label>
+	<input type="radio" id="both" name="preference" value="both">
+	<label for="both">both</label><br>
 
 	<label for="interests">interests</label><br>
 	<input type="text" id="interests" name="interests"><br>		
 
-	<label for="location">location</label><br>
-	<input type="text" id="location" name="location"><br>		
+	<label for="locate">location</label><br>
+	<input type="text" id="locate" name="locate"><br>		
 
 	<label for="bio">bio</label><br>
-	<input type="text" id="bio" name="bio"><br>		
-	
+	<textarea id="bio" name="bio" rows="4" cols="23"></textarea><br>
+
 	<label for="password">password</label><br>
 	<input type="password" id="password" name="password"><br>
 	<br>
