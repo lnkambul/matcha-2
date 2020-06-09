@@ -30,8 +30,27 @@ Profile.validate = (profile, callback)  => {
 		callback(null, "valid form")
 }
 
-Profile.register = (profile, callback) => {
-	callback(null, "profile complete")
+Profile.register = (username, newpassword, p, callback) => {
+	Q.fetchone("users", ['password'], 'username', username, (err, res) => {
+		if (res.length > 0) {
+			S.findHash(newpassword, res[0].password, (err, res) => {
+				if (err)
+					callback('password incorrect', null)
+				else {
+					var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
+					var values = [username, p.age, p.gender, p.sexual_orientation, p.preference, p.interests.join(','), p.locate, p.bio]
+					Q.insert("profiles", params, values, (err, result) => {
+						if (err)
+							callback(err, null)
+						else
+							callback(null, "registration successful")
+					})
+				}
+			})
+		}
+		else
+			callback("password error")
+	})
 }
 
 module.exports = Profile
