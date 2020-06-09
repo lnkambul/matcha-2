@@ -19,12 +19,12 @@ exports.registerProfile = (req, res) => {
 				if (err)
 					console.log("error ", err)
 				else {
-					console.log(newProfile)
 					Profile.register(newProfile, (err, success) => {
 						if (err)
 							console.log(err)
 						else
 							console.log(success)
+						console.log(newProfile)
 					})
 				}
 					res.redirect('/p')
