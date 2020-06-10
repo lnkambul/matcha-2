@@ -30,47 +30,68 @@ Profile.validate = (profile, callback)  => {
 		callback(null, "valid form")
 }
 
-Profile.create = (id, vals, interests, callback) => {
-	var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
-	Q.insert("profiles", params, vals, (err, res) => {
-		if (err)
-			callback(err, null)
-		else {
-			params = ['interest', 'user_list']
-			r = 0
-			e = null
-			s = []
-			for (let i in interests) {
-				Q.fetchone("interests", params, 'interest', interests[i], (err, res) => {
-					if (res.length > 0) {
-						var newlist = `${res[0].user_list},${id}`
-						Q.update("interests", ['user_list'], newlist, 'interest', interests[i], (err, result) => {
-							r += 1
-							if (err)
-								e = err
-							else
-								s.push(`${interests[i]} ${result}`)
-							if (r == interests.length && e)
-									callback(e)
-							else if (r == interests.length)
-									callback(null, s)
-						})
-					} else {
-						Q.insert("interests", params, [interests[i], id], (err, result) => {
-							r += 1
-							if (err)
-								e = err
-							else
-								s.push(`${interests[i]} inserted`)
-							if (r == interests.length && e)
-									callback(e)
-							else if (r == interests.length)
-									callback(null, s)
-						})
-					}
+Profile.interests = (id, interests, callback) => {
+	params = ['interest', 'user_list']
+	r = 0
+	e = []
+	s = []
+	for (let i in interests) {
+		Q.fetchone("interests", params, 'interest', interests[i], (err, res) => {
+			if (res.length > 0) {
+				var users = res[0].user_list.split(',')
+				var newlist = `${res[0].user_list}`
+				if (users.find(element => element ==`${id}`) == null)
+					newlist += `,${id}`
+				Q.update("interests", ['user_list'], newlist, 'interest', interests[i], (err, result) => {
+					r += 1
+					if (err)
+						e.push(err)
+					else
+						s.push(`${interests[i]} ${result}`)
+					if (r == interests.length && e.length > 0)
+						callback(e)
+					else if (r == interests.length)
+						callback(null, s)
+				})
+			} else {
+				Q.insert("interests", params, [interests[i], id], (err, result) => {
+					r += 1
+					if (err)
+						e.push(err)
+					else
+						s.push(`${interests[i]} inserted`)
+					if (r == interests.length && e.length > 0)
+						callback(e)
+					else if (r == interests.length)
+						callback(null, s)
 				})
 			}
+		})
+	}
+}
+
+Profile.create = (id, vals, interests, callback) => {
+	var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
+	var e = []
+	var r = []
+	Q.fetchone("profiles", ['username'], 'username', vals[0], (err, res) => {
+		if (res.length > 0) {
+			Q.update("profiles", params, vals, 'username', vals[0], (err, res) => {
+				if (err)
+					callback(res)
+			})
+		} else {
+			Q.insert("profiles", params, vals, (err, res) => {
+		 		if (err)
+		 			callback(err)
+		 	})
 		}
+	})
+	Profile.interests(id, interests, (err, result) => {
+		if (err)
+			callback(err)
+		else
+			callback(null, result)
 	})
 }
 
@@ -96,6 +117,10 @@ Profile.register = (username, newpassword, p, callback) => {
 		else
 			callback("password error")
 	})
+}
+
+Profile.edit = (username, newpassword, p, callback) => {
+	
 }
 
 module.exports = Profile

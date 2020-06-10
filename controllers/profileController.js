@@ -11,7 +11,6 @@ exports.showProfile = (req, res) => {
 
 exports.registerProfile = (req, res) => {
 	var sess = req.session
-	var user = 'kori'
 	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
 		if (result.length > 0) {
 			var newProfile = new Profile(result[0].username, req.body)
@@ -21,9 +20,9 @@ exports.registerProfile = (req, res) => {
 				else {
 					Profile.register(result[0].username, req.body.password, newProfile, (err, success) => {
 						if (err)
-							console.log(err)
+							console.log('failed to update profile')
 						else {
-							console.log(success)
+							console.log('profile updated')
 							res.redirect('/')
 						}
 					})
