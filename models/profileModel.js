@@ -37,23 +37,35 @@ Profile.create = (id, vals, interests, callback) => {
 			callback(err, null)
 		else {
 			params = ['interest', 'user_list']
+			r = 0
+			e = null
+			s = []
 			for (let i in interests) {
 				Q.fetchone("interests", params, 'interest', interests[i], (err, res) => {
 					if (res.length > 0) {
 						var newlist = `${res[0].user_list},${id}`
 						Q.update("interests", ['user_list'], newlist, 'interest', interests[i], (err, result) => {
+							r += 1
 							if (err)
-								callback(err)
+								e = err
 							else
-								callback(null, interests[i]+" updated")
+								s.push(`${interests[i]} ${result}`)
+							if (r == interests.length && e)
+									callback(e)
+							else if (r == interests.length)
+									callback(null, s)
 						})
-					}
-					else {
-						Q.insert("interests", params, [interests[i], id], (err, res) => {
+					} else {
+						Q.insert("interests", params, [interests[i], id], (err, result) => {
+							r += 1
 							if (err)
-								callback(err)
+								e = err
 							else
-								callback(null, interests[i]+" inserted")
+								s.push(`${interests[i]} inserted`)
+							if (r == interests.length && e)
+									callback(e)
+							else if (r == interests.length)
+									callback(null, s)
 						})
 					}
 				})

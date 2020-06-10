@@ -24,10 +24,10 @@ exports.registerProfile = (req, res) => {
 							console.log(err)
 						else {
 							console.log(success)
+							res.redirect('/')
 						}
 					})
 				}
-					res.redirect('/p')
 			})
 		}
 		else {
