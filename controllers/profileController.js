@@ -12,7 +12,7 @@ exports.showProfile = (req, res) => {
 exports.registerProfile = (req, res) => {
 	var sess = req.session
 	var user = 'kori'
-	Q.fetchone("tokens", ['username'], 'username', user, (err, result) => {
+	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
 		if (result.length > 0) {
 			var newProfile = new Profile(result[0].username, req.body)
 			Profile.validate(newProfile, (err, success) => {

@@ -27,6 +27,15 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
+	interests : (
+		"CREATE TABLE `interests` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `interest` varchar(20) NOT NULL," +
+		" `user_list` varchar(400)," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+
 	images : (
 		"CREATE TABLE `images` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +

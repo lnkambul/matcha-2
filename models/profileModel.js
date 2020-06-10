@@ -30,20 +30,53 @@ Profile.validate = (profile, callback)  => {
 		callback(null, "valid form")
 }
 
+Profile.create = (id, vals, interests, callback) => {
+	var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
+	Q.insert("profiles", params, vals, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			params = ['interest', 'user_list']
+			for (let i in interests) {
+				Q.fetchone("interests", params, 'interest', interests[i], (err, res) => {
+					if (res.length > 0) {
+						var newlist = `${res[0].user_list},${id}`
+						Q.update("interests", ['user_list'], newlist, 'interest', interests[i], (err, result) => {
+							if (err)
+								callback(err)
+							else
+								callback(null, interests[i]+" updated")
+						})
+					}
+					else {
+						Q.insert("interests", params, [interests[i], id], (err, res) => {
+							if (err)
+								callback(err)
+							else
+								callback(null, interests[i]+" inserted")
+						})
+					}
+				})
+			}
+		}
+	})
+}
+
 Profile.register = (username, newpassword, p, callback) => {
-	Q.fetchone("users", ['password'], 'username', username, (err, res) => {
+	Q.fetchone("users", ['id', 'password'], 'username', username, (err, res) => {
 		if (res.length > 0) {
+			var id = res[0].id
 			S.findHash(newpassword, res[0].password, (err, res) => {
 				if (err)
 					callback('password incorrect', null)
 				else {
 					var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
 					var values = [username, p.age, p.gender, p.sexual_orientation, p.preference, p.interests.join(','), p.locate, p.bio]
-					Q.insert("profiles", params, values, (err, result) => {
+					Profile.create(id, values, p.interests, (err, result) => {
 						if (err)
-							callback(err, null)
+							callback(err)
 						else
-							callback(null, "registration successful")
+							callback(null, result)
 					})
 				}
 			})
