@@ -84,6 +84,12 @@ Profile.create = (id, vals, interests, callback) => {
 			Q.insert("profiles", params, vals, (err, res) => {
 		 		if (err)
 		 			callback(err)
+				else {
+					Q.update("users", ['verified'], 2, 'username', vals[0], (err, res) => {
+						if (err)
+							callback(err)
+					})
+		 		}
 		 	})
 		}
 	})

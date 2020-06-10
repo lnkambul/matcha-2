@@ -1,12 +1,20 @@
 const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
 
-exports.showProfile = (req, res) => {
+exports.formProfile = (req, res) => {
 	var token = req.session.token
-	if (req.session.token)
+	if (token)
 		res.render('profileForm', {token: token})
 	else
-		res.render('profileForm', {token: token})
+		res.redirect('/login')
+}
+
+exports.userProfile = (req, res) => {
+	var token = req.session.token
+	if (token)
+		res.render('profile', {token: token})
+	else
+		res.redirect('/login')
 }
 
 exports.registerProfile = (req, res) => {
