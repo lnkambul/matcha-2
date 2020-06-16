@@ -4,3 +4,10 @@
 	<li class="list-group-item"><%= users[i].username %> - <%= users[i].email%></li>
 <%}%>
 <%- include ('partials/footer') %>
+
+<script>
+	navigator.geolocation.getCurrentPosition((position) => {
+		console.log(position)
+	})
+</script>
+

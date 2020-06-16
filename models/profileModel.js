@@ -125,8 +125,4 @@ Profile.register = (username, newpassword, p, callback) => {
 	})
 }
 
-Profile.edit = (username, newpassword, p, callback) => {
-	
-}
-
 module.exports = Profile

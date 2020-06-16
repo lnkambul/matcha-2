@@ -49,6 +49,7 @@ exports.loginUser = (req, res) => {
 		}
 		else {
 			req.session.token = result
+			req.session.user = newUser.username
 			console.log("login successful")
 			res.redirect('/')
 		}
@@ -56,14 +57,8 @@ exports.loginUser = (req, res) => {
 }
 
 exports.logoutUser = (req, res) => {
-	req.session.destroy((err) => {
-		if (err)
-			res.send('404 homie')
-		else {
-			console.log("log out successful")
-			res.redirect('/')
-		}
-	})
+	req.session.reset()
+	res.redirect('/')
 }
 
 exports.verifyUser = (req, res) => {
