@@ -1,5 +1,8 @@
 const Q = require('./queryModel')
 const S = require('./securityModel')
+const fs = require('fs')
+const dir = 'public/uploads/temp/'
+const dest = 'public/uploads/'
 
 var Profile = function(username, profile) {
 	this.username = username
@@ -122,6 +125,41 @@ Profile.register = (username, newpassword, p, callback) => {
 		}
 		else
 			callback("password error")
+	})
+}
+
+Profile.uploadImage = (user, callback) => {
+	fs.readdir(dir, (err, file) => {
+		if (err)
+			console.log('directory not found')
+		else {
+			var path = dest+file
+			fs.rename(dir+file, path, (err) => {
+				if (err)
+					callback(err)
+				else {
+					Q.fetchone("images", ['img_src'], 'username', user, (err, result) => {
+						if (err)
+							callback(err)
+						else if (result.length > 4) {
+							Q.update("images", ['img_src'], `${path}${result.length}`, 'img_src', `${path}${result.length}`, (err, res) => {
+								if (err)
+									callback(err)
+								else
+									callback(null, path)
+							})
+						} else {
+							Q.insert("images", ['username', 'img_src'], [user, `${path}${result.length}`], (err, res) => {
+								if (err)
+									callback(err)
+								else
+									callback(null, path)
+							})
+						}
+					})
+				}
+			})
+		}
 	})
 }
 

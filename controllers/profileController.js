@@ -2,8 +2,6 @@ const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
 const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
 const upload = require('../models/imageModel')
-const fs = require('fs')
-const dir = 'public/uploads/temp'
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
@@ -70,24 +68,17 @@ exports.formPhotos = (req, res) => {
 }
 
 exports.uploadPhotos = (req, res) => {
-	var files = req.files
+	var file = req.file
 	var sess = req.session
-	if (!files)
+	if (!file)
 		res.send('error please upload')
 	else {
-		fs.readdir(dir, (err, files) => {
+		Profile.uploadImage(req.session.user, (err, result) => {
 			if (err)
-				console.log(dir)
+				console.log(err)
 			else {
-				var temp = []
-				for (let i in files) {
-					var f = `/^[${req.session.user}]/`
-					if (files[i].match(f)) {
-						temp.push(files[i])
-					}
-				}
-				console.log('upload successful')
-				res.redirect('/p/u')
+				console.log(result)
+				res.redirect('upload')
 			}
 		})
 	}

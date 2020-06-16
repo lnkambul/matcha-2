@@ -42,8 +42,8 @@ Secure.strage = (str, callback) => {
 Secure.tags = (str, callback) => {
 	var ar = str.split(',')
 	var msg = null
-	if (str.search(/[,;]/) > 0)
-		callback('no commas')
+	if (str.search(/[;]/) > 0)
+		callback('no colons')
 	for (let i in ar) {
 		if (ar[i].length < 1 || ar[i].length > 12 || !ar[i].match(/^[a-z]+$/))
 			msg = 'tags must be less than 12 lowercase alphabets each, separated by a single comma'

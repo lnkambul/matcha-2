@@ -9,7 +9,7 @@ router.post('/', profileController.registerProfile)
 
 router.get('/upload', profileController.formPhotos)
 
-router.post('/upload', upload.array('photos'), profileController.uploadPhotos)
+router.post('/upload', upload.single('photos'), profileController.uploadPhotos)
 
 router.get('/u', profileController.userProfile)
 
