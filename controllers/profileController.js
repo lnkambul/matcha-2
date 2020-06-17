@@ -28,11 +28,7 @@ exports.formProfile = (req, res) => {
 
 exports.userProfile = (req, res) => {
 	var token = req.session.token
-	if (token) {
-		res.render('profile', {token: token})
-	}
-	else
-		res.redirect('/login')
+	res.render('profile', {token: token})
 }
 
 exports.registerProfile = (req, res, next) => {

@@ -2,6 +2,14 @@ const Q = require('../models/queryModel')
 const User = require('../models/userModel')
 const pass = require('../models/passwordModel')
 
+exports.auth = (req, res, next) => {
+	var token = req.session.token
+	if (!token) {
+		res.redirect('/login')
+	} else
+		next()
+}
+
 exports.list_users = (req, res) => {
 	var token = req.session.token
 	Q.fetchall("users", (err, data) => {
@@ -10,6 +18,10 @@ exports.list_users = (req, res) => {
 			users: data
 		})
 	})
+}
+
+exports.formSignup = (req, res) => {
+	res.render('signup')
 }
 
 exports.registerUser = (req, res) => {
