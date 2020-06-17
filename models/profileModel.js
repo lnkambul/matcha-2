@@ -149,7 +149,7 @@ Profile.uploadImage = (user, callback) => {
 									callback(null, path)
 							})
 						} else {
-							Q.insert("images", ['username', 'img_src'], [user, `${path}${result.length}`], (err, res) => {
+							Q.insert("images", ['username', 'img_src'], [user, `${path}${result.length+1}`], (err, res) => {
 								if (err)
 									callback(err)
 								else
