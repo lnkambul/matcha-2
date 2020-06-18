@@ -4,10 +4,18 @@ const pass = require('../models/passwordModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
-	if (!token) {
+	if (!token)
 		res.redirect('/login')
-	} else
-		next()
+	else {
+		Q.fetchone("tokens", ['token'], 'token', token, (err, result) => {
+			if (err)
+				res.redirect('/login')
+			else if (result.length > 0) {
+				next()
+			} else
+				res.redirect('/login')
+		})
+	}
 }
 
 exports.list_users = (req, res) => {

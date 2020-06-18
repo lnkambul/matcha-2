@@ -1,11 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const userController = require('../controllers/userController')
 const passwordController = require('../controllers/passwordController')
 
-router.get('/', (req, res) => {
-	res.render('forgotpassword')
-})
+router.get('/', passwordController.forgotDisplay)
 
 router.post('/', passwordController.forgotPassword)
 
