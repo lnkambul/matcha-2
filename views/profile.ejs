@@ -1,4 +1,7 @@
 <%- include ('partials/header') %>
+<img src='/uploads/<%=user.username%>' width="150" height="150"><br>
+<a href='/p/upload'>upload photos</a><br>
+<a href='/p'>edit profile</a></p>
 <p><%= user.username %></p>
 <p><%= user.age %></p>
 <p><%= user.gender %></p>
@@ -7,6 +10,4 @@
 <p><%= user.interests %></p>
 <p><%= user.location %></p>
 <p><%= user.bio %></p>
-<a href='/p'>edit profile</a><br>
-<a href='/p/upload'>upload photos</a>
 <%- include ('partials/footer') %>
