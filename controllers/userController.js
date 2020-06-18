@@ -12,11 +12,16 @@ exports.auth = (req, res, next) => {
 
 exports.list_users = (req, res) => {
 	var token = req.session.token
-	Q.fetchall("users", (err, data) => {
-		res.render('index', {
-			token: token,
-			users: data
-		})
+	Q.fetchall("profiles", (err, data) => {
+		if (err)
+			res.redirect('/login')
+		else if (data.length > 0) {
+			res.render('index', {
+				token: token,
+				users: data
+			})
+		} else
+			res.redirect('/login')
 	})
 }
 

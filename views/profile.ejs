@@ -1,5 +1,12 @@
 <%- include ('partials/header') %>
-<p><%= token %></p>
+<p><%= user.username %></p>
+<p><%= user.age %></p>
+<p><%= user.gender %></p>
+<p><%= user.orientation %></p>
+<p><%= user.preference %></p>
+<p><%= user.interests %></p>
+<p><%= user.location %></p>
+<p><%= user.bio %></p>
 <a href='/p'>edit profile</a><br>
 <a href='/p/upload'>upload photos</a>
 <%- include ('partials/footer') %>

@@ -27,8 +27,26 @@ exports.formProfile = (req, res) => {
 }
 
 exports.userProfile = (req, res) => {
-	var token = req.session.token
-	res.render('profile', {token: token})
+	Q.fetchone("profiles", ['username', params], 'username', req.session.user, (err, result) => {
+		if (err)
+			res.redirect('/p')
+		else if (result.length > 0) {
+			res.render('profile', {token: req.session.token, user: result[0]})
+		} else
+			res.redirect('/p')
+	})
+}
+
+exports.matchProfile = (req, res) => {
+	var match = req.params.match
+	Q.fetchone("profiles", ['username', params], 'username', match, (err, result) => {
+		if (err)
+			res.redirect('/')
+		else if (result.length > 0) {
+			res.render('matchProfile', {token: req.session.token, match: result[0]})
+		} else
+			res.redirect('/')
+	})
 }
 
 exports.registerProfile = (req, res, next) => {
@@ -65,7 +83,6 @@ exports.formPhotos = (req, res) => {
 
 exports.uploadPhotos = (req, res) => {
 	var file = req.file
-	var sess = req.session
 	if (!file)
 		res.send('error please upload')
 	else {
