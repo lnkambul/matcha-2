@@ -10,8 +10,9 @@ exports.formProfile = (req, res) => {
 	var token = req.session.token
 	if (token)
 		Q.fetchone("profiles", params, 'username', req.session.user, (err, result) => { 
-			if (result.length > 0)
-			if (result && result.length > 0)
+			if (err)
+				res.redirect('/login')
+			else if (result.length > 0)
 				var p = result[0]
 			else
 				var p = []

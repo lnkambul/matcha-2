@@ -22,14 +22,14 @@ exports.list_users = (req, res) => {
 	var token = req.session.token
 	Q.fetchall("profiles", (err, data) => {
 		if (err)
-			res.redirect('/login')
+			res.redirect('/p')
 		else if (data.length > 0) {
 			res.render('index', {
 				token: token,
 				users: data
 			})
 		} else
-			res.redirect('/login')
+			res.redirect('/p')
 	})
 }
 
