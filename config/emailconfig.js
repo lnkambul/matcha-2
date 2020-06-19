@@ -1,8 +1,8 @@
 const elogs = {
 	service: 'gmail',
 	auth: {
-		user: 'lnkambul@student.wethinkcode.co.za',
-		pass: 'schrodinger'
+		user: 'mahbabiez@gmail.com',
+		pass: 'pass'
 	}
 }
 

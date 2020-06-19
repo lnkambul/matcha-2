@@ -17,6 +17,4 @@ router.get('/u', userController.auth, profileController.userProfile)
 
 router.get('/:match', userController.auth, profileController.matchProfile)
 
-router.post('/geo', userController.auth, profileController.geolocation)
-
 module.exports = router
