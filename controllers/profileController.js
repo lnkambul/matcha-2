@@ -2,12 +2,13 @@ const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
 const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
 const upload = require('../models/imageModel')
+const Geo = require('../models/geoModel')
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
 	if (token)
 		Q.fetchone("profiles", params, 'username', req.session.user, (err, result) => { 
-			if (result.length > 0)
+			if (result && result.length > 0)
 				var p = result[0]
 			else
 				var p = []
@@ -30,7 +31,7 @@ exports.userProfile = (req, res) => {
 	Q.fetchone("profiles", ['username', params], 'username', req.session.user, (err, result) => {
 		if (err)
 			res.redirect('/p')
-		else if (result.length > 0) {
+		else if (result && result.length > 0) {
 			res.render('profile', {token: req.session.token, user: result[0]})
 		} else
 			res.redirect('/p')
@@ -52,7 +53,7 @@ exports.matchProfile = (req, res) => {
 exports.registerProfile = (req, res, next) => {
 	var sess = req.session
 	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
-		if (result.length > 0) {
+		if (result && result.length > 0) {
 			var newProfile = new Profile(result[0].username, req.body)
 			Profile.validate(newProfile, (err, success) => {
 				if (err)
@@ -95,4 +96,10 @@ exports.uploadPhotos = (req, res) => {
 			}
 		})
 	}
+}
+
+exports.geolocation = (req,res) => {
+	console.log(req.body.lat)
+	console.log(req.body.lng)
+        Geo.create( req.session.user,req.body.lat, req.body.lng)
 }

@@ -52,6 +52,15 @@ var tables = {
 		" `token` varchar(250) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
+	),
+	geolocation : (
+		"CREATE TABLE `geolocation` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
+		" `latitude` DECIMAL(6,4) NOT NULL," +
+		" `longitude` DECIMAL(6,4) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
 	)
 }
 
