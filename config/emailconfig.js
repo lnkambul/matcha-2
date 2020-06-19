@@ -1,7 +1,7 @@
 const elogs = {
 	service: 'gmail',
 	auth: {
-		user: 'lnkambul@student.wethinkcode.co.za',
+		user: 'gitwontignore@gmail.com',
 		pass: ''
 	}
 }
