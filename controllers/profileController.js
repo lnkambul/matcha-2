@@ -3,7 +3,6 @@ const Q = require('../models/queryModel')
 const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
-const ipLocation = require("iplocation")
 const http = require('http')
 
 
@@ -104,14 +103,38 @@ exports.uploadPhotos = (req, res) => {
 exports.geolocation = (req,res) => {
 	console.log(req.body.lat)
 	console.log(req.body.lng)
-		Geo.create( req.session.user,req.body.lat, req.body.lng)
-	var ipaddress = '41.211.36.26'
-	/*
-	let addy = req.ip;
-	console.log("addy = " + addy.clientIp)
+	Geo.create( req.session.user,req.body.lat, req.body.lng)
+	
+	var ipaddress = req.ip
+	if (ipaddress === "::1") {
 
-	const promise = new Promise ((resolve, reject) => {
+		var options = {
+			host: 'ipv4bot.whatismyipaddress.com',
+			port: 80,
+			path: '/'
+			}
+
+			http.get(options, function(res) {
+			console.log("status: " + res.statusCode)
+
+			res.on("data", function(chunk) {
+				console.log("BODY: " + chunk)
+				ipaddress = chunk
+			})
+			}).on('error', function(e) {
+			console.log("error: " + e.message)
+		})
+	}
+	console.log("ipaddress: " + ipaddress)
+	/*	
+	let addy = req.ip
+
+	//::1 is IPV6 notation for localhost
+
+	console.log("addy = " + addy)
 	*/
+	//const promise = new Promise ((resolve, reject) => {
+	
 		http.get('http://api.ipstack.com/' + `${ipaddress}` + '?access_key=a38364d86e7b0804af0bf7e03865f3aa', (res) => {
 			let data = ''
 
@@ -120,7 +143,7 @@ exports.geolocation = (req,res) => {
 			})
 
 			res.on('end', () => {
-				console.log(JSON.parse(data).city)
+				console.log("city: " + JSON.parse(data).city)
 			})
 		}).on("error", (err) => {
 			console.log("Error: " +err.message)
@@ -130,4 +153,5 @@ exports.geolocation = (req,res) => {
 		console.log(iplocation.region)
 	}).catch(err => console.log(err.message))
 	*/
+ 
 
