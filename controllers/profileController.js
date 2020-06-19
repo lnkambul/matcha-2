@@ -145,16 +145,17 @@ exports.geolocation = (req,res) => {
 	})
 	promise.then( ipaddress => {
 		console.log("ipaddress: " + ipaddress)
-		http.get('http://api.ipstack.com/' + `${ipaddress}` + '?access_key=a38364d86e7b0804af0bf7e03865f3aa', (res) => {
+		//http.get('http://api.ipstack.com/' + `${ipaddress}` + '?access_key=a38364d86e7b0804af0bf7e03865f3aa', (res) => {
+		http.get('http://ip-api.com/json/' + `${ipaddress}`, (res) => {
 			let data = ''
 			res.on('data', (chunk) => {
 				data += chunk
 			})
 			res.on('end', () => {
 				console.log("city: " + JSON.parse(data).city)
-				console.log("region: " + JSON.parse(data).region_name)
-				console.log("country: " + JSON.parse(data).country_name)
-				Geo.create( req.session.user, JSON.parse(data).city, JSON.parse(data).region_name, JSON.parse(data).country_name)
+				console.log("region: " + JSON.parse(data).regionName)
+				console.log("country: " + JSON.parse(data).country)
+				Geo.create( req.session.user, JSON.parse(data).city, JSON.parse(data).regionName, JSON.parse(data).country)
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message))
