@@ -3,6 +3,9 @@ const Q = require('../models/queryModel')
 const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
+const ipLocation = require("iplocation")
+const http = require('http')
+
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
@@ -101,5 +104,30 @@ exports.uploadPhotos = (req, res) => {
 exports.geolocation = (req,res) => {
 	console.log(req.body.lat)
 	console.log(req.body.lng)
-        Geo.create( req.session.user,req.body.lat, req.body.lng)
-}
+		Geo.create( req.session.user,req.body.lat, req.body.lng)
+	var ipaddress = '41.211.36.26'
+	/*
+	let addy = req.ip;
+	console.log("addy = " + addy.clientIp)
+
+	const promise = new Promise ((resolve, reject) => {
+	*/
+		http.get('http://api.ipstack.com/' + `${ipaddress}` + '?access_key=a38364d86e7b0804af0bf7e03865f3aa', (res) => {
+			let data = ''
+
+			res.on('data', (chunk) => {
+				data += chunk
+			})
+
+			res.on('end', () => {
+				console.log(JSON.parse(data).city)
+			})
+		}).on("error", (err) => {
+			console.log("Error: " +err.message)
+		})
+	}
+	/*promise.then(iplocation => {
+		console.log(iplocation.region)
+	}).catch(err => console.log(err.message))
+	*/
+
