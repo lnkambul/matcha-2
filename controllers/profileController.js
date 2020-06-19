@@ -35,7 +35,6 @@ exports.userProfile = (req, res) => {
 		if (err)
 			res.redirect('/p')
 		else if (result.length > 0) {
-		else if (result && result.length > 0) {
 			res.render('profile', {token: req.session.token, user: result[0]})
 		} else
 			res.redirect('/p')
@@ -58,7 +57,6 @@ exports.matchProfile = (req, res) => {
 }
 
 exports.matchLike = (req, res) => {
-	
 	res.redirect(`/p/${req.params.match}`)
 }
 
@@ -77,7 +75,6 @@ exports.matchProfile = (req, res) => {
 exports.registerProfile = (req, res, next) => {
 	var sess = req.session
 	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
-		if (result.length > 0) {
 		if (result && result.length > 0) {
 			var newProfile = new Profile(result[0].username, req.body)
 			Profile.validate(newProfile, (err, success) => {
@@ -101,7 +98,7 @@ exports.registerProfile = (req, res, next) => {
 		else {
 			console.log("please log in to register")
 			res.redirect('/login')
-		}
+		}		
 	})
 }
 
