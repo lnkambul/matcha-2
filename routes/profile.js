@@ -15,6 +15,8 @@ router.post('/upload', userController.auth, upload.single('photos'), profileCont
 
 router.get('/u', userController.auth, profileController.userProfile)
 
-router.get('/:match', userController.auth, profileController.matchProfile)
+router.get('/:match', profileController.matchProfile)
+
+router.post('/:match', profileController.matchLike)
 
 module.exports = router
