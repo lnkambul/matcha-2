@@ -9,4 +9,4 @@ var config = {
 	db: 'matcha_db'
 }
 
-module.exports = config;
+module.exports = config
