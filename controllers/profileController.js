@@ -65,6 +65,9 @@ exports.registerProfile = (req, res, next) => {
 						if (err)
 							console.log('failed to update profile')
 						else {
+							/*successful profile registration/update triggers geolocation function*/
+							exports.geolocation(req,res)
+							/*end of modifications to registerProfile*/
 							console.log('profile updated')
 							res.redirect('/p/upload')
 						}
@@ -101,57 +104,38 @@ exports.uploadPhotos = (req, res) => {
 }
 
 exports.geolocation = (req,res) => {
-	console.log(req.body.lat)
-	console.log(req.body.lng)
-	Geo.create( req.session.user,req.body.lat, req.body.lng)
-	
-	var ipaddress = req.ip
-	if (ipaddress === "::1") {
-
-		var options = {
-			host: 'ipv4bot.whatismyipaddress.com',
-			port: 80,
-			path: '/'
+	let promise = new Promise ((resolve, reject) => {
+		var ipaddress = req.ip
+		//::1 is IPV6 notation for localhost
+		if (ipaddress === "::1") {
+			var options = {
+				host: 'ipv4bot.whatismyipaddress.com',
+				port: 80,
+				path: '/'
 			}
-
 			http.get(options, function(res) {
-			console.log("status: " + res.statusCode)
-
-			res.on("data", function(chunk) {
-				console.log("BODY: " + chunk)
-				ipaddress = chunk
-			})
-			}).on('error', function(e) {
-			console.log("error: " + e.message)
-		})
-	}
-	console.log("ipaddress: " + ipaddress)
-	/*	
-	let addy = req.ip
-
-	//::1 is IPV6 notation for localhost
-
-	console.log("addy = " + addy)
-	*/
-	//const promise = new Promise ((resolve, reject) => {
-	
+				res.on("data", function(chunk) {
+					ipaddress = chunk
+					resolve(ipaddress)
+				})
+			}).on('error', function(e) { reject(e) })
+		}
+		else { resolve (ipaddress) }
+	})
+	promise.then( ipaddress => {
+		console.log("ipaddress: " + ipaddress)
 		http.get('http://api.ipstack.com/' + `${ipaddress}` + '?access_key=a38364d86e7b0804af0bf7e03865f3aa', (res) => {
 			let data = ''
-
 			res.on('data', (chunk) => {
 				data += chunk
 			})
-
 			res.on('end', () => {
 				console.log("city: " + JSON.parse(data).city)
+				console.log("region: " + JSON.parse(data).region_name)
+				console.log("country: " + JSON.parse(data).country_name)
+				Geo.create( req.session.user, JSON.parse(data).city, JSON.parse(data).region_name, JSON.parse(data).country_name)
 			})
-		}).on("error", (err) => {
-			console.log("Error: " +err.message)
-		})
-	}
-	/*promise.then(iplocation => {
-		console.log(iplocation.region)
+		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message))
-	*/
- 
+}
 

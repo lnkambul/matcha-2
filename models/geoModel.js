@@ -14,9 +14,9 @@ local.locate()
 */
 var Geo = function (){}
 
-Geo.create = (username, lat, lng) => {
-	var params = ['username', 'latitude', 'longitude']
-	var vals = [username, lat, lng]
+Geo.create = (username, city, region, country) => {
+	var params = ['username', 'city', 'region', 'country']
+	var vals = [username, city, region, country]
 	Q.fetchone("geolocation", ['id'], 'username', username, (err, res) => {
 		if (res && res.length > 0) {
 			Q.update("geolocation", params, vals, 'username', vals[0], (err, res) => {
