@@ -9,6 +9,7 @@ var tables = {
 		" `last_name` varchar(25) NOT NULL," + 
 		" `email` varchar(60) NOT NULL," +
 		" `password` varchar(100) NOT NULL," +
+		" `pro_pic` varchar(250)," +
 		" `verified` int(2) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
@@ -27,12 +28,19 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
+	interests : (
+		"CREATE TABLE `interests` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `interest` varchar(20) NOT NULL," +
+		" `user_list` varchar(400)," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
 	images : (
 		"CREATE TABLE `images` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `user_id` int(11)," +
+		" `username` varchar(20) NOT NULL," +
 		" `img_src` varchar(250) NOT NULL," +
-		" `pro_pic` varchar(250) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -42,6 +50,15 @@ var tables = {
 		" `username` varchar(20)," +
 		" `type` varchar(20) NOT NULL," +
 		" `token` varchar(250) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	geolocation : (
+		"CREATE TABLE `geolocation` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
+		" `latitude` DECIMAL(6,4) NOT NULL," +
+		" `longitude` DECIMAL(6,4) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	)

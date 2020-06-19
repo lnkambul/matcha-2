@@ -1,0 +1,28 @@
+<%- include ('partials/header') %>
+<img src='/uploads/<%=match.username%>' width="200" height="200">
+<input type="submit" value="like" id="likeButton" onclick="like()"></p>
+<p class="list-group-item"><%= match.username %></p>
+<p class="list-group-item"><%= match.age %></p>
+<p class="list-group-item"><%= match.gender %></p>
+<p class="list-group-item"><%= match.orientation %></p>
+<p class="list-group-item"><%= match.preference %></p>
+<p class="list-group-item"><%= match.interests %></p>
+<p class="list-group-item"><%= match.location %></p>
+<p class="list-group-item"><%= match.bio %></p>
+<%- include ('partials/footer') %>
+<script>src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+function like() {
+	var l = document.getElementById("likeButton")
+	if (l.value == "like") {
+		l.value = "unlike"
+		})
+	}
+	else {
+		l.value = "like"
+
+	}
+	
+}
+</script>

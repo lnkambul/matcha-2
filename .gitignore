@@ -1,0 +1,5 @@
+node_modules/
+public/uploads/
+.idea/
+config/config.js
+config/emailconfig.js

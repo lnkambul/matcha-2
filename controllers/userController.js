@@ -2,14 +2,39 @@ const Q = require('../models/queryModel')
 const User = require('../models/userModel')
 const pass = require('../models/passwordModel')
 
+exports.auth = (req, res, next) => {
+	var token = req.session.token
+	if (!token)
+		res.redirect('/login')
+	else {
+		Q.fetchone("tokens", ['token'], 'token', token, (err, result) => {
+			if (err)
+				res.redirect('/login')
+			else if (result.length > 0) {
+				next()
+			} else
+				res.redirect('/login')
+		})
+	}
+}
+
 exports.list_users = (req, res) => {
 	var token = req.session.token
-	Q.fetchall("users", (err, data) => {
-		res.render('index', {
-			token: token,
-			users: data
-		})
+	Q.fetchall("profiles", (err, data) => {
+		if (err)
+			res.redirect('/login')
+		else if (data.length > 0) {
+			res.render('index', {
+				token: token,
+				users: data
+			})
+		} else
+			res.redirect('/login')
 	})
+}
+
+exports.formSignup = (req, res) => {
+	res.render('signup')
 }
 
 exports.registerUser = (req, res) => {
@@ -49,6 +74,7 @@ exports.loginUser = (req, res) => {
 		}
 		else {
 			req.session.token = result
+			req.session.user = newUser.username
 			console.log("login successful")
 			res.redirect('/')
 		}
@@ -56,14 +82,8 @@ exports.loginUser = (req, res) => {
 }
 
 exports.logoutUser = (req, res) => {
-	req.session.destroy((err) => {
-		if (err)
-			res.send('404 homie')
-		else {
-			console.log("log out successful")
-			res.redirect('/')
-		}
-	})
+	req.session.reset()
+	res.redirect('/')
 }
 
 exports.verifyUser = (req, res) => {

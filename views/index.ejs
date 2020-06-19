@@ -1,6 +1,5 @@
 <%- include ('partials/header') %>
-<p><%= token %></p>
 <% for (let i in users) {%>
-	<li class="list-group-item"><%= users[i].username %> - <%= users[i].email%></li>
+	<a href='/p/<%=users[i].username%>'><li class="list-group-item"><%=users[i].username%> - <%=users[i].gender%></li></a>
 <%}%>
 <%- include ('partials/footer') %>
