@@ -38,11 +38,11 @@ User.check = (user, callback) => {
 	var e = {username: null, email: null}
 	var msg = 'not available'
 	Q.fetchone("users", 'username', 'username', user.username, (err, res) => {
-		if (res.length > 0)
+		if (res && res.length > 0)
 			callback('(username not available)')
 		else {
 			Q.fetchone("users", 'email', 'email', user.email, (err, res) => {
-				if (res.length > 0)
+				if (res && res.length > 0)
 					callback('(email not available)')
 				else
 					callback(null, 'success')
@@ -85,7 +85,7 @@ User.create = (user, callback) => {
 
 User.login = (user, callback) => {
 	Q.fetchone("users", ['id', 'username', 'password', 'verified'], 'username', user.username, (err, res) => {
-		if (res.length > 0) {
+		if (res && res.length > 0) {
 			if (res[0].verified > 0) {
 				S.findHash(user.password, res[0].password, (err, result) => {
 					if (err)

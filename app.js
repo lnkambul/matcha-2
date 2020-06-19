@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
-const session = require('express-session')
-
+//const session = require('express-session')
+const session = require('client-sessions')
 //database connection
 //const dbc = require('./models/connModel')
 
@@ -19,6 +19,10 @@ app.set('view engine', 'ejs')
 
 //set public folder
 app.use(express.static(path.join(__dirname, 'public')))
+
+//enable cross origin resource sharing (for geolocation and chat)
+const cors = require('cors')
+app.use(cors())
 
 //load body parser middleware
 const bodyParser = require('body-parser')

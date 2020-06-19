@@ -14,6 +14,10 @@ exports.forgotPassword = (req, res) => {
 	})
 }
 
+exports.forgotDisplay = (req, res) => {
+	res.render('forgotpassword')
+}
+
 exports.resetForm = (req, res) => {
   	var token = req.params.token
 	Q.fetchone("tokens", ['username', 'token'], 'token', token, (err, result) => {

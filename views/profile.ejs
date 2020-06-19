@@ -1,3 +1,13 @@
 <%- include ('partials/header') %>
-<p><%= token %></p>
+<img src='/uploads/<%=user.username%>' width="150" height="150"><br>
+<a href='/p/upload'>upload photos</a><br>
+<a href='/p'>edit profile</a></p>
+<p><%= user.username %></p>
+<p><%= user.age %></p>
+<p><%= user.gender %></p>
+<p><%= user.orientation %></p>
+<p><%= user.preference %></p>
+<p><%= user.interests %></p>
+<p><%= user.location %></p>
+<p><%= user.bio %></p>
 <%- include ('partials/footer') %>

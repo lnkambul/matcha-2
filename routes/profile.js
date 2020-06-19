@@ -1,9 +1,20 @@
 const express = require('express')
 const router = express.Router()
 const profileController = require('../controllers/profileController')
+const userController = require('../controllers/userController')
+const upload = require('../models/imageModel')
 
-router.get('/', profileController.showProfile)
 
-router.post('/', profileController.registerProfile)
+router.get('/', userController.auth, profileController.formProfile)
+
+router.post('/', userController.auth, profileController.registerProfile)
+
+router.get('/upload', userController.auth, profileController.formPhotos)
+
+router.post('/upload', userController.auth, upload.single('photos'), profileController.uploadPhotos)
+
+router.get('/u', userController.auth, profileController.userProfile)
+
+router.get('/:match', userController.auth, profileController.matchProfile)
 
 module.exports = router

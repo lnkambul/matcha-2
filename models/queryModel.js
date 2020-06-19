@@ -35,9 +35,9 @@ query.update = (t_name, sets, values, param, pval, callback) => {
 	var sql = "UPDATE "+t_name+" SET "+z+" WHERE "+param+"=\'"+pval+"\'"
 	DB.insert(sql, values, (err, res) => {
 		if (err)
-			callback("failed to delete", null)
+			callback("failed to update", null)
 		else
-			callback(null, "deleted")
+			callback(null, "updated")
 	})
 }
 
