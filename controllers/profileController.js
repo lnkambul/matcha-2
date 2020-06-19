@@ -43,10 +43,18 @@ exports.matchProfile = (req, res) => {
 		if (err)
 			res.redirect('/')
 		else if (result.length > 0) {
-			res.render('matchProfile', {token: req.session.token, match: result[0]})
+			res.render('matchProfile', {
+				token: req.session.token, 
+				match: result[0],
+				like: 'like'})
 		} else
 			res.redirect('/')
 	})
+}
+
+exports.matchLike = (req, res) => {
+	
+	res.redirect(`/p/${req.params.match}`)
 }
 
 exports.registerProfile = (req, res, next) => {
