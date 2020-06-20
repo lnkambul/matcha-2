@@ -4,7 +4,27 @@ const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'loca
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
 const http = require('http')
+const B = require('../models/browseModel')
 
+exports.auth = (req, res, next) => {
+	var token = req.session.token
+	if (!token)
+		res.redirect('/login')
+	else {
+		Q.fetchone("tokens", ['username'], 'username', req.session.user, (err, result) => {
+			if (result && result.length > 0) {
+				Q.fetchone("profiles", ['username'], 'username', req.session.user, (err, result) => {
+					if (result && result.length > 0) {
+						next()
+					} else
+						res.redirect('/p')
+				})
+			}
+			else
+				res.redirect('/login')
+		})
+	}
+}
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
@@ -48,28 +68,30 @@ exports.matchProfile = (req, res) => {
 		if (err)
 			res.redirect('/')
 		else if (result.length > 0) {
-			res.render('matchProfile', {
-				token: req.session.token, 
-				match: result[0],
-				like: 'like'})
-		} else
-			res.redirect('/')
+			B.visit(req.session.user, match, (err, success) => {
+				if (err)
+					console.log(err)
+				else {
+					console.log(success)
+					res.render('matchProfile', {
+						token: req.session.token, 
+						match: result[0]
+					})
+				}
+			})
+		}
 	})
 }
 
-exports.matchLike = (req, res) => {
-	res.redirect(`/p/${req.params.match}`)
-}
-
-exports.matchProfile = (req, res) => {
-	var match = req.params.match
-	Q.fetchone("profiles", ['username', params], 'username', match, (err, result) => {
-		if (err)
+exports.like = (req, res) => {
+	B.like(req.session.user, req.params.match, (err, result) => {
+		if (err) {
+			console.log(err)
 			res.redirect('/')
-		else if (result.length > 0) {
-			res.render('matchProfile', {token: req.session.token, match: result[0]})
-		} else
-			res.redirect('/')
+		} else {
+			console.log(result)
+			res.redirect(`/p/${req.params.match}`)
+		}
 	})
 }
 
@@ -144,7 +166,6 @@ exports.geolocation = (req,res) => {
 		else { resolve (ipaddress) }
 	})
 	promise.then( ipaddress => {
-		console.log("ipaddress: " + ipaddress)
 		http.get('http://ip-api.com/json/' + `${ipaddress}`, (res) => {
 			let data = ''
 			res.on('data', (chunk) => {

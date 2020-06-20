@@ -9,6 +9,7 @@ const session = require('client-sessions')
 //init database
 const db = require('./models/dbModel')
 db.init()
+//db.tables()
 
 //init app
 const app = express()

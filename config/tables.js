@@ -36,6 +36,22 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
+	likes : (
+		"CREATE TABLE `likes` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
+		" `liked` varchar(20) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	visits : (
+		"CREATE TABLE `visits` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
+		" `visitor` varchar(20) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
 	images : (
 		"CREATE TABLE `images` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
