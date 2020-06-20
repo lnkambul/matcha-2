@@ -46,6 +46,14 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
+	flagged : (
+		"CREATE TABLE `flagged` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
+		" `flagger` varchar(20) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
 	visits : (
 		"CREATE TABLE `visits` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +

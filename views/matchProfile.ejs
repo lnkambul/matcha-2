@@ -3,10 +3,10 @@
 <form action="/p/<%=match.username%>" method="post">
 	<input type="submit" value="like" id="likeButton" onclick="like()">
 </form></p>
-	<!-- Blocking button and like buttion proposal -->
-		<button id="block">block</button>
+	<!-- Block button, and like button proposal -->
+		<button class="block" id="<%=match.username%>">block</button>
 		<button class="like" id="<%=match.username%>">like (tweaked)</button>
-	<!-- End of changes to matchProfile.ejs-->
+	<!-- Break -->
 <p class="list-group-item"><%= match.username %></p>
 <p class="list-group-item"><%= match.age %></p>
 <p class="list-group-item"><%= match.gender %></p>
@@ -15,5 +15,8 @@
 <p class="list-group-item"><%= match.interests %></p>
 <p class="list-group-item"><%= match.location %></p>
 <p class="list-group-item"><%= match.bio %></p>
+<!-- Client side js to trigger button-click events -->
 <script src="../../like.js"></script>
+<script src="../../block.js"></script>
+<!-- End of changes -->
 <%- include ('partials/footer') %>

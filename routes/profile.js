@@ -15,10 +15,11 @@ router.post('/upload', profileController.auth, upload.single('photos'), profileC
 
 router.get('/u', profileController.auth, profileController.userProfile)
 
+router.post('/block', profileController.auth, profileController.block)
+
 router.get('/:match', profileController.auth, profileController.matchProfile)
 
 router.post('/:match', profileController.auth, profileController.like)
 
-router.post('/:block', profileController.auth, profileController.block)
 
 module.exports = router

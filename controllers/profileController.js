@@ -204,11 +204,11 @@ exports.uploadPhotos = (req, res) => {
 exports.block = (req, res) => {
 	let username = req.session.user
 	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
-		if (res && res.length > 0) {
-			User.block(JSON.parse(req.body).target)
+		if (res && res.length > 0 && res[0].admin === 1) {
+			B.block((req.body).block, req.session.user)
 		}
 		else { 
-			User.flag(JSON.parse(req.body).target)
+			B.flag((req.body).block, req.session.user)
 		}
 	})
 }
