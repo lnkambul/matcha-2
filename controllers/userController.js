@@ -117,3 +117,11 @@ exports.verifyUser = (req, res) => {
 	})
 }
 
+exports.blockUser = (req, res) => {
+	let username = req.session.user
+	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
+		if (res && res.length > 0) {
+			User.block(req)
+		}
+	})
+}

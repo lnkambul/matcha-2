@@ -163,4 +163,12 @@ Profile.uploadImage = (user, callback) => {
 	})
 }
 
+Profile.block = (user, callback) => {
+	console.log(user + "has been blocked")
+}
+
+Profile.flag = (user, callback) => {
+	console.log(user + "has been flagged")
+}
+
 module.exports = Profile

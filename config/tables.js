@@ -11,6 +11,8 @@ var tables = {
 		" `password` varchar(100) NOT NULL," +
 		" `pro_pic` varchar(250)," +
 		" `verified` int(2) NOT NULL DEFAULT 0," +
+		" `admin` int (1) NOT NULL DEFAULT 0," +
+		" `blocked` int (1) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),

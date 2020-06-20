@@ -19,4 +19,6 @@ router.get('/:match', profileController.auth, profileController.matchProfile)
 
 router.post('/:match', profileController.auth, profileController.like)
 
+router.post('/:block', profileController.auth, profileController.block)
+
 module.exports = router

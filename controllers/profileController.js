@@ -75,7 +75,7 @@ exports.matchProfile = (req, res) => {
 					console.log(success)
 					res.render('matchProfile', {
 						token: req.session.token, 
-						match: result[0]
+						match: result[0],
 					})
 				}
 			})
@@ -90,7 +90,9 @@ exports.like = (req, res) => {
 			res.redirect('/')
 		} else {
 			console.log(result)
+			/* commented out to prevent page refresh
 			res.redirect(`/p/${req.params.match}`)
+			*/
 		}
 	})
 }
@@ -197,4 +199,16 @@ exports.uploadPhotos = (req, res) => {
 			}
 		})
 	}
+}
+
+exports.block = (req, res) => {
+	let username = req.session.user
+	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
+		if (res && res.length > 0) {
+			User.block(JSON.parse(req.body).target)
+		}
+		else { 
+			User.flag(JSON.parse(req.body).target)
+		}
+	})
 }
