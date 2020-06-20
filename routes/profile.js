@@ -9,14 +9,14 @@ router.get('/', userController.auth, profileController.formProfile)
 
 router.post('/', userController.auth, profileController.registerProfile)
 
-router.get('/upload', userController.auth, profileController.formPhotos)
+router.get('/upload', profileController.auth, profileController.formPhotos)
 
-router.post('/upload', userController.auth, upload.single('photos'), profileController.uploadPhotos)
+router.post('/upload', profileController.auth, upload.single('photos'), profileController.uploadPhotos)
 
-router.get('/u', userController.auth, profileController.userProfile)
+router.get('/u', profileController.auth, profileController.userProfile)
 
-router.get('/:match', profileController.matchProfile)
+router.get('/:match', profileController.auth, profileController.matchProfile)
 
-router.post('/:match', profileController.matchLike)
+router.post('/:match', profileController.auth, profileController.like)
 
 module.exports = router

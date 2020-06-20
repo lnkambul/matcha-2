@@ -10,12 +10,19 @@ exports.auth = (req, res, next) => {
 		Q.fetchone("tokens", ['token'], 'token', token, (err, result) => {
 			if (err)
 				res.redirect('/login')
-			else if (result.length > 0) {
+			else if (result.length > 0) 
 				next()
-			} else
+			else
 				res.redirect('/login')
 		})
 	}
+}
+
+exports.loginForm = (req, res) => {
+	if (req.session.token)
+		res.redirect('/logout')
+	else
+		res.render('login')
 }
 
 exports.list_users = (req, res) => {
@@ -34,7 +41,10 @@ exports.list_users = (req, res) => {
 }
 
 exports.formSignup = (req, res) => {
-	res.render('signup')
+	if (req.session.token)
+		res.redirect('/logout')
+	else
+		res.render('signup')
 }
 
 exports.registerUser = (req, res) => {
@@ -82,8 +92,15 @@ exports.loginUser = (req, res) => {
 }
 
 exports.logoutUser = (req, res) => {
-	req.session.reset()
-	res.redirect('/')
+	Q.delone("tokens", 'token', req.session.token, (err, result) => {
+		if (err)
+			console.log(err)
+		else {
+			console.log(`${req.session.user} logged out`)
+			req.session.reset()
+			res.redirect('/')
+		}
+	})
 }
 
 exports.verifyUser = (req, res) => {

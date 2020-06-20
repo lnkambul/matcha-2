@@ -1,7 +1,6 @@
 const Q = require('./queryModel')
 //const S = require('./securityModel')
 /*
->>>>>>> 490d520d5900388f1ec1bcb8b0b67fa5a4caee12
 var local = function() {}
 
 local.locate = () => {
@@ -30,6 +29,7 @@ Geo.create = (username, city, region, country) => {
 		 			console.log(err)
 		 	})
 		}
-	})}
+	})
+}
 
 module.exports = Geo
