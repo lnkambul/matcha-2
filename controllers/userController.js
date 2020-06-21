@@ -2,17 +2,20 @@ const Q = require('../models/queryModel')
 const User = require('../models/userModel')
 const pass = require('../models/passwordModel')
 const gen = require('../models/generateUsersModel')
+const admin = require('../models/adminModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
+	var aToken = req.session.adminToken
 	if (!token)
 		res.redirect('/login')
 	else {
 		Q.fetchone("tokens", ['token'], 'token', token, (err, result) => {
 			if (err)
 				res.redirect('/login')
-			else if (result.length > 0) 
+			else if (result.length > 0) {
 				next()
+			}
 			else
 				res.redirect('/login')
 		})
@@ -86,6 +89,12 @@ exports.loginUser = (req, res) => {
 		else {
 			req.session.token = result
 			req.session.user = newUser.username
+			/* admin navbar link for ease of testing */
+				admin.isAdmin(req.session.user, (fail, win) => {
+					if (fail) { req.session.adminToken = null }
+					else if (win) { req.session.adminToken = 1 }
+				})
+			/* eoc */	
 			console.log("login successful")
 			res.redirect('/')
 		}

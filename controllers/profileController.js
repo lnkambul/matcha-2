@@ -8,6 +8,7 @@ const B = require('../models/browseModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	if (!token)
 		res.redirect('/login')
 	else {
@@ -28,6 +29,7 @@ exports.auth = (req, res, next) => {
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.token
 	if (token)
 		Q.fetchone("profiles", params, 'username', req.session.user, (err, result) => { 
 			if (err)
@@ -56,7 +58,7 @@ exports.userProfile = (req, res) => {
 		if (err)
 			res.redirect('/p')
 		else if (result.length > 0) {
-			res.render('profile', {token: req.session.token, user: result[0]})
+			res.render('profile', {token: req.session.token, user: result[0], adminToken: req.session.adminToken})
 		} else
 			res.redirect('/p')
 	})
@@ -76,6 +78,7 @@ exports.matchProfile = (req, res) => {
 					res.render('matchProfile', {
 						token: req.session.token, 
 						match: result[0],
+						adminToken: req.session.adminToken
 					})
 				}
 			})
@@ -172,7 +175,8 @@ exports.geolocation = (req,res) => {
 				data += chunk
 			})
 			res.on('end', () => {
-				Geo.create(req.session.user, JSON.parse(data).city, JSON.parse(data).regionName, JSON.parse(data).country)
+				let parsed = JSON.parse(data)
+				Geo.create(req.session.user, parsed.city, parsed.regionName, parsed.country)
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message))

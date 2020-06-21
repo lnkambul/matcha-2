@@ -19,7 +19,6 @@ function toggleVis(item, toggle) {
 }
 
 kingme.addEventListener('submit', (f) => {
-    console.log("fetching...")
     var form = f.target
 
     fetch(form.action, {

@@ -36,6 +36,9 @@ const sess = require('./config/secret')
 app.use(session(sess))
 global.token = null
 
+//init admin token
+global.adminToken = 1
+
 //routes
 let index = require('./routes/index')
 let signup = require('./routes/signup')
