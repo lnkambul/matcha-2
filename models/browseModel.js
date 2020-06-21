@@ -75,4 +75,26 @@ Browse.flag = (user, flagger, callback) => {
 	})
 }
 
+Browse.likeTweaked = (user, liked, callback) => {
+	var params = ['username', 'liked']
+	var pvals = [user, liked]
+	Q.fetchoneMRows("likes", ['id'], params, pvals, (err, res) => {
+		if (res && res.length > 0) {
+			Q.deloneMRows("likes", params, pvals, (err, result) => {
+				if (err)
+					callback(err, null)
+				else
+					callback(null, `${user} unliked ${liked}`)
+			})
+		} else {
+			Q.insert("likes", params, pvals, (err, result) => {
+				if (err)
+					callback(err, null)
+				else
+					callback(null, `${user} liked ${liked}`)
+			})
+		}
+	})
+}
+
 module.exports = Browse

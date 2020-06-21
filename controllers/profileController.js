@@ -90,9 +90,7 @@ exports.like = (req, res) => {
 			res.redirect('/')
 		} else {
 			console.log(result)
-			/* commented out to prevent page refresh
 			res.redirect(`/p/${req.params.match}`)
-			*/
 		}
 	})
 }
@@ -210,5 +208,15 @@ exports.block = (req, res) => {
 		else { 
 			B.flag((req.body).block, req.session.user)
 		}
+	})
+}
+
+
+exports.likeTweaked = (req, res) => {
+	B.likeTweaked(req.session.user, (req.body).like, (err, result) => {
+		if (err) {
+			console.log(err)
+			res.redirect('/')
+		} else { console.log(result) }
 	})
 }

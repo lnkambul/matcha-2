@@ -17,6 +17,8 @@ router.get('/u', profileController.auth, profileController.userProfile)
 
 router.post('/block', profileController.auth, profileController.block)
 
+router.post('/like', profileController.auth, profileController.likeTweaked)
+
 router.get('/:match', profileController.auth, profileController.matchProfile)
 
 router.post('/:match', profileController.auth, profileController.like)
