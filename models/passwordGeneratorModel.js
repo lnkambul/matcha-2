@@ -1,6 +1,6 @@
 var generatePassword = require("password-generator")
 
-exports.genPass = (callback) => {
+exports.genPass = (callback) => {   
     var maxLength = 18;
     var minLength = 12
     var uppercaseMinCount = 3
