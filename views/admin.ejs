@@ -1,0 +1,15 @@
+<%- include ('partials/header') %>
+
+    <form method="post" action="/p/admin">
+        <label class="options">Generate Test Accounts</label><br>         
+        <input type = "radio" name = "testAccounts" id = "min" value = "5" checked = "checked" class="options" />
+        <label for = "min" class="options">5</label>
+        <input type = "radio" name = "testAccounts" id = "mod" value = "100" class="options" />
+        <label for = "mod" class="options">100</label>
+        <input type = "radio" name = "testAccounts" id = "max" value = "500" class="options" />
+        <label for = "max" class="options" >500</label><br>
+        <button class="options" id="go">Go</button>
+    </form><br>
+    <script src="admin.js"></script>
+
+<%- include ('partials/footer') %>

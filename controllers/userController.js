@@ -1,6 +1,7 @@
 const Q = require('../models/queryModel')
 const User = require('../models/userModel')
 const pass = require('../models/passwordModel')
+const gen = require('../models/generateUsersModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
@@ -117,11 +118,22 @@ exports.verifyUser = (req, res) => {
 	})
 }
 
-exports.blockUser = (req, res) => {
-	let username = req.session.user
-	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
-		if (res && res.length > 0) {
-			User.block(req)
+exports.createAdmin = (req, res) => {
+	gen.initAdmin(req.session.user, (result) => {
+			res.send(result)
+	})
+}
+
+exports.vAdmin =(req, res) => {
+	gen.verifyAdmin(req.session.user, req.body.key, (err, result) => {
+		if (err) {
+			console.log(err)
+			res.redirect('/')
+		}
+		else {
+			console.log(result)
+			res.redirect('../admin')
+			//res.send(result)
 		}
 	})
 }

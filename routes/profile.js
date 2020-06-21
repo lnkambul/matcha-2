@@ -19,6 +19,10 @@ router.post('/block', profileController.auth, profileController.block)
 
 router.post('/like', profileController.auth, profileController.likeTweaked)
 
+router.get('/admin', profileController.auth, userController.createAdmin)
+
+router.post('/va', profileController.auth, userController.vAdmin)
+
 router.get('/:match', profileController.auth, profileController.matchProfile)
 
 router.post('/:match', profileController.auth, profileController.like)

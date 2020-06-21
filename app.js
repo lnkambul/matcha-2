@@ -52,6 +52,10 @@ app.use('/v', verify)
 app.use('/f', forgotpassword)
 app.use('/p', profile)
 
+//admin routes
+let admin = require('./routes/admin')
+app.use('/admin', admin)
+
 //start server
 app.listen(port, (err, res) => {
 		console.log(`server listening on port ${port}...`)
