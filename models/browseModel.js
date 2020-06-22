@@ -23,13 +23,21 @@ Browse.like = (user, liked, callback) => {
 	})
 }
 
-Browse.visit = (user, visitor, callback) => {
-	var par = ['username', 'visitor']
-	Q.insert("visits", par, [user, visitor], (err, result) => {
-		if (err)
-			callback(err)
-		else
-			callback(null, `${user} visited ${visitor}`)
+Browse.visit = (user, match, callback) => {
+	var par = ['visitor', 'visited', 'year', 'month']
+	var msg = `${user} visited ${match}`
+	var t = new Date()
+	Q.fetchoneMRows("visits", ['visited'], ['visitor', 'visited', 'month'], [user, match, t.getMonth()], (err, data) => {
+		if (data && data.length > 0) {
+				callback(null, msg)
+		} else {
+			Q.insert("visits", par, [user, match, t.getFullYear(), t.getMonth()], (err, result) => {
+				if (err)
+					callback(err)
+				else
+					callback(null, msg)
+			})
+		}
 	})
 }
 
