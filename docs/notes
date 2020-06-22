@@ -23,7 +23,12 @@ initialize project
 
 install dependencies
 ====================
--npm install express --save
--npm install mysql --save
--npm install body-paser --save
--npm install nodemon --save-dev //(run -> nodemon script.js localhost port)
+-see package.json
+
+admin passkey
+=============
+-console
+
+test account credentials
+========================
+-console

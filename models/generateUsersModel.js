@@ -4,11 +4,14 @@ const path = require('path')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const kg = require('./keyGeneratorModel')
+const admod = require('./adminModel')
 
 exports.initAdmin = (username, callback) => {
     let promise = new Promise((res, rej) => { 
         bcrypt.genSalt(10, function(err, salt) {
-            kg.genPass((passkey) => {
+            kg.genPass((err, passkey) => {
+                if (err)
+                    rej(err)
                 console.log(`passkey : ${passkey}`)
                 bcrypt.hash(passkey, salt, function(err, hash) {
                     if (err)
@@ -69,10 +72,15 @@ exports.initTestAccounts = (adminName, count, callback) => {
             callback(err, null)
         else if (res && res[0].admin) {
             let promise = new Promise ((res, rej) => {
+                //newUsers = []
                 for (i = 0; i < count; i++) {
-                    /*kg.gen(user => {
-                        console.log(user)
-                    })*/
+                    admod.genUser((fail, succeed)  => {
+                            if (fail) { rej(fail) }
+                            else {
+                                console.log(`user : ${succeed.username}, password : ${succeed.unhash} created`)
+                                //newUsers.push(succeed)
+                            }
+                    })
                 }
             })
             promise.then( () => { 

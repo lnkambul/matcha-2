@@ -3,6 +3,9 @@ var generateUsername = require ("random-username-generator")
 var generateEmail = require ("random-email")
 var generateSentence = require ("random-sentence")
 var Chance = require ("chance")
+var admod = require ("./adminModel")
+
+
 
 exports.genPass = (callback) => {   
     var maxLength = 18
@@ -37,7 +40,7 @@ exports.genPass = (callback) => {
         while (!isStrongEnough(password)) {
             password = generateKey(randomLength, false, /[\w\d\?\-]/)
         }
-        callback(password)
+        callback(null, password)
     }
     customPassword()
 }
@@ -57,26 +60,56 @@ exports.genUsername = (callback) => {
             generateUsername.setSeperator('_')
             username = generateUsername.generate()
         }
-        callback(username)
+        callback(null, username)
     }
     customUsername()
 }
 
 exports.genEmail = (callback) => {
-    callback(generateEmail( {domain : 'matcha.com'} ))
+    callback(null, generateEmail( {domain : 'matcha.com'} ))
 }
 
 exports.genAge = (callback) => {
     maxAge = 120
     minAge = 18
-    callback(Math.floor(Math.random() * (maxAge - minAge)) + minAge)
+    callback(null, Math.floor(Math.random() * (maxAge - minAge)) + minAge)
 }
 
 exports.genBio = (callback) => {
-    callback(generateSentence({min: 4, max: 7}))
+    callback(null, generateSentence({min: 4, max: 7}))
 }
 
 exports.genPlace = (callback) => {
     var chance = new Chance
-    callback(chance.city())
+    callback(null, chance.city())
+}
+
+exports.genName = (callback) => {
+    var chance = new Chance
+    callback(null, chance.first())
+}
+
+exports.genSurname = (callback) => {
+    var chance = new Chance
+    callback(null, chance.last())
+}
+
+exports.genSex = (callback) => {
+    var gender = ["male", "female"]
+    callback(null, gender[Math.floor(Math.random() * (2 - 0)) + 0])
+
+}
+
+exports.genOrientation = (callback) => {
+    var orientation = ["straight", "gay", "bisexual"]
+    callback(null, orientation[Math.floor(Math.random() * (3 - 0)) + 0])
+}
+
+exports.genPreference = (callback) => {
+    var preference = ["men", "women", "both"]
+    callback(null, preference[Math.floor(Math.random() * (3 - 0)) + 0])
+}
+
+exports.genInterests = (callback) => {
+    callback(null, "some,random,shit")
 }
