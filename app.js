@@ -36,6 +36,9 @@ const sess = require('./config/secret')
 app.use(session(sess))
 global.token = null
 
+//init admin token
+global.adminToken = null
+
 //routes
 let index = require('./routes/index')
 let signup = require('./routes/signup')
@@ -51,6 +54,10 @@ app.use('/logout', logout)
 app.use('/v', verify)
 app.use('/f', forgotpassword)
 app.use('/p', profile)
+
+//admin routes
+let admin = require('./routes/admin')
+app.use('/admin', admin)
 
 //start server
 app.listen(port, (err, res) => {

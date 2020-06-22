@@ -11,6 +11,8 @@ var tables = {
 		" `password` varchar(100) NOT NULL," +
 		" `pro_pic` varchar(250)," +
 		" `verified` int(2) NOT NULL DEFAULT 0," +
+		" `admin` int (1) NOT NULL DEFAULT 0," +
+		" `blocked` int (1) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -41,6 +43,14 @@ var tables = {
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
 		" `liked` varchar(20) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	flagged : (
+		"CREATE TABLE `flagged` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
+		" `flagger` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -76,6 +86,13 @@ var tables = {
 		" `city` varchar(42)," +
 		" `region` varchar(42)," +
 		" `country` varchar(42)," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	test : (
+		"CREATE TABLE `test` {" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `username` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	)

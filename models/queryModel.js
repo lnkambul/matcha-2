@@ -63,4 +63,40 @@ query.fetchone = (t_name, val, params, pval, callback) => {
 	})
 }
 
+query.fetchoneMRows = (t_name, val, params, pvals, callback) => {
+	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
+	var chunk = ""
+	for(i = 0; i < params.length; i++) {
+		chunk += params[i]+"=\'"+pvals[i]+"\'"
+		if (i + 1 < params.length)
+			chunk += " AND "
+	}
+	sql += chunk
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
+
+query.deloneMRows = (t_name, params, pvals, callback) => {
+	var sql = "DELETE FROM "+t_name+" WHERE "
+	var chunk = ""
+	for(i = 0; i < params.length; i++) {
+		chunk += params[i]+"=\'"+pvals[i]+"\'"
+		if (i + 1 < params.length)
+			chunk += " AND "
+	}
+	sql += chunk
+	DB.insert(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
+
 module.exports = query

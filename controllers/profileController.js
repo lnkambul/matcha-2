@@ -8,6 +8,7 @@ const B = require('../models/browseModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	if (!token)
 		res.redirect('/login')
 	else {
@@ -28,6 +29,7 @@ exports.auth = (req, res, next) => {
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	if (token)
 		Q.fetchone("profiles", params, 'username', req.session.user, (err, result) => { 
 			if (err)
@@ -44,7 +46,8 @@ exports.formProfile = (req, res) => {
 				preference: p.preference,
 				interests: p.interests,
 				locate: p.location,
-				bio: p.bio
+				bio: p.bio,
+				adminToken: adminToken
 			})
 		})
 	else
@@ -56,7 +59,7 @@ exports.userProfile = (req, res) => {
 		if (err)
 			res.redirect('/p')
 		else if (result.length > 0) {
-			res.render('profile', {token: req.session.token, user: result[0]})
+			res.render('profile', {token: req.session.token, user: result[0], adminToken: req.session.adminToken})
 		} else
 			res.redirect('/p')
 	})
@@ -75,7 +78,8 @@ exports.matchProfile = (req, res) => {
 					console.log(success)
 					res.render('matchProfile', {
 						token: req.session.token, 
-						match: result[0]
+						match: result[0],
+						adminToken: req.session.adminToken
 					})
 				}
 			})
@@ -127,6 +131,7 @@ exports.registerProfile = (req, res, next) => {
 
 exports.formPhotos = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	res.render('uploadForm', {token: token})
 }
 
@@ -172,7 +177,8 @@ exports.geolocation = (req,res) => {
 				data += chunk
 			})
 			res.on('end', () => {
-				Geo.create(req.session.user, JSON.parse(data).city, JSON.parse(data).regionName, JSON.parse(data).country)
+				let parsed = JSON.parse(data)
+				Geo.create(req.session.user, parsed.city, parsed.regionName, parsed.country)
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message))
@@ -180,6 +186,7 @@ exports.geolocation = (req,res) => {
 
 exports.formPhotos = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	res.render('uploadForm', {token: token})
 }
 
@@ -197,4 +204,26 @@ exports.uploadPhotos = (req, res) => {
 			}
 		})
 	}
+}
+
+exports.block = (req, res) => {
+	let username = req.session.user
+	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
+		if (res && res.length > 0 && res[0].admin === 1) {
+			B.block(req.body.block, req.session.user)
+		}
+		else { 
+			B.flag(req.body.block, req.session.user)
+		}
+	})
+}
+
+
+exports.likeTweaked = (req, res) => {
+	B.likeTweaked(req.session.user, req.body.like, (err, result) => {
+		if (err) {
+			console.log(err)
+			res.redirect('/')
+		} else { console.log(result) }
+	})
 }
