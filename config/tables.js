@@ -90,7 +90,7 @@ var tables = {
 		") ENGINE=InnoDB"
 	),
 	test : (
-		"CREATE TABLE `test` {" +
+		"CREATE TABLE `test` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
