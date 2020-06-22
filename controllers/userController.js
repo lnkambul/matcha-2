@@ -100,7 +100,7 @@ exports.loginUser = (req, res) => {
 		let vetted = new Promise ((y, n) => {
 			admin.isAdmin(user, (fail, win) => {
 					if (fail) {
-						throw(err)
+						throw(fail)
 					}
 					else {
 						req.session.adminToken = win

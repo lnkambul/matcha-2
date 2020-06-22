@@ -1,0 +1,5 @@
+<%- include ('partials/header') %>
+<% for (let i in visitors) {%>
+	<a href='/p/<%=visitors[i].visitor%>'><li class="list-group-item"><%=visitors[i].visitor%></li></a>
+<%}%>
+<%- include ('partials/footer') %>

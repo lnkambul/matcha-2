@@ -57,8 +57,26 @@ var tables = {
 	visits : (
 		"CREATE TABLE `visits` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
 		" `visitor` varchar(20) NOT NULL," +
+		" `visited` varchar(20) NOT NULL," +
+		" `year` int(4) NOT NULL," +
+		" `month` int(2) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	blocks : (
+		"CREATE TABLE `blocks` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `blocker` varchar(20) NOT NULL," +
+		" `blocked` varchar(20) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	matches : (
+		"CREATE TABLE `matches` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `user` varchar(20) NOT NULL," +
+		" `match` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -90,7 +108,7 @@ var tables = {
 		") ENGINE=InnoDB"
 	),
 	test : (
-		"CREATE TABLE `test` {" +
+		"CREATE TABLE `test` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
