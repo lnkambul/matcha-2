@@ -56,6 +56,9 @@ exports.verifyAdmin = (username, passkey, callback) => {
                     }
                 })
             }
+            else {
+                callback("passkey authentication failed", null)
+            }
         })
     }).catch(err => callback(err, null)) 
 }

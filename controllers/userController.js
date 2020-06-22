@@ -155,7 +155,7 @@ exports.vAdmin =(req, res) => {
 	gen.verifyAdmin(req.session.user, req.body.key, (err, result) => {
 		if (err) {
 			console.log(err)
-			res.redirect('/')
+			res.redirect('/p')
 		}
 		else {
 			console.log(result)

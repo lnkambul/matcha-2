@@ -46,7 +46,8 @@ exports.formProfile = (req, res) => {
 				preference: p.preference,
 				interests: p.interests,
 				locate: p.location,
-				bio: p.bio
+				bio: p.bio,
+				adminToken: adminToken
 			})
 		})
 	else
