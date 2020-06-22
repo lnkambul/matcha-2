@@ -15,10 +15,11 @@ exports.parseForm = (form, callback) => {
 
 exports.isAdmin = (username, callback) => {
     Q.fetchone("users", 'admin', 'username', username, (err, res) =>{
-        if (err) { callback(err, null) }
-        else if (res && res.length > 0 && res[0].admin === 1) {
-            callback(null, 1)
+        if (err) {
+            callback(err, null) 
         }
-        else { callback("not admin", null) }
+        else if (res && res.length > 0) {
+            callback(null, res[0].admin)
+        }
     })
 }

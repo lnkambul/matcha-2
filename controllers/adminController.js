@@ -25,7 +25,8 @@ exports.auth = (req, res, next) => {
 
 exports.adminForm = (req, res) => {
     res.render('admin', {
-        token: req.session.token
+        token: req.session.token,
+        adminToken: req.session.adminToken
     } )
 }
 

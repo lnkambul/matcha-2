@@ -29,7 +29,7 @@ exports.auth = (req, res, next) => {
 
 exports.formProfile = (req, res) => {
 	var token = req.session.token
-	var adminToken = req.session.token
+	var adminToken = req.session.adminToken
 	if (token)
 		Q.fetchone("profiles", params, 'username', req.session.user, (err, result) => { 
 			if (err)
@@ -130,6 +130,7 @@ exports.registerProfile = (req, res, next) => {
 
 exports.formPhotos = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	res.render('uploadForm', {token: token})
 }
 
@@ -184,6 +185,7 @@ exports.geolocation = (req,res) => {
 
 exports.formPhotos = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	res.render('uploadForm', {token: token})
 }
 

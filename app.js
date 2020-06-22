@@ -37,7 +37,7 @@ app.use(session(sess))
 global.token = null
 
 //init admin token
-global.adminToken = 1
+global.adminToken = null
 
 //routes
 let index = require('./routes/index')

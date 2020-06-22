@@ -6,7 +6,7 @@ const admin = require('../models/adminModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
-	var aToken = req.session.adminToken
+	var adminToken = req.session.adminToken
 	if (!token)
 		res.redirect('/login')
 	else {
@@ -31,13 +31,15 @@ exports.loginForm = (req, res) => {
 
 exports.list_users = (req, res) => {
 	var token = req.session.token
+	var adminToken = req.session.adminToken
 	Q.fetchall("profiles", (err, data) => {
 		if (err)
 			res.redirect('/p')
 		else if (data.length > 0) {
 			res.render('index', {
 				token: token,
-				users: data
+				users: data,
+				adminToken: adminToken
 			})
 		} else
 			res.redirect('/p')
@@ -81,24 +83,40 @@ exports.registerUser = (req, res) => {
 
 exports.loginUser = (req, res) => {
 	const newUser = new User(req.body)
-	User.login(newUser, (err, result) => {
-		if (err) {
-			console.log(err)
-			res.redirect('/login')
-		}
-		else {
-			req.session.token = result
-			req.session.user = newUser.username
-			/* admin navbar link for ease of testing */
-				admin.isAdmin(req.session.user, (fail, win) => {
-					if (fail) { req.session.adminToken = null }
-					else if (win) { req.session.adminToken = 1 }
-				})
-			/* eoc */	
-			console.log("login successful")
+	/* admin navbar link */
+	let promise = new Promise ((resolve, reject) => {
+		User.login(newUser, (err, result) => {
+			if (err) {
+				reject(err)
+			}
+			else {
+				req.session.token = result
+				req.session.user = newUser.username
+				resolve(req.session.user)
+			}
+		})
+	})	
+	promise.then(user => {
+		let vetted = new Promise ((y, n) => {
+			admin.isAdmin(user, (fail, win) => {
+					if (fail) {
+						throw(err)
+					}
+					else {
+						req.session.adminToken = win
+						y(req.session.adminToken)
+					}
+			})
+		})
+		vetted.then ((status) => { 
+			console.log("login successful ", status) 
 			res.redirect('/')
-		}
+		}).catch(err => { throw(err)})
+	}).catch(err => { 
+		console.log(err)
+		res.redirect('/login')
 	})
+	/* eoc */
 }
 
 exports.logoutUser = (req, res) => {
@@ -141,6 +159,7 @@ exports.vAdmin =(req, res) => {
 		}
 		else {
 			console.log(result)
+			req.session.adminToken = 1
 			res.redirect('../admin')
 			//res.send(result)
 		}
