@@ -114,12 +114,12 @@ exports.genInterests = (callback) => {
     var interests = ""
     var chance = new Chance
 
-    for (i = 0; i < (Math.floor(Math.random() * (8 - 1)) + 1); i++)
+    for (i = 0; i < (Math.floor(Math.random() * (4 - 1)) + 1); i++)
     {
         if (i > 0) {
             interests += ","
         }
-        interests += chance.animal({type: 'pet'})
+        interests += chance.animal({type: 'pet'}).toLowerCase()
     }
     callback(null, interests)
 }
