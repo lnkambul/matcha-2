@@ -1,13 +1,13 @@
 <%- include ('partials/header') %>
-<img src='/uploads/<%=user.username%>' width="150" height="150"><br>
+<img src='/uploads/<%=profile.username%>' width="150" height="150"><br>
 <a href='/p/upload'>upload photos</a><br>
 <a href='/p'>edit profile</a></p>
-<p><%= user.username %></p>
-<p><%= user.age %></p>
-<p><%= user.gender %></p>
-<p><%= user.orientation %></p>
-<p><%= user.preference %></p>
-<p><%= user.interests %></p>
-<p><%= user.location %></p>
-<p><%= user.bio %></p>
+<p><%= profile.username %></p>
+<p><%= profile.age %></p>
+<p><%= profile.gender %></p>
+<p><%= profile.orientation %></p>
+<p><%= profile.preference %></p>
+<p><%= profile.interests %></p>
+<p><%= profile.location %></p>
+<p><%= profile.bio %></p>
 <%- include ('partials/footer') %>

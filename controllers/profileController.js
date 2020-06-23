@@ -48,7 +48,8 @@ exports.formProfile = (req, res) => {
 				interests: p.interests,
 				locate: p.location,
 				bio: p.bio,
-				adminToken: adminToken
+				adminToken: adminToken,
+				user: req.session.user
 			})
 		})
 	else
@@ -60,7 +61,12 @@ exports.userProfile = (req, res) => {
 		if (err)
 			res.redirect('/p')
 		else if (result.length > 0) {
-			res.render('profile', {token: req.session.token, user: result[0], adminToken: req.session.adminToken})
+			res.render('profile', {
+				token: req.session.token, 
+				user: req.session.user,
+				profile: result[0],
+				adminToken: req.session.adminToken
+			})
 		} else
 			res.redirect('/p')
 	})
@@ -80,6 +86,7 @@ exports.matchProfile = (req, res) => {
 					res.render('matchProfile', {
 						token: req.session.token, 
 						match: result[0],
+						user: req.session.user,
 						adminToken: req.session.adminToken
 					})
 				}
@@ -141,7 +148,11 @@ exports.registerProfile = (req, res, next) => {
 exports.formPhotos = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	res.render('uploadForm', {token: token})
+	res.render('uploadForm', {
+		token: token,
+		adminToken: adminToken,
+		user: req.session.user
+	})
 }
 
 exports.uploadPhotos = (req, res) => {
@@ -192,28 +203,6 @@ exports.geolocation = (req, res) => {
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message+'here'))
-}
-
-exports.formPhotos = (req, res) => {
-	var token = req.session.token
-	var adminToken = req.session.adminToken
-	res.render('uploadForm', {token: token})
-}
-
-exports.uploadPhotos = (req, res) => {
-	var file = req.file
-	if (!file)
-		res.send('error please upload')
-	else {
-		Profile.uploadImage(req.session.user, (err, result) => {
-			if (err)
-				console.log(err)
-			else {
-				console.log(result)
-				res.redirect('upload')
-			}
-		})
-	}
 }
 
 exports.block = (req, res) => {

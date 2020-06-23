@@ -14,7 +14,8 @@ exports.listVisitors = (req, res) => {
 		res.render('visitors', {
 			token: token, 
 			 visitors: visitors,
-			 adminToken: adminToken
+			 adminToken: adminToken,
+			 user: req.session.user
 		})
 	})
 }
@@ -32,7 +33,8 @@ exports.listLikes = (req, res) => {
 		res.render('likes', {
 			token: token, 
 			likes: likes,
-			adminToken: adminToken
+			adminToken: adminToken,
+			user: req.session.user
 		})
 	})
 }

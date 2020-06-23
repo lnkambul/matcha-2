@@ -39,7 +39,8 @@ exports.list_users = (req, res) => {
 			res.render('index', {
 				token: token,
 				users: data,
-				adminToken: adminToken
+				adminToken: adminToken,
+				user: req.session.user
 			})
 		} else
 			res.redirect('/p')

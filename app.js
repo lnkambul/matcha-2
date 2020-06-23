@@ -35,6 +35,7 @@ app.use(bodyParser.json())
 const sess = require('./config/secret')
 app.use(session(sess))
 global.token = null
+global.user = null
 
 //init admin token
 global.adminToken = null
