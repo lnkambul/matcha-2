@@ -24,8 +24,11 @@ exports.initAdmin = (username, callback) => {
         })
     }) 
     promise.then( hash => {
-        const configPath = path.join(__dirname, '../config')
-        fs.writeFile(`${configPath}/${username}.txt`, `${hash}`, (err) => {
+        const tempPath = path.join(__dirname, '../config/temp')
+        if (!fs.existsSync(tempPath)) {
+            fs.mkdirSync(tempPath);
+        }
+        fs.writeFile(`${tempPath}/${username}.txt`, `${hash}`, (err) => {
             if (err)
                 throw (err)
         })
@@ -34,7 +37,7 @@ exports.initAdmin = (username, callback) => {
 }
 
 exports.verifyAdmin = (username, passkey, callback) => {
-    const filePath = path.join(__dirname, `../config/${username}.txt`)
+    const filePath = path.join(__dirname, `../config/temp/${username}.txt`)
     let promise = new Promise ((res, rej) => {
         fs.readFile(filePath, 'utf8', (err, contents) => {
             if (err)
