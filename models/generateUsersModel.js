@@ -2,7 +2,6 @@ const Q = require('./queryModel')
 const fs = require('fs')
 const path = require('path')
 const bcrypt = require('bcrypt')
-//const crypto = require('crypto')
 const kg = require('./keyGeneratorModel')
 const admod = require('./adminModel')
 
@@ -26,7 +25,7 @@ exports.initAdmin = (username, callback) => {
     promise.then( hash => {
         const tempPath = path.join(__dirname, '../config/temp')
         if (!fs.existsSync(tempPath)) {
-            fs.mkdirSync(tempPath);
+            fs.mkdirSync(tempPath)
         }
         fs.writeFile(`${tempPath}/${username}.txt`, `${hash}`, (err) => {
             if (err)

@@ -72,7 +72,6 @@ exports.genUser = (callback) => {
             gen.genInterests((err, inter) => { if (err) { rej(err) } else { user.interests = inter } })
             gen.genPlace((err, locate) => { if (err) { rej(err) } else { user.location = locate } })
             gen.genBio((err, b) => { if (err) { rej(err) } else { user.bio = b } })
-    
             res(user)
         })
         promise.then(user => {
