@@ -65,7 +65,7 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
-  matches : (
+	matches : (
 		"CREATE TABLE `matches` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `user` varchar(20) NOT NULL," +

@@ -34,7 +34,7 @@ exports.create = (username, latitude, longitude, city, region, country) => {
 			Q.insert("geolocation", params, vals, (err, res) => {
 		 		if (err)
 					 console.log(err)
-				Q.update("users", 'location', city, 'username', username, (err, res) => {
+				Q.update("profiles", 'location', city, 'username', username, (err, res) => {
 					if (err) {
 						throw(err)
 					}

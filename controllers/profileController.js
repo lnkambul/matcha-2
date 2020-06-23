@@ -179,7 +179,7 @@ exports.geolocation = (req, res) => {
 		else { resolve (ipaddress.ip) }
 	})
 	promise.then( ipaddress => {
-		console.log(ipaddress)
+		//console.log(ipaddress)
 		http.get('http://ip-api.com/json/' + `${ipaddress}`, (res) => {
 			let data = ''
 			res.on('data', (chunk) => {
@@ -188,7 +188,7 @@ exports.geolocation = (req, res) => {
 			res.on('end', () => {
 				let parsed = JSON.parse(data)
 				Geo.create(req.session.user, parsed.lat, parsed.lon, parsed.city, parsed.regionName, parsed.country)
-				console.log(`${req.session.user}'s location updated`)
+				//console.log(`${req.session.user}'s location updated`)
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message))
