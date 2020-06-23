@@ -27,6 +27,7 @@ var tables = {
 		" `interests` varchar(140) NOT NULL," +
 		" `location` varchar(42) NOT NULL," +
 		" `bio` varchar(140)," +
+		" `popularity` int (2) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -62,14 +63,6 @@ var tables = {
 		" `visited` varchar(20) NOT NULL," +
 		" `year` int(4) NOT NULL," +
 		" `month` int(2) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	matches : (
-		"CREATE TABLE `matches` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `user` varchar(20) NOT NULL," +
-		" `match` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),

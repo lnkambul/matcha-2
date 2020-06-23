@@ -52,6 +52,16 @@ query.fetchall = (t_name, callback) => {
 	})
 }
 
+query.fetchallnot = (t_name, param, pval, callback) => {
+	var sql = "SELECT * FROM "+t_name+" WHERE NOT "+param+"=\'"+pval+"\'"
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else
+			callback(null, res)
+	})
+}
+
 query.fetchone = (t_name, val, params, pval, callback) => {
 	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "+params+"=\'"+pval+"\'"
 	DB.fetch(sql, (err, res) => {

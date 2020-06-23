@@ -9,9 +9,9 @@ router.get('/', userController.auth, profileController.formProfile)
 
 router.post('/', userController.auth, profileController.registerProfile)
 
-router.get('/upload', profileController.auth, profileController.formPhotos)
+router.get('/upload', userController.auth, profileController.formPhotos)
 
-router.post('/upload', profileController.auth, upload.single('photos'), profileController.uploadPhotos)
+router.post('/upload', userController.auth, upload.single('photos'), profileController.uploadPhotos)
 
 router.get('/u', profileController.auth, profileController.userProfile)
 

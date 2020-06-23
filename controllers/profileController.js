@@ -15,11 +15,15 @@ exports.auth = (req, res, next) => {
 	else {
 		Q.fetchone("tokens", ['username'], 'username', req.session.user, (err, result) => {
 			if (result && result.length > 0) {
-				Q.fetchone("profiles", ['username'], 'username', req.session.user, (err, result) => {
+				Q.fetchone("users", ['verified'], 'username', req.session.user, (err, result) => {
 					if (result && result.length > 0) {
-						next()
-					} else
-						res.redirect('/p')
+						if (result[0].verified == 1)
+							res.redirect('/p')
+						else if (result[0].verified == 2)
+							res.redirect('/p/upload')
+						else
+							next()
+					}
 				})
 			}
 			else
@@ -48,7 +52,8 @@ exports.formProfile = (req, res) => {
 				interests: p.interests,
 				locate: p.location,
 				bio: p.bio,
-				adminToken: adminToken
+				adminToken: adminToken,
+				user: req.session.user
 			})
 		})
 	else
@@ -60,7 +65,12 @@ exports.userProfile = (req, res) => {
 		if (err)
 			res.redirect('/p')
 		else if (result.length > 0) {
-			res.render('profile', {token: req.session.token, user: result[0], adminToken: req.session.adminToken})
+			res.render('profile', {
+				token: req.session.token, 
+				user: req.session.user,
+				profile: result[0],
+				adminToken: req.session.adminToken
+			})
 		} else
 			res.redirect('/p')
 	})
@@ -80,6 +90,7 @@ exports.matchProfile = (req, res) => {
 					res.render('matchProfile', {
 						token: req.session.token, 
 						match: result[0],
+						user: req.session.user,
 						adminToken: req.session.adminToken
 					})
 				}
@@ -143,7 +154,11 @@ exports.registerProfile = (req, res, next) => {
 exports.formPhotos = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	res.render('uploadForm', {token: token})
+	res.render('uploadForm', {
+		token: token,
+		adminToken: adminToken,
+		user: req.session.user
+	})
 }
 
 exports.uploadPhotos = (req, res) => {
@@ -156,7 +171,7 @@ exports.uploadPhotos = (req, res) => {
 				console.log(err)
 			else {
 				console.log(result)
-				res.redirect('upload')
+				res.redirect('/p/u')
 			}
 		})
 	}
