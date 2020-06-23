@@ -1,4 +1,7 @@
 const Q = require('./queryModel')
+var Mutex = require('async-mutex').Mutex
+var Semaphore = require('async-mutex').Semaphore
+var withTimeout = require('async-mutex').withTimeout
 
 var Browse = function(){}
 
@@ -41,30 +44,34 @@ Browse.visit = (user, match, callback) => {
 	})
 }
 
-Browse.suspend = (user, suspender, callback) => {
+Browse.suspend = (user, admin, callback) => {
 	var params = ['suspended']
-	Q.fetchone("users", params, 'username', user, (err, res) =>{
-		if (res && res.length > 0) {
-			var val = (res[0].suspended) ? 0 : 1
-			Q.update("users", params, val, 'username', user, (err,res) => {
-				if (err) {
-					console.log(err)
-					callback(err, null)
-				}
-				else if (val === 1) {
-					console.log(`${suspender} suspended ${user}`)
-					callback(null, "suspension successful")
-				}
-				else {
-					console.log(`${suspender} unsuspended ${user}`)
-					callback(null, "suspension reversed")
-				}
-
-			})
-		} else {
-			callback("user " + user + " not found")
-		}
+	let promise = new Promise ((resolve, reject) => {
+		Q.fetchone("users", params, 'username', user, (err, res) =>{
+			if (res && res.length > 0) {
+				var val = (res[0].suspended) ? 0 : 1
+				resolve(val)
+			} else {
+				callback("user " + user + " not found")
+			}
+		})
 	})
+	promise.then(val => {
+		Q.update("users", params, val, 'username', user, (err,res) => {
+			if (err) {
+				console.log(err)
+				callback(err, null)
+			}
+			else if (val === 1) {
+				console.log(`${admin} suspended ${user}`)
+				callback(null, JSON.stringify({label:"suspension status", value:"1", initiator:admin, user:user}))
+			}
+			else {
+				console.log(`${admin} unsuspended ${user}`)
+				callback(null, JSON.stringify({label:"suspension status", value:"0", initiator:admin, user:user}))
+			}
+		})
+	}).catch(err => { console.log(err.message) })
 }
 
 Browse.block = (user, blocker, callback) => {
@@ -79,7 +86,7 @@ Browse.block = (user, blocker, callback) => {
 				}
 				else {
 					console.log(`${blocker} unblocked ${user}`)
-					callback(null, "success")
+					callback(null, JSON.stringify({ label:"blocked status", value:"0", initiator:blocker, user:user }))
 				}
 			})
 		}
@@ -91,7 +98,7 @@ Browse.block = (user, blocker, callback) => {
 				}
 				else {
 					console.log(`${blocker} blocked ${user}`)
-					callback(null, "success")
+					callback(null, JSON.stringify({ label:"blocked status", value:"1", initiator:blocker, user:user }))
 				}
 			})
 	})
@@ -105,15 +112,19 @@ Browse.likeTweaked = (user, liked, callback) => {
 			Q.deloneMRows("likes", params, pvals, (err, result) => {
 				if (err)
 					callback(err, null)
-				else 
-					callback(null, `${user} unliked ${liked}`)
+				else { 
+					console.log(`${user} unliked ${liked}`)
+					callback(null, JSON.stringify({ label:"like status", value:"0", initiator:user, user:liked }))
+				}
 			})
 		} else {
 			Q.insert("likes", params, pvals, (err, result) => {
 				if (err)
 					callback(err, null)
-				else
-					callback(null, `${user} liked ${liked}`)
+				else {
+					console.log(`${user} liked ${liked}`)
+					callback(null, JSON.stringify({ label:"like status", value:"1", initiator:user, user:liked }))
+				}
 			})
 		}
 	})

@@ -94,15 +94,17 @@ exports.likeTweaked = (req, res) => {
 	var liked = req.body.like
 	B.likeTweaked(user, liked, (err, result) => {
 		if (err) {
-			console.log(err)
-			res.redirect('/')
-		} else {
-			console.log(result)
+			res.send(err)
+		} 
+		else {
+			res.send(result)
 			B.checkMatch(user, liked, (err, result) => {
 				if (err) {
 					console.log(err)
-				} else
+				} 
+				else {
 					console.log(result)
+				}
 			})
 		}
 	})
@@ -191,35 +193,26 @@ exports.geolocation = (req, res) => {
 	}).catch(err => console.log(err.message))
 }
 
-exports.formPhotos = (req, res) => {
-	var token = req.session.token
-	var adminToken = req.session.adminToken
-	res.render('uploadForm', {token: token})
-}
-
-exports.uploadPhotos = (req, res) => {
-	var file = req.file
-	if (!file)
-		res.send('error please upload')
-	else {
-		Profile.uploadImage(req.session.user, (err, result) => {
-			if (err)
-				console.log(err)
-			else {
-				console.log(result)
-				res.redirect('upload')
-			}
-		})
-	}
-}
-
 exports.block = (req, res) => {
 	let username = req.session.user
-	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
-		if (res && res.length > 0 && res[0].admin === 1) {
+	let promise = new Promise ((resolve, reject) => {
+		Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
+			if (err) {
+				reject(err)
+			}
+			else {
+				resolve(res)
+			}
+		})
+	})
+	promise.then(success =>{
+		if (success && success.length > 0 && success[0].admin === 1) {
 			B.suspend(req.body.block, req.session.user, (error, result) => {
 				if (error) {
 					console.log("could not suspend account")
+				}
+				else {
+					res.send(result)
 				}
 			})
 		}
@@ -228,7 +221,10 @@ exports.block = (req, res) => {
 				if (error) {
 					console.log("could not block account")
 				}
+				else {
+					res.send(result)
+				}
 			})
 		}
-	})
+	}).catch(err => { console.log(error) })
 }
