@@ -47,16 +47,22 @@ Browse.suspend = (user, suspender, callback) => {
 		if (res && res.length > 0) {
 			var val = (res[0].suspended) ? 0 : 1
 			Q.update("users", params, val, 'username', user, (err,res) => {
-				if (err)
+				if (err) {
 					console.log(err)
-				else if (val === 1)
+					callback(err, null)
+				}
+				else if (val === 1) {
 					console.log(`${suspender} suspended ${user}`)
-				else
+					callback(null, "suspension successful")
+				}
+				else {
 					console.log(`${suspender} unsuspended ${user}`)
+					callback(null, "suspension reversed")
+				}
 
 			})
 		} else {
-			console.log("user " + user + " not found")
+			callback("user " + user + " not found")
 		}
 	})
 }
@@ -67,18 +73,26 @@ Browse.block = (user, blocker, callback) => {
 	Q.fetchoneMRows("blocked", ['id'], params, pvals, (err, res) => {
 		if (res && res.length > 0) {
 			Q.deloneMRows("blocked", params, pvals, (err, res)=> {
-				if (err)
+				if (err) {
 					console.log(err)
-				else
+					callback(err, null)
+				}
+				else {
 					console.log(`${blocker} unblocked ${user}`)
+					callback(null, "success")
+				}
 			})
 		}
 		else
 			Q.insert("blocked", params, pvals, (err, res) => {
-				if (err)
+				if (err) {
 					console.log(err)
-				else
+					callback(err, null)
+				}
+				else {
 					console.log(`${blocker} blocked ${user}`)
+					callback(null, "success")
+				}
 			})
 	})
 }

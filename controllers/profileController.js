@@ -161,7 +161,6 @@ exports.uploadPhotos = (req, res) => {
 }
 
 exports.geolocation = (req, res) => {
-	//console.log(`getting ${req.session.user}'s location`)
 	let promise = new Promise ((resolve, reject) => {
 		var ipaddress = req.ip
 		//::1 is IPV6 notation for localhost
@@ -179,7 +178,6 @@ exports.geolocation = (req, res) => {
 		else { resolve (ipaddress.ip) }
 	})
 	promise.then( ipaddress => {
-		//console.log(ipaddress)
 		http.get('http://ip-api.com/json/' + `${ipaddress}`, (res) => {
 			let data = ''
 			res.on('data', (chunk) => {
@@ -188,7 +186,6 @@ exports.geolocation = (req, res) => {
 			res.on('end', () => {
 				let parsed = JSON.parse(data)
 				Geo.create(req.session.user, parsed.lat, parsed.lon, parsed.city, parsed.regionName, parsed.country)
-				//console.log(`${req.session.user}'s location updated`)
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
 	}).catch(err => console.log(err.message))
@@ -220,10 +217,18 @@ exports.block = (req, res) => {
 	let username = req.session.user
 	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
 		if (res && res.length > 0 && res[0].admin === 1) {
-			B.suspend(req.body.block, req.session.user)
+			B.suspend(req.body.block, req.session.user, (error, result) => {
+				if (error) {
+					console.log("could not suspend account")
+				}
+			})
 		}
 		else { 
-			B.block(req.body.block, req.session.user)
+			B.block(req.body.block, req.session.user, (error, result) => {
+				if (error) {
+					console.log("could not block account")
+				}
+			})
 		}
 	})
 }
