@@ -35,7 +35,7 @@ exports.create = (username, latitude, longitude, city, region, country) => {
 		 		if (err)
 					 console.log(err)
 				else {
-					Q.update("profiles", 'location', city, 'username', username, (err, res) => {
+					Q.update("profiles", ['location'], city, 'username', username, (err, res) => {
 						if (err) {
 							throw(err)
 						}
