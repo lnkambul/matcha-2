@@ -81,7 +81,9 @@ Profile.create = (id, vals, interests, callback) => {
 		if (res.length > 0) {
 			Q.update("profiles", params, vals, 'username', vals[0], (err, res) => {
 				if (err)
-					callback(res)
+					callback(err)
+				else
+					callback(null, 'profile updated')
 			})
 		} else {
 			Q.insert("profiles", params, vals, (err, res) => {
@@ -92,7 +94,7 @@ Profile.create = (id, vals, interests, callback) => {
 						if (err)
 							callback(err)
 					})
-		 		}
+				}
 		 	})
 		}
 	})
@@ -152,8 +154,14 @@ Profile.uploadImage = (user, callback) => {
 							Q.insert("images", ['username', 'img_src'], [user, `${path}${result.length+1}`], (err, res) => {
 								if (err)
 									callback(err)
-								else
-									callback(null, path)
+								else {
+									Q.update("users", ['verified'], 3, 'username', user, (err, res) => {
+										if (err)
+											callback(err)
+										else
+											callback(null, 'image uploaded')
+									})
+								}
 							})
 						}
 					})

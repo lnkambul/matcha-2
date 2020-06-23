@@ -15,11 +15,15 @@ exports.auth = (req, res, next) => {
 	else {
 		Q.fetchone("tokens", ['username'], 'username', req.session.user, (err, result) => {
 			if (result && result.length > 0) {
-				Q.fetchone("profiles", ['username'], 'username', req.session.user, (err, result) => {
+				Q.fetchone("users", ['verified'], 'username', req.session.user, (err, result) => {
 					if (result && result.length > 0) {
-						next()
-					} else
-						res.redirect('/p')
+						if (result[0].verified == 1)
+							res.redirect('/p')
+						else if (result[0].verified == 2)
+							res.redirect('/p/upload')
+						else
+							next()
+					}
 				})
 			}
 			else
@@ -165,7 +169,7 @@ exports.uploadPhotos = (req, res) => {
 				console.log(err)
 			else {
 				console.log(result)
-				res.redirect('upload')
+				res.redirect('/p/u')
 			}
 		})
 	}

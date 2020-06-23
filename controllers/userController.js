@@ -32,18 +32,13 @@ exports.loginForm = (req, res) => {
 exports.list_users = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	Q.fetchall("profiles", (err, data) => {
+	var pars = {token: token, users: null, adminToken: adminToken, user: req.session.user}
+	Q.fetchallnot("profiles", 'username', req.session.user, (err, data) => {
 		if (err)
-			res.redirect('/p')
-		else if (data.length > 0) {
-			res.render('index', {
-				token: token,
-				users: data,
-				adminToken: adminToken,
-				user: req.session.user
-			})
-		} else
-			res.redirect('/p')
+			console.log(err)
+		else if (data.length > 0) 
+			pars.users = data
+		res.render('index', pars)
 	})
 }
 
