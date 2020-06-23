@@ -87,14 +87,34 @@ exports.matchProfile = (req, res) => {
 	})
 }
 
-exports.like = (req, res) => {
-	B.like(req.session.user, req.params.match, (err, result) => {
+
+exports.likeTweaked = (req, res) => {
+	var user = req.session.user
+	var liked = req.body.like
+	B.likeTweaked(user, liked, (err, result) => {
 		if (err) {
 			console.log(err)
 			res.redirect('/')
 		} else {
 			console.log(result)
-			res.redirect(`/p/${req.params.match}`)
+			B.checkMatch(user, liked, (err, result) => {
+				if (err) {
+					console.log(err)
+				} else
+					console.log(result)
+			})
+		}
+	})
+}
+
+exports.block = (req, res) => {
+	let username = req.session.user
+	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
+		if (res && res.length > 0 && res[0].admin === 1) {
+			B.block(req.body.block, req.session.user)
+		}
+		else { 
+			B.flag(req.body.block, req.session.user)
 		}
 	})
 }
@@ -206,24 +226,6 @@ exports.uploadPhotos = (req, res) => {
 	}
 }
 
-exports.block = (req, res) => {
-	let username = req.session.user
-	Q.fetchone("users", ['admin'], 'username', username, (err, res) => {
-		if (res && res.length > 0 && res[0].admin === 1) {
-			B.block(req.body.block, req.session.user)
-		}
-		else { 
-			B.flag(req.body.block, req.session.user)
-		}
-	})
-}
 
 
-exports.likeTweaked = (req, res) => {
-	B.likeTweaked(req.session.user, req.body.like, (err, result) => {
-		if (err) {
-			console.log(err)
-			res.redirect('/')
-		} else { console.log(result) }
-	})
-}
+

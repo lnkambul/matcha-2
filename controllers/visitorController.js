@@ -14,6 +14,19 @@ exports.listVisitors = (req, res) => {
 	})
 }
 
+exports.listLikes = (req, res) => {
+	var token = req.session.token
+	var likes = null
+	Q.fetchone("likes", ['username'], 'liked', req.session.user, (err, data) => {
+		if (err)
+			console.log(err)
+		else if (data.length > 0) {
+			likes = data
+		} else {console.log('no one likes you')}
+		res.render('likes', {token: token, likes: likes})
+	})
+}
+
 exports.lost = (req, res, next) => {
 	var m = req.params.map
 	if (m == 'visitors')
