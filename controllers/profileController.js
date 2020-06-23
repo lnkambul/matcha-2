@@ -191,7 +191,7 @@ exports.geolocation = (req, res) => {
 				//console.log(`${req.session.user}'s location updated`)
 			})
 		}).on("error", (err) => { console.log("Error: " +err.message) })
-	}).catch(err => console.log(err.message))
+	}).catch(err => console.log(err.message+'here'))
 }
 
 exports.formPhotos = (req, res) => {
