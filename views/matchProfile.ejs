@@ -1,6 +1,8 @@
 <%- include ('partials/header') %>
 <img src='/uploads/<%=match.username%>' width="200" height="200">
-<button class="block" id="<%=match.username%>">block</button>
+<% if (adminToken) { %>
+    <button class="block" id="<%=match.username%>">suspend</button>
+<%} %>
 <button class="like" id="<%=match.username%>">like</button>
 <p class="list-group-item"><%= match.username %></p>
 <p class="list-group-item"><%= match.age %></p>

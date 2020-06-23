@@ -96,20 +96,30 @@ exports.genSurname = (callback) => {
 
 exports.genSex = (callback) => {
     var gender = ["male", "female"]
-    callback(null, gender[Math.floor(Math.random() * (2 - 0)) + 0])
+    callback(null, gender[Math.floor(Math.random() * 2)])
 
 }
 
 exports.genOrientation = (callback) => {
-    var orientation = ["straight", "gay", "bisexual"]
-    callback(null, orientation[Math.floor(Math.random() * (3 - 0)) + 0])
+    var orientation = ["heterosexual", "homosexual", "bisexual"]
+    callback(null, orientation[Math.floor(Math.random() * 3)])
 }
 
 exports.genPreference = (callback) => {
     var preference = ["men", "women", "both"]
-    callback(null, preference[Math.floor(Math.random() * (3 - 0)) + 0])
+    callback(null, preference[Math.floor(Math.random() * 3)])
 }
 
 exports.genInterests = (callback) => {
-    callback(null, "some,random,shit")
+    var interests = ""
+    var chance = new Chance
+
+    for (i = 0; i < (Math.floor(Math.random() * (8 - 1)) + 1); i++)
+    {
+        if (i > 0) {
+            interests += ","
+        }
+        interests += chance.animal({type: 'pet'})
+    }
+    callback(null, interests)
 }

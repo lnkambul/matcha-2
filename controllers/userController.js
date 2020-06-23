@@ -108,8 +108,9 @@ exports.loginUser = (req, res) => {
 					}
 			})
 		})
-		vetted.then ((status) => { 
-			console.log("login successful ", status) 
+		vetted.then ((status) => {
+			let admin = (status === 1) ? "[admin]" : "[non-admin]" 
+			console.log("login successful ", admin) 
 			res.redirect('/')
 		}).catch(err => { throw(err)})
 	}).catch(err => { 
