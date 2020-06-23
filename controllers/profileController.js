@@ -1,6 +1,6 @@
 const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
-const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
+const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio', 'popularity']
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
 const http = require('http')
