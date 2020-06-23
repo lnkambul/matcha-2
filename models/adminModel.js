@@ -65,7 +65,6 @@ exports.genUser = (callback) => {
             gen.genName((err, fname) => { if (err) { rej(err) } else { user.firstName = fname } })
             gen.genName((err, lname) => { if (err) { rej(err) } else { user.lastName = lname } })
             gen.genEmail((err, mail) => { if(err) { rej(err) } else { user.email = mail } })
-            
             gen.genAge((err, old) => { if (err) { rej(err) } else { user.age = old } })
             gen.genSex((err, sex) => { if (err) { rej(err) } else { user.gender = sex } })
             gen.genOrientation((err, type) => { if (err) { rej(err) } else { user.orientation = type } })
@@ -83,6 +82,14 @@ exports.genUser = (callback) => {
         var pVals = [user.username, user.age, user.gender, user.orientation, user.preference, user.interests, user.location, user.bio]
         Q.insert("users", uParams, uVals, (err, res) => { if (err) { throw(err) } else { /*console.log(res)*/ } })
         Q.insert("profiles", pParams, pVals, (err, res) => { if (err) { throw(err) } else { /*console.log(res)*/ } })
+        Q.fetchone("users", "id", 'username', user.username, (err, res) => {
+            if (res && res.length > 0) {
+                Q.insert("test", ['username'], user.username, (error, result) => {
+                    if (error)
+                        throw (error)
+                })
+            }
+        })
         callback(null, user)
         }).catch(err => { throw(err) })
     }).catch(err => { callback(err, null) })
