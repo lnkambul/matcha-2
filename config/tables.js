@@ -43,6 +43,7 @@ var tables = {
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
 		" `liked` varchar(20) NOT NULL," +
+		" `lovers` int (1) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -64,7 +65,7 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
-	matches : (
+  matches : (
 		"CREATE TABLE `matches` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `user` varchar(20) NOT NULL," +

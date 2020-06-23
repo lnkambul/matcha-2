@@ -25,7 +25,4 @@ router.post('/va', profileController.auth, userController.vAdmin)
 
 router.get('/:match', profileController.auth, profileController.matchProfile)
 
-router.post('/:match', profileController.auth, profileController.like)
-
-
 module.exports = router

@@ -91,7 +91,7 @@ Browse.likeTweaked = (user, liked, callback) => {
 			Q.deloneMRows("likes", params, pvals, (err, result) => {
 				if (err)
 					callback(err, null)
-				else
+				else 
 					callback(null, `${user} unliked ${liked}`)
 			})
 		} else {
@@ -101,6 +101,39 @@ Browse.likeTweaked = (user, liked, callback) => {
 				else
 					callback(null, `${user} liked ${liked}`)
 			})
+		}
+	})
+}
+
+Browse.checkMatch = (user, liked, callback) => {
+	var params = ['username', 'liked']
+	var pvals = [liked, user]
+	Q.fetchoneMRows("likes", ['liked', 'lovers'], params, pvals, (err, res) => {
+		 if (res && res.length > 0) {
+		 	if (res[0].lovers == 1) {
+				Q.updateMRows("likes", ['lovers'], 0, params, [user, liked], (err, res) => {
+					if (err)
+						callback(err)
+					else {
+						Q.updateMRows("likes", ['lovers'],0, params, pvals, (err, res) => {
+							if (err)
+								callback(err)
+							else
+								callback(null, `${user} & ${liked} are not a match :(`)
+						})
+					}
+				})
+			} else {
+				Q.updateMRows("likes", ['lovers'], 1, params, pvals, (err, success) => {
+					if (err)
+						callback(err+" mxm", null)
+					else {
+						Q.updateMRows("likes", ['lovers'], 1, params, [user, liked], (err, success) => {
+							callback(null, `${user} & ${liked} like each other!`)
+						})
+					}
+				})
+			}
 		}
 	})
 }

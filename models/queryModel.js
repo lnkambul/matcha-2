@@ -99,4 +99,25 @@ query.deloneMRows = (t_name, params, pvals, callback) => {
 	})
 }
 
+query.updateMRows = (t_name, sets, values, params, pvals, callback) => {
+	var z = ''
+	var chunk = ""
+	var len = params.length
+	for (let s in sets)
+		z += sets[s]+"=?, "
+	for (i = 0; i < len; i++) {
+		chunk += params[i]+"=\'"+pvals[i]+"\'"
+		if (i + 1 < len)
+			chunk += " AND "
+	}
+	z = z.slice(0, -2)
+	var sql = "UPDATE "+t_name+" SET "+z+" WHERE "+chunk
+	DB.insert(sql, values, (err, res) => {
+		if (err)
+			callback("failed to update", null)
+		else
+			callback(null, "updated")
+	})
+}
+
 module.exports = query

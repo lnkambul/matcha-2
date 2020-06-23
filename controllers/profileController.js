@@ -88,14 +88,22 @@ exports.matchProfile = (req, res) => {
 	})
 }
 
-exports.like = (req, res) => {
-	B.like(req.session.user, req.params.match, (err, result) => {
+
+exports.likeTweaked = (req, res) => {
+	var user = req.session.user
+	var liked = req.body.like
+	B.likeTweaked(user, liked, (err, result) => {
 		if (err) {
 			console.log(err)
 			res.redirect('/')
 		} else {
 			console.log(result)
-			res.redirect(`/p/${req.params.match}`)
+			B.checkMatch(user, liked, (err, result) => {
+				if (err) {
+					console.log(err)
+				} else
+					console.log(result)
+			})
 		}
 	})
 }
@@ -217,15 +225,5 @@ exports.block = (req, res) => {
 		else { 
 			B.block(req.body.block, req.session.user)
 		}
-	})
-}
-
-
-exports.likeTweaked = (req, res) => {
-	B.likeTweaked(req.session.user, req.body.like, (err, result) => {
-		if (err) {
-			console.log(err)
-			res.redirect('/')
-		} else { console.log(result) }
 	})
 }
