@@ -48,7 +48,7 @@ var tables = {
 		") ENGINE=InnoDB"
 	),
 	blocked : (
-		"CREATE TABLE `flagged` (" +
+		"CREATE TABLE `blocked` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
 		" `blocker` varchar(20) NOT NULL," +
