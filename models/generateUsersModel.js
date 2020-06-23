@@ -2,7 +2,7 @@ const Q = require('./queryModel')
 const fs = require('fs')
 const path = require('path')
 const bcrypt = require('bcrypt')
-const crypto = require('crypto')
+//const crypto = require('crypto')
 const kg = require('./keyGeneratorModel')
 const admod = require('./adminModel')
 
@@ -77,7 +77,7 @@ exports.initTestAccounts = (adminName, count, callback) => {
                     admod.genUser((fail, succeed)  => {
                             if (fail) { rej(fail) }
                             else {
-                                console.log(`user : ${succeed.username}, password : ${succeed.unhash} created`)
+                                console.log(`user : ${succeed.username}  password : ${succeed.unhash} created`)
                                 //newUsers.push(succeed)
                             }
                     })

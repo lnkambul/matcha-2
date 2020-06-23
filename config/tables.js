@@ -12,7 +12,7 @@ var tables = {
 		" `pro_pic` varchar(250)," +
 		" `verified` int(2) NOT NULL DEFAULT 0," +
 		" `admin` int (1) NOT NULL DEFAULT 0," +
-		" `blocked` int (1) NOT NULL DEFAULT 0," +
+		" `suspended` int (1) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -23,10 +23,10 @@ var tables = {
 		" `age` varchar(3)," +
 		" `gender` varchar(25) NOT NULL," +
 		" `orientation` varchar(25) NOT NULL," +
-		" `preference` varchar(240) NOT NULL," +
-		" `interests` varchar(200) NOT NULL," +
-		" `location` varchar(200) NOT NULL," +
-		" `bio` varchar(300)," +
+		" `preference` varchar(25) NOT NULL," +
+		" `interests` varchar(140) NOT NULL," +
+		" `location` varchar(42) NOT NULL," +
+		" `bio` varchar(140)," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -47,11 +47,11 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
-	flagged : (
+	blocked : (
 		"CREATE TABLE `flagged` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
-		" `flagger` varchar(20) NOT NULL," +
+		" `blocker` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -65,11 +65,11 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
-	blocks : (
-		"CREATE TABLE `blocks` (" +
+	matches : (
+		"CREATE TABLE `matches` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `blocker` varchar(20) NOT NULL," +
-		" `blocked` varchar(20) NOT NULL," +
+		" `user` varchar(20) NOT NULL," +
+		" `match` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -94,6 +94,8 @@ var tables = {
 		"CREATE TABLE `geolocation` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
 		" `username` varchar(20) NOT NULL," +
+		" `latitude` DECIMAL(6, 4)," +
+		" `longitude` DECIMAL(6, 4)," +
 		" `city` varchar(42)," +
 		" `region` varchar(42)," +
 		" `country` varchar(42)," +

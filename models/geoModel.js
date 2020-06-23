@@ -12,24 +12,36 @@ local.locate = () => {
 
 local.locate()
 */
-var Geo = function (){}
 
-Geo.create = (username, city, region, country) => {
-	var params = ['username', 'city', 'region', 'country']
-	var vals = [username, city, region, country]
+exports.create = (username, latitude, longitude, city, region, country) => {
+	var params = ['username', 'latitude', 'longitude', 'city', 'region', 'country']
+	var vals = [username, latitude, longitude, city, region, country]
 	Q.fetchone("geolocation", ['id'], 'username', username, (err, res) => {
 		if (res && res.length > 0) {
-			Q.update("geolocation", params, vals, 'username', vals[0], (err, res) => {
-				if (err)
+			Q.update("geolocation", params, vals, 'username', username, (err, res) => {
+				if (err) {
 					console.log(err)
+				}
+				else {
+					Q.update("profiles", ['location'], city, 'username', username, (err, res) => {
+						if (err) {
+							console.log('geolocation profile update :', err)
+						}
+					})
+				}
 			})
 		} else {
 			Q.insert("geolocation", params, vals, (err, res) => {
 		 		if (err)
-		 			console.log(err)
+					 console.log(err)
+				else {
+					Q.update("profiles", ['location'], city, 'username', username, (err, res) => {
+						if (err) {
+							throw(err)
+						}
+					})
+				}
 		 	})
 		}
 	})
 }
-
-module.exports = Geo
