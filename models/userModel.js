@@ -84,30 +84,40 @@ User.create = (user, callback) => {
 }
 
 User.login = (user, callback) => {
-	Q.fetchone("users", ['id', 'username', 'password', 'verified'], 'username', user.username, (err, res) => {
-		if (res && res.length > 0) {
-			if (res[0].verified > 0) {
-				S.findHash(user.password, res[0].password, (err, result) => {
-					if (err)
-						callback("username or password incorrect", null)
-					else {
-						S.createToken(res[0].password, (token) => {
+	let promise = new Promise ((resolve, reject) => {
+		Q.fetchone("users", ['id', 'username', 'password', 'verified'], 'username', user.username, (err, res) => {
+			if (res && res.length > 0) {
+				resolve(res)
+			}
+			else 
+				callback("username or password incorrect", null)
+		})
+	})
+	promise.then(res => {
+		if (res[0].verified > 0) {
+			S.findHash(user.password, res[0].password, (err, result) => {
+				if (err)
+					callback("username or password incorrect", null)
+				else {
+					S.createToken(res[0].password, (token) => {
+						let insure = new Promise ((y, n) => {
 							Q.insert("tokens", ['username', 'type', 'token'], [user.username, 'login', token], (err, success) => {
 								if (err)
 									callback(err, null)
 								else
-									callback(null, token)
+									y(token)
 							})
 						})
-					}
-				})
-			} 
-			else
-				callback("please verify account")
-		}
-		else 
-			callback("username or password incorrect", null)
-	})
+						insure.then(token => {
+							callback(null, token)
+						})
+					})
+				}
+			})
+		} 
+		else
+			callback("please verify account")
+	}).catch(err => { console.log(err.message) })
 }
 
 User.verify = (token, callback) => {
