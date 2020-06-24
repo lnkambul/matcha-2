@@ -135,7 +135,7 @@ exports.registerProfile = (req, res, next) => {
 							console.log('failed to update profile')
 						else {
 							/*successful profile registration/update triggers geolocation function*/
-							exports.geolocation(req,res)
+							exports.geolocation(req)
 							/*end of modifications to registerProfile*/
 							console.log('profile updated')
 							res.redirect('/p/upload')
@@ -177,7 +177,7 @@ exports.uploadPhotos = (req, res) => {
 	}
 }
 
-exports.geolocation = (req, res) => {
+exports.geolocation = (req) => {
 	let promise = new Promise ((resolve, reject) => {
 		var ipaddress = req.ip
 		//::1 is IPV6 notation for localhost
