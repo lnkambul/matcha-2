@@ -26,19 +26,47 @@ Browse.like = (user, liked, callback) => {
 	})
 }
 
+Browse.popularity = (match, callback) => {
+	Q.fetchone("visits", ['visited'], 'visited', match, (err, a) => {
+  		if (err)
+  			callback(err)
+		else if (a.length > 0) {
+			var pop = 0
+			Q.fetchone("likes", ['liked'], 'liked', match, (err, b) => {
+				if (err)
+					callback(err)
+				else if (b && b.length > 0) 
+					pop = (b.length/a.length)*10
+				Q.update("profiles", ['popularity'], pop, 'username', match, (err, res) => {
+					if (err)
+						callback(err)
+					else
+						callback(null, `${pop}/10 rating`)
+				})
+			})
+		}
+	})
+}
+
 Browse.visit = (user, match, callback) => {
 	var par = ['visitor', 'visited', 'year', 'month']
 	var msg = `${user} visited ${match}`
 	var t = new Date()
 	Q.fetchoneMRows("visits", ['visited'], ['visitor', 'visited', 'month'], [user, match, t.getMonth()], (err, data) => {
 		if (data && data.length > 0) {
-				callback(null, msg)
+				callback(null, `${msg} again`)
 		} else {
 			Q.insert("visits", par, [user, match, t.getFullYear(), t.getMonth()], (err, result) => {
 				if (err)
 					callback(err)
-				else
-					callback(null, msg)
+				else {
+					Browse.popularity(match, (err, res) => {
+						if (err)
+							callback(err)
+						else
+							callback(null, `${msg} (${res})`)
+					})
+				}
 			})
 		}
 	})
@@ -114,6 +142,11 @@ Browse.likeTweaked = (user, liked, callback) => {
 					callback(err, null)
 				else { 
 					console.log(`${user} unliked ${liked}`)
+					Browse.popularity(liked, (err, res) => {
+						if (err)
+							callback(err)
+						console.log(res)
+					})
 					callback(null, JSON.stringify({ label:"like status", value:"0", initiator:user, user:liked }))
 				}
 			})
@@ -123,6 +156,11 @@ Browse.likeTweaked = (user, liked, callback) => {
 					callback(err, null)
 				else {
 					console.log(`${user} liked ${liked}`)
+					Browse.popularity(liked, (err, res) => {
+						if (err)
+							callback(err)
+						console.log(res)
+					})
 					callback(null, JSON.stringify({ label:"like status", value:"1", initiator:user, user:liked }))
 				}
 			})
