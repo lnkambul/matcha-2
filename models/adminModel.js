@@ -61,7 +61,20 @@ exports.genUser = (callback) => {
                 location : "",
                 bio : ""
             }
-            gen.genUsername((err, uname) => { if (err) { rej(err) } else { user.username = uname } })
+            let name = new Promise ((resolve, reject) => {
+                gen.genUsername((err, uname) => { 
+                    if (err) { 
+                        rej(err) } 
+                    else { 
+                        user.username = uname
+                        resolve(user.username)
+                    } 
+                })
+            })
+            name.then(promised => {
+            gen.genPlace(promised, (err, locate) => { if (err) { rej(err) } else { user.location = locate } })
+
+            })
             gen.genName((err, fname) => { if (err) { rej(err) } else { user.firstName = fname } })
             gen.genName((err, lname) => { if (err) { rej(err) } else { user.lastName = lname } })
             gen.genEmail((err, mail) => { if(err) { rej(err) } else { user.email = mail } })
@@ -70,7 +83,6 @@ exports.genUser = (callback) => {
             gen.genOrientation((err, type) => { if (err) { rej(err) } else { user.orientation = type } })
             gen.genPreference((err, pref) => { if (err) { rej(err) } else { user.preference = pref } })
             gen.genInterests((err, inter) => { if (err) { rej(err) } else { user.interests = inter } })
-            gen.genPlace((err, locate) => { if (err) { rej(err) } else { user.location = locate } })
             gen.genBio((err, b) => { if (err) { rej(err) } else { user.bio = b } })
             res(user)
         })

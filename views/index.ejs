@@ -1,5 +1,5 @@
 <%- include ('partials/header') %>
-<% for (let i in users) {%>
-	<a href='/p/<%=users[i].username%>'><li class="list-group-item"><%=users[i].username%> - <%=users[i].gender%></li></a>
-<%}%>
+<% if (users) { for (let i in users) {%>
+	<a href='/p/<%=users[i].username%>'><li class="list-group-item"><%=users[i].username%> - <%=users[i].gender%> <span style="float: right;"><% if (distance) {%><%=distance[i].city%> - <%=distance[i].distance%> km </span><%}%></li></a>
+<%}}%>
 <%- include ('partials/footer') %>

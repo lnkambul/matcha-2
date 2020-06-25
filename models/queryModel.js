@@ -62,6 +62,17 @@ query.fetchallnot = (t_name, param, pval, callback) => {
 	})
 }
 
+query.countRows = (t_name, callback) =>
+{
+	var sql = "SELECT COUNT(*) as total from "+t_name//->fetchColumn();
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else
+			callback(null, res[0].total)
+	})
+}
+
 query.fetchone = (t_name, val, params, pval, callback) => {
 	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "+params+"=\'"+pval+"\'"
 	DB.fetch(sql, (err, res) => {

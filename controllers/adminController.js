@@ -34,21 +34,37 @@ exports.adminForm = (req, res) => {
 exports.processForm = (req, res) => {
     let promise = new Promise ((resolve, reject) => {
         admod.parseForm(req.body, (error, resolution) => {
-            if (error)
-                reject(error)
-            else
+            if (error) {
+                console.log(error)
+                res.redirect('/')
+            }
+            else {
                 resolve(resolution)
+            }
         })
     })
     promise.then( count => {
+        let accounts = new Promise ((resolve, reject) => {
             gum.initTestAccounts(req.session.user, count, (err, result) => {
-            if (err) {
-                console.log(err)
-            }
-            else {
-                console.log(result)
-            }
+                if (err) {
+                    console.log(err)
+                    res.redirect('/')
+                }
+                else {
+                    resolve(result)
+                }
+            })
         })
-    }).catch( err => console.log(err.message))
-    res.redirect('/')
+        accounts.then(result => {
+            console.log(result)
+            res.redirect('/')
+        }).catch( err => {
+            console.log(err.message)
+            res.redirect('/')
+        })
+    }).catch( err => {
+        console.log(err.message)
+        res.redirect('/')
+    })
+    //res.redirect('/')
 }

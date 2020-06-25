@@ -3,6 +3,7 @@ const User = require('../models/userModel')
 const pass = require('../models/passwordModel')
 const gen = require('../models/generateUsersModel')
 const admin = require('../models/adminModel')
+const key = require('../models/keyGeneratorModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
@@ -32,14 +33,71 @@ exports.loginForm = (req, res) => {
 exports.list_users = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	var pars = {token: token, users: null, adminToken: adminToken, user: req.session.user}
-	Q.fetchallnot("profiles", 'username', req.session.user, (err, data) => {
-		if (err)
-			console.log(err)
-		else if (data.length > 0) 
-			pars.users = data
-		res.render('index', pars)
+	var pars = {token: token, users: null, adminToken: adminToken, user: req.session.user, distance: null}
+	let selffilter = new Promise ((y, n) => {
+		Q.fetchallnot("profiles", 'username', req.session.user, (err, data) => {
+			if (err) {
+				console.log(err)
+			}
+			else if (data) 
+				y(data)
+		})
 	})
+	selffilter.then(data => {
+		if (data.length > 0) {
+			pars.users = data
+		}
+		else {
+			res.render('index', pars)
+		}
+		let distcalc = new Promise((resolve, reject) => {
+			key.calculateDistance(req.session.user, data, (err, result) => {
+				if (err) {
+					console.log(err)
+					res.render('index', pars)
+				}
+				else if (result) {
+					resolve(result)
+				}
+			})
+		})
+		distcalc.then(outcome => {
+			let listDistances = new Promise ((resolve, reject) => {
+				Q.fetchall(req.session.user, (err, rows) => {
+					if (err) {
+						console.log(err)
+						res.render('index', pars)
+					}
+					else if (rows) {
+						pars.distance = rows
+						resolve(rows)
+					}
+				})
+			})
+			listDistances.then(rows => {
+				if (rows.length > 0) {
+					Q.countRows(req.session.user, (err, result) => {
+						if (err) {
+							console.log(err)
+						}
+						else {
+							console.log(result, "rows")
+						}
+					})
+				}
+			})
+			listDistances.then( () => {
+				setTimeout(()=> {
+					console.log("rendering")
+					res.render('index', pars)
+				}, 1000)
+			})
+			console.log("distance calculation ", outcome)
+		}).catch(err => {
+			throw(err)
+		})
+	})
+	
 }
 
 exports.formSignup = (req, res) => {
@@ -105,8 +163,8 @@ exports.loginUser = (req, res) => {
 			})
 		})
 		vetted.then ((status) => {
-			let admin = (status === 1) ? "[admin]" : "[non-admin]" 
-			console.log("login successful ", admin) 
+			let admin = (status === 1) ? "[admin]" : "[non-admin]"
+			console.log("login successful ", admin)
 			res.redirect('/')
 		}).catch(err => { throw(err)})
 	}).catch(err => { 
@@ -155,9 +213,22 @@ exports.vAdmin =(req, res) => {
 			res.redirect('/p')
 		}
 		else {
-			console.log(result)
-			req.session.adminToken = 1
-			res.redirect('../admin')
+			let promise = new Promise((resolve, reject) => {
+				key.genPlaces(5, (error, success) => {
+					if (error) {
+						reject(error)
+					}
+					else {
+						console.log(result)
+						req.session.adminToken = 1
+						resolve(success)
+					}
+				})
+			})
+			promise.then(places => {
+				console.log(places)
+				res.redirect('../admin')
+			}).catch(err => { console.log(err) })
 			//res.send(result)
 		}
 	})

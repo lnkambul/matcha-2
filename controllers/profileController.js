@@ -121,7 +121,7 @@ exports.likeTweaked = (req, res) => {
 	})
 }
 
-exports.registerProfile = (req, res, next) => {
+exports.registerProfile = (req, res) => {
 	var sess = req.session
 	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
 		if (result && result.length > 0) {
@@ -202,9 +202,16 @@ exports.geolocation = (req) => {
 			})
 			res.on('end', () => {
 				let parsed = JSON.parse(data)
-				Geo.create(req.session.user, parsed.lat, parsed.lon, parsed.city, parsed.regionName, parsed.country)
+				Geo.create(req.session.user, parsed.lat, parsed.lon, parsed.city, parsed.country, (err, result) => {
+					if (err) {
+						console.log(err)
+					}
+					else {
+						
+					}
+				})
 			})
-		}).on("error", (err) => { console.log("Error: " +err.message) })
+		}).on("error", (err) => { console.log("Location API error: " +err.message) })
 	}).catch(err => console.log(err.message))
 }
 
@@ -220,7 +227,7 @@ exports.block = (req, res) => {
 			}
 		})
 	})
-	promise.then(success =>{
+	promise.then(success => {
 		if (success && success.length > 0 && success[0].admin === 1) {
 			B.suspend(req.body.block, req.session.user, (error, result) => {
 				if (error) {

@@ -90,7 +90,6 @@ var tables = {
 		" `latitude` DECIMAL(6, 4)," +
 		" `longitude` DECIMAL(6, 4)," +
 		" `city` varchar(42)," +
-		" `region` varchar(42)," +
 		" `country` varchar(42)," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
@@ -101,7 +100,17 @@ var tables = {
 		" `username` varchar(20) NOT NULL," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
-	)
+	),
+	places : (
+		"CREATE TABLE `places` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `latitude` DECIMAL(6, 4)," +
+		" `longitude` DECIMAL(6, 4)," +
+		" `city` varchar(42) NOT NULL," +
+		" `country` varchar(42) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
 }
 
 module.exports = tables;
