@@ -1,4 +1,34 @@
 var block = document.getElementsByClassName("block")
+const q = {status : block[0].id}
+
+function checkStat () {
+  fetch("/p/stat-b", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json', },
+    body: JSON.stringify(q),
+    }).then(res => res.json()).then(data => {
+      if (parseInt(data.status) === 1) {
+          block[0].innerHTML = "unblock"
+      }
+      else if (parseInt(data.status) === 0) {
+        block[0].innerHTML = "block"
+      }
+      else if (parseInt(data.status) === 3) {
+        block[0].innerHTML = "unsuspend"
+      }
+      else if (parseInt(data.status) === 4) {
+        block[0].innerHTML = "suspend"
+      }
+      else {
+        toggleVis(block[0], "none")
+      }
+      console.log("status check", data.status)
+    }).catch((error) => {
+      console.error('status check errror', error)
+    })
+}
+
+checkStat()
 
 block[0].addEventListener("click", () => {
     block[0].disabled = true
@@ -23,5 +53,8 @@ block[0].addEventListener("click", () => {
     xhr.onerror = function (e) {
         console.error(xhr.statusText);
     }
-    setTimeout( () => {block[0].disabled = false }, 1000)    
+    setTimeout( () => {
+      checkStat()
+      block[0].disabled = false 
+    }, 1000)
 })

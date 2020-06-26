@@ -6,6 +6,7 @@ const Geo = require('../models/geoModel')
 const http = require('http')
 const https = require('https')
 const B = require('../models/browseModel')
+const adminController = require ('./adminController')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
@@ -118,6 +119,62 @@ exports.likeTweaked = (req, res) => {
 				}
 			})
 		}
+	})
+}
+
+exports.likeStatus = (req, res) => {
+	let table = 'likes'
+	let params = ['username', 'liked']
+	B.checkstat(req.session.user, req.body.status, table, params, (err, result) => {
+		if (err) {
+			res.send(err)
+		}
+		else {
+			res.send(result)
+		}
+	})
+}
+
+exports.blockStatus = (req, res) => {
+	let promise = new Promise ((resolve, reject) => {
+		if (req.session.adminToken) {
+			adminController.auth(req, res, () => {
+				Q.fetchone("users", ['suspended'], 'username', req.body.status, (error, response) =>{
+					if (response && response.length > 0) {
+						console.log('suspension status obtained')
+						var val = (response[0].suspended) ? 3 : 4
+						resolve(val)
+					} 
+					else if (error) {
+						console.log(error)
+						resolve(-1)
+					}
+				})
+			})
+		}
+		else {
+			resolve(2)
+		}
+	})
+	promise.then(type => {
+		if (type === 2) {
+			let table = 'blocked'
+			let params = ['blocker', 'username']
+			B.checkstat(req.session.user, req.body.status, table, params, (err, result) => {
+				if (err) {
+					res.send(err)
+				}
+				else {
+					res.send(result)
+				}
+			})
+		}
+		else {
+			res.send(JSON.stringify({status: type}))
+		}
+	}).catch(err => {
+		console.log(err)
+		res.send(JSON.stringify({error: err}))
 	})
 }
 

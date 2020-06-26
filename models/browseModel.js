@@ -4,7 +4,7 @@ var Semaphore = require('async-mutex').Semaphore
 var withTimeout = require('async-mutex').withTimeout
 
 var Browse = function(){}
-
+/*
 Browse.like = (user, liked, callback) => {
 	var par = ['username', 'liked']
 	Q.fetchone("likes", par, 'liked', liked, (err, res) => {
@@ -25,7 +25,7 @@ Browse.like = (user, liked, callback) => {
 		}
 	})
 }
-
+*/
 Browse.popularity = (match, callback) => {
 	Q.fetchone("visits", ['visited'], 'visited', match, (err, a) => {
   		if (err)
@@ -80,7 +80,7 @@ Browse.suspend = (user, admin, callback) => {
 				var val = (res[0].suspended) ? 0 : 1
 				resolve(val)
 			} else {
-				callback("user " + user + " not found")
+				callback(JSON.stringify({error: `user ${user} not found`}), null)
 			}
 		})
 	})
@@ -88,7 +88,7 @@ Browse.suspend = (user, admin, callback) => {
 		Q.update("users", params, val, 'username', user, (err,res) => {
 			if (err) {
 				console.log(err)
-				callback(err, null)
+				callback(JSON.stringify({error: err}), null)
 			}
 			else if (val === 1) {
 				console.log(`${admin} suspended ${user}`)
@@ -99,7 +99,10 @@ Browse.suspend = (user, admin, callback) => {
 				callback(null, JSON.stringify({label:"suspension status", value:"0", initiator:admin, user:user}))
 			}
 		})
-	}).catch(err => { console.log(err.message) })
+	}).catch(err => { 
+		console.log(err.message) 
+		callback(JSON.stringify({error: err}), null)
+	})
 }
 
 Browse.block = (user, blocker, callback) => {
@@ -110,7 +113,7 @@ Browse.block = (user, blocker, callback) => {
 			Q.deloneMRows("blocked", params, pvals, (err, res)=> {
 				if (err) {
 					console.log(err)
-					callback(err, null)
+					callback(JSON.stringify({error: err}), null)
 				}
 				else {
 					console.log(`${blocker} unblocked ${user}`)
@@ -122,13 +125,28 @@ Browse.block = (user, blocker, callback) => {
 			Q.insert("blocked", params, pvals, (err, res) => {
 				if (err) {
 					console.log(err)
-					callback(err, null)
+					callback(JSON.stringify({error: err}), null)
 				}
 				else {
 					console.log(`${blocker} blocked ${user}`)
 					callback(null, JSON.stringify({ label:"blocked status", value:"1", initiator:blocker, user:user }))
 				}
 			})
+	})
+}
+
+Browse.checkstat = (user, other, table, params, callback) => {
+	var pvals = [user, other]
+	Q.fetchoneMRows(table, ['id'], params, pvals, (err, res) => {
+		if (err) {
+			callback(JSON.stringify({error: err}), null)
+		}
+		else if (res && res.length > 0) {
+			callback(null, JSON.stringify({status: "1"}))
+		}
+		else {
+			callback(null, JSON.stringify({status: "0"}))
+		}
 	})
 }
 
@@ -139,7 +157,7 @@ Browse.likeTweaked = (user, liked, callback) => {
 		if (res && res.length > 0) {
 			Q.deloneMRows("likes", params, pvals, (err, result) => {
 				if (err)
-					callback(err, null)
+					callback(JSON.stringify({error: err}), null)
 				else { 
 					console.log(`${user} unliked ${liked}`)
 					Browse.popularity(liked, (err, res) => {
@@ -152,8 +170,9 @@ Browse.likeTweaked = (user, liked, callback) => {
 			})
 		} else {
 			Q.insert("likes", params, pvals, (err, result) => {
-				if (err)
-					callback(err, null)
+				if (err) {
+					callback(JSON.stringify({error: err}), null)
+				}
 				else {
 					console.log(`${user} liked ${liked}`)
 					Browse.popularity(liked, (err, res) => {
