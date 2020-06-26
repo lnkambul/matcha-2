@@ -37,6 +37,11 @@ app.use(session(sess))
 global.token = null
 global.user = null
 
+//init connection
+const http = require('http').createServer(app)
+io = require('socket.io')(http)
+app.set('socket', io)
+
 //init admin token
 global.adminToken = null
 
@@ -63,6 +68,6 @@ let admin = require('./routes/admin')
 app.use('/admin', admin)
 
 //start server
-app.listen(port, (err, res) => {
+http.listen(port, (err, res) => {
 		console.log(`server listening on port ${port}...`)
 })
