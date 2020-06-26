@@ -320,9 +320,11 @@ exports.calculateDistance = (user, others, callback) => {
                     //console.log(Math.floor(others[i].distance/1000), "km away")
                    }).catch(err => { callback(err, null) })
                 }).catch(err => { callback(err, null) })
-                if (i === others.length - 1) {
-                    y("finished")
-                }
+                otherLocation.then( () => {
+                    if (i === others.length - 1) {
+                        y("finished")
+                    }
+                })
 
             }, (i + 1) * 150, i)
             }
