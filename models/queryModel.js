@@ -52,6 +52,16 @@ query.fetchall = (t_name, callback) => {
 	})
 }
 
+query.fetchallOB = (t_name, orderBy, callback) => {
+	var sql = `SELECT * FROM ${t_name} ORDER BY ${orderBy}`
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else
+			callback(null, res)
+	})
+}
+
 query.fetchallnot = (t_name, param, pval, callback) => {
 	var sql = "SELECT * FROM "+t_name+" WHERE NOT "+param+"=\'"+pval+"\'"
 	DB.fetch(sql, (err, res) => {

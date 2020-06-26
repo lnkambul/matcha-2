@@ -250,6 +250,7 @@ exports.calculateDistance = (user, others, callback) => {
                 let otherLocation = new Promise((resolve, reject) => {
                     let locationObject = {
                         username: others[i].username,
+                        gender: others[i].gender,
                         city: null,
                         country: null,
                         distance : null
@@ -279,6 +280,7 @@ exports.calculateDistance = (user, others, callback) => {
                         `CREATE TABLE IF NOT EXISTS ${user} (` +
                         " `id` int(11) NOT NULL AUTO_INCREMENT," +
                         " `username` varchar(20) NOT NULL," +
+                        " `gender` varchar(20) NOT NULL," +
                         " `distance` int(6)," +
                         " `city` varchar(42)," +
                         " `country` varchar(42)," +
@@ -295,8 +297,8 @@ exports.calculateDistance = (user, others, callback) => {
                     })
                    table.then(locationObject => {
                     Q.fetchone(user, ['id'], 'username', locationObject.username, (err, result) => {
-                        params = ['username', 'distance', 'city', 'country']
-                        vals = [locationObject.username, locationObject.distance, locationObject.city, locationObject.country]
+                        params = ['username', 'gender', 'distance', 'city', 'country']
+                        vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, locationObject.country]
                         if (result && result.length > 0) {
                             Q.update(user, params, vals, 'username', locationObject.username, (err, res) => {
                                 if (err) {

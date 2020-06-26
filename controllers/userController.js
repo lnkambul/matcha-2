@@ -33,7 +33,7 @@ exports.loginForm = (req, res) => {
 exports.list_users = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	var pars = {token: token, users: null, adminToken: adminToken, user: req.session.user, distance: null}
+	var pars = {token: token, users: null, adminToken: adminToken, user: req.session.user, suggestions: null}
 	let selffilter = new Promise ((y, n) => {
 		Q.fetchallnot("profiles", 'username', req.session.user, (err, data) => {
 			if (err) {
@@ -51,6 +51,7 @@ exports.list_users = (req, res) => {
 			res.render('index', pars)
 		}
 		let distcalc = new Promise((resolve, reject) => {
+			console.log("finding matches near you, please wait...")
 			key.calculateDistance(req.session.user, data, (err, result) => {
 				if (err) {
 					console.log(err)
@@ -63,13 +64,14 @@ exports.list_users = (req, res) => {
 		})
 		distcalc.then(outcome => {
 			let listDistances = new Promise ((resolve, reject) => {
-				Q.fetchall(req.session.user, (err, rows) => {
+				orderRow = 'distance'
+				Q.fetchallOB(req.session.user, orderRow, (err, rows) => {
 					if (err) {
 						console.log(err)
 						res.render('index', pars)
 					}
 					else if (rows) {
-						pars.distance = rows
+						pars.suggestions = rows
 						resolve(rows)
 					}
 				})
@@ -81,14 +83,13 @@ exports.list_users = (req, res) => {
 							console.log(err)
 						}
 						else {
-							console.log(result, "rows")
+							console.log(result, "hits!")
 						}
 					})
 				}
 			})
 			listDistances.then( () => {
 				setTimeout(()=> {
-					console.log("rendering")
 					res.render('index', pars)
 				}, 1000)
 			})
@@ -214,7 +215,7 @@ exports.vAdmin =(req, res) => {
 		}
 		else {
 			let promise = new Promise((resolve, reject) => {
-				key.genPlaces(5, (error, success) => {
+				key.genPlaces(50, (error, success) => {
 					if (error) {
 						reject(error)
 					}
