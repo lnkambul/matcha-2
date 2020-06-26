@@ -1,5 +1,11 @@
 <%- include ('partials/header') %>
-<% for (let i in users) {%>
-	<a href='/p/<%=users[i].username%>'><li class="list-group-item"><%=users[i].username%> - <%=users[i].gender%></li></a>
-<%}%>
+<% if (suggestions) { for (let i in suggestions) {%>
+	<a href='/p/<%=users[i].username%>'>
+		<li class="list-group-item">
+			<div><%=suggestions[i].username%> - <%=suggestions[i].gender%></div>
+			<div><%=suggestions[i].city%> ( <%=suggestions[i].distance%> km )</div>
+		</li>
+	</a>
+<%}}%>
 <%- include ('partials/footer') %>
+

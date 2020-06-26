@@ -69,25 +69,45 @@ exports.verifyAdmin = (username, passkey, callback) => {
 }
 
 exports.initTestAccounts = (adminName, count, callback) => {
-    Q.fetchone("users", ['admin'], 'username', adminName, (err, res) => {
-        if (err)
-            callback(err, null)
-        else if (res && res[0].admin) {
+    let verify = new Promise ((resolve, reject) => {
+        Q.fetchone("users", ['admin'], 'username', adminName, (err, res) => {
+            if (err) {
+                callback(err, null)
+            }
+            else {
+                resolve(res)
+            }
+        })
+    })
+    verify.then(res => {
+        if (res && res[0].admin) {
             let promise = new Promise ((res, rej) => {
-                //newUsers = []
+                var i
                 for (i = 0; i < count; i++) {
-                    admod.genUser((fail, succeed)  => {
-                        if (fail) { rej(fail) }
-                        else {
-                            console.log(`user : ${succeed.username}  password : ${succeed.unhash} created`)
-                            //newUsers.push(succeed)
-                        }
-                    })
+                    setTimeout((i) => {
+                        admod.genUser((fail, succeed)  => {
+                            if (fail) { rej(fail) }
+                            else {
+                                console.log(`new user [${i + 1}]: ${succeed.username}  password : ${succeed.unhash} created`)
+                                //res(i)
+                                if (i == count - 1) {
+                                    res(count)
+                                }
+                            }
+                        })
+                    }, (i + 1) * 500, i)
                 }
             })
-            promise.then( () => { 
+            promise.then(count => { 
                 callback(null, `${count} test-accounts created successfully`) 
             }).catch(err => callback(err, null))
         }
-    })
+        else {
+            callback(null, `${adminName} is not an admin`)
+        }
+    }).catch(err => callback(err, null))
+}
+
+exports.sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
 }

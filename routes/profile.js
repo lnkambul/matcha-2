@@ -23,6 +23,10 @@ router.get('/admin', profileController.auth, userController.createAdmin)
 
 router.post('/va', profileController.auth, userController.vAdmin)
 
+router.post('/stat-l', profileController.auth, profileController.likeStatus)
+
+router.post('/stat-b', profileController.auth, profileController.blockStatus)
+
 router.get('/:match', profileController.auth, profileController.matchProfile)
 
 module.exports = router

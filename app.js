@@ -39,6 +39,7 @@ global.user = null
 
 //init admin token
 global.adminToken = null
+global.distance = null
 
 //routes
 let index = require('./routes/index')

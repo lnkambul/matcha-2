@@ -3,7 +3,12 @@ var generateUsername = require ("random-username-generator")
 var generateEmail = require ("random-email")
 var generateSentence = require ("random-sentence")
 var Chance = require ("chance")
-var admod = require ("./adminModel")
+var randomLocation = require ("random-location")
+var https = require ("https")
+var Q = require ("./queryModel")
+var Geo = require ("./geoModel")
+var conn = require ("./connModel")
+const { resolve } = require("path")
 
 
 
@@ -70,18 +75,13 @@ exports.genEmail = (callback) => {
 }
 
 exports.genAge = (callback) => {
-    maxAge = 120
+    maxAge = 50
     minAge = 18
     callback(null, Math.floor(Math.random() * (maxAge - minAge)) + minAge)
 }
 
 exports.genBio = (callback) => {
     callback(null, generateSentence({min: 4, max: 7}))
-}
-
-exports.genPlace = (callback) => {
-    var chance = new Chance
-    callback(null, chance.city())
 }
 
 exports.genName = (callback) => {
@@ -122,4 +122,219 @@ exports.genInterests = (callback) => {
         interests += chance.animal({type: 'pet'}).toLowerCase()
     }
     callback(null, interests)
+}
+
+exports.genPlaces = (rows, callback) => {
+    https.get(`https://data.opendatasoft.com/api/records/1.0/search/?dataset=geonames-all-cities-with-a-population-1000%40public&rows=${rows}&facet=country&refine.country=South+Africa`, (res) => {
+		let data = ''
+		res.on('data', (chunk) => {
+			data += chunk
+		})
+		res.on('end', () => {
+            let parsed = JSON.parse(data)
+            let hits = parsed.nhits
+            let promise = new Promise ((resolve, reject) => {
+                var i
+                for(i = 0; i < hits && i < rows; i++) {
+                    let city = parsed.records[i].fields.name
+                    let country = parsed.records[i].fields.country
+                    let latitude = parsed.records[i].fields.latitude
+                    let longitude = parsed.records[i].fields.longitude
+                    let params = ['latitude', 'longitude', 'city', 'country']
+                    let vals = [latitude, longitude, city, country]
+                    let valid = new Promise((y, n) => {
+                        Q.fetchone("places", ['id'], 'city', city, (err, res) => {
+                            if (err) {
+                                callback("places generator mySQL query error " + err, null)
+                            }
+                            else if (res && res.length > 0) {
+                                n(0)
+                            }
+                            else {
+                                y(1)
+                            }
+                        })
+                    })
+                    valid.then(proceed => {
+                        if (proceed === 1) {
+                            Q.insert("places", params, vals, (err, res) => {
+                                if (err) {
+                                    callback("places table insertion error " + err, null)
+                                }
+                            })
+                        }
+                    }).catch(err => { callback("places table query error " + err, null) })
+                }
+                if (i === rows || i === hits) {
+                    resolve("places loaded")
+                }
+            })
+            promise.then(status => {
+                callback(null, status)
+            }).catch(err => callback(err, null))
+        })
+	}).on("error", (err) => { callback("Geonames API error: " +err, null) })
+}
+
+exports.genPlace = (username, callback) => {
+    let promise = new Promise((res, rej) => {
+        Q.countRows('places',(error, result) => {
+            if (error) {
+                callback(error, null)
+            }
+            else {
+                res(result)
+            }
+        })
+    })
+    promise.then(count => {
+        index = Math.floor(Math.random() * (count)) + 1
+        let params = ['latitude', 'longitude', 'city', 'country']
+        let place = new Promise((found, notfound) => {
+            Q.fetchone("places", params, 'id', index, (err, res) => {
+                if (err) {
+                    callback(err, null)
+                }
+                else if (res && res.length > 0){
+                   found(res)
+                }
+            })
+        })
+        place.then(res => {
+            let city = res[0].city
+            let country = res[0].country
+            let latitude = res[0].latitude
+            let longitude = res[0].longitude
+            let creation = new Promise((y, n) => {
+                Geo.create(username, latitude, longitude, city, country, (err, result) => {
+                    if (err) {
+                        callback(err, null)
+                    }
+                    else {
+                        y(result)
+                    }
+                })
+
+            })
+            creation.then(outcome => {
+                callback(null, outcome)
+            }).catch(err => { callback(err, null) })
+        })
+        
+    })
+}
+
+exports.calculateDistance = (user, others, callback) => {
+    let userLocation = new Promise ((res, rej) => {
+        params = ['latitude', 'longitude', 'city', 'country']
+        Q.fetchone("geolocation", params, 'username', user, (err, result) => {
+            if (err) {
+                callback(err, null)
+            }
+            else if (result && result.length > 0) {
+                const L1 = {
+                    latitude: result[0].latitude,
+                    longitude: result[0].longitude,
+                    //city: result[0].city,
+                    //country: result[0].country
+                }
+                res(L1)
+            }
+        })
+    })
+    userLocation.then(loc => {
+        let distCalc = new Promise((y, n) => {
+            var i
+            for (i = 0; i < others.length; i++) {
+            setTimeout((i) => {
+                let otherLocation = new Promise((resolve, reject) => {
+                    let locationObject = {
+                        username: others[i].username,
+                        gender: others[i].gender,
+                        city: null,
+                        country: null,
+                        distance : null
+                    }
+                    Q.fetchone("geolocation", ['latitude', 'longitude', 'city', 'country'], 'username', others[i].username, (err, result) => {
+                        if (err) {
+                            callback(err, null)
+                        }
+                        else if (result && result.length > 0) {
+                            let L2 = {
+                                latitude: result[0].latitude,
+                                longitude: result[0].longitude,
+                            }
+                            locationObject.city = result[0].city
+                            locationObject.country = result[0].country
+                            locationObject.distance = Math.floor(randomLocation.distance(loc, L2)) / 1000
+                            resolve(locationObject)
+                        }
+                        else {
+                            reject(-1)
+                        }
+                    })
+                })
+                otherLocation.then(locationObject => {
+                    let table = new Promise((resolve, reject) => {
+                        var sql = 
+                        `CREATE TABLE IF NOT EXISTS ${user} (` +
+                        " `id` int(11) NOT NULL AUTO_INCREMENT," +
+                        " `username` varchar(20) NOT NULL," +
+                        " `gender` varchar(20) NOT NULL," +
+                        " `distance` int(6)," +
+                        " `city` varchar(42)," +
+                        " `country` varchar(42)," +
+                        " PRIMARY KEY (`id`)" +
+                        ") ENGINE=InnoDB"
+                        conn.query(sql, (err, res) => {
+                            if (err) {
+                                reject(err)
+                            }
+                            else {
+                                resolve(locationObject)
+                            }
+                        })
+                    })
+                   table.then(locationObject => {
+                    Q.fetchone(user, ['id'], 'username', locationObject.username, (err, result) => {
+                        params = ['username', 'gender', 'distance', 'city', 'country']
+                        vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, locationObject.country]
+                        if (result && result.length > 0) {
+                            Q.update(user, params, vals, 'username', locationObject.username, (err, res) => {
+                                if (err) {
+                                    callback(err, null)
+                                }
+                                else {
+                                    
+                                }
+                            })
+                        }
+                        else {
+                            Q.insert(user, params, vals, (err, res) => {
+                                if (err)
+                                    console.log(err)
+                               else {
+                                   
+                                }
+                            })
+                        }
+                    })
+                    //console.log(Math.floor(others[i].distance/1000), "km away")
+                   }).catch(err => { callback(err, null) })
+                }).catch(err => { callback(err, null) })
+                otherLocation.then( () => {
+                    if (i === others.length - 1) {
+                        y("finished")
+                    }
+                })
+
+            }, (i + 1) * 150, i)
+            }
+        })
+        distCalc.then(result => {
+            setTimeout(() => {
+                callback(null, result)
+            }, 500)
+        }).catch(err => { callback(err, null) })
+    }).catch(err => { callback(err, null) })
 }

@@ -107,27 +107,37 @@ Profile.create = (id, vals, interests, callback) => {
 }
 
 Profile.register = (username, newpassword, p, callback) => {
-	Q.fetchone("users", ['id', 'password'], 'username', username, (err, res) => {
-		if (res.length > 0) {
-			var id = res[0].id
-			S.findHash(newpassword, res[0].password, (err, res) => {
-				if (err)
-					callback('password incorrect', null)
-				else {
-					var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
-					var values = [username, p.age, p.gender, p.sexual_orientation, p.preference, p.interests.join(','), p.locate, p.bio]
+	let promise = new Promise ((resolve, reject) => {
+		Q.fetchone("users", ['id', 'password'], 'username', username, (err, res) => {
+			if (res.length > 0) {
+				resolve(res)
+			}
+			else
+				callback("password error")
+		})
+	})
+	promise.then(res => {
+		var id = res[0].id
+		S.findHash(newpassword, res[0].password, (err, res) => {
+			if (err)
+				callback('password incorrect', null)
+			else {
+				var params = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
+				var values = [username, p.age, p.gender, p.sexual_orientation, p.preference, p.interests.join(','), p.locate, p.bio]
+				var prof = new Promise((y, n) => {
 					Profile.create(id, values, p.interests, (err, result) => {
 						if (err)
 							callback(err)
 						else
-							callback(null, result)
+							y(result)
 					})
-				}
-			})
-		}
-		else
-			callback("password error")
-	})
+				})
+				promise.then(result => {
+					callback(null, result)
+				}).catch(err => console.log(err))
+			}
+		})
+	}).catch(err => console.log(err))
 }
 
 Profile.uploadImage = (user, callback) => {
