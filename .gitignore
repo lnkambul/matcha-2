@@ -4,3 +4,4 @@ public/uploads/
 config/config.js
 config/emailconfig.js
 *.txt
+models/emailModel.js
