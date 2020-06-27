@@ -75,7 +75,7 @@ Browse.visit = (user, match, callback) => {
 Browse.suspend = (user, admin, callback) => {
 	var params = ['suspended']
 	let promise = new Promise ((resolve, reject) => {
-		Q.fetchone("users", params, 'username', user, (err, res) =>{
+		Q.fetchone("profiles", params, 'username', user, (err, res) =>{
 			if (res && res.length > 0) {
 				var val = (res[0].suspended) ? 0 : 1
 				resolve(val)
@@ -85,7 +85,7 @@ Browse.suspend = (user, admin, callback) => {
 		})
 	})
 	promise.then(val => {
-		Q.update("users", params, val, 'username', user, (err,res) => {
+		Q.update("profiles", params, val, 'username', user, (err,res) => {
 			if (err) {
 				console.log(err)
 				callback(JSON.stringify({error: err}), null)

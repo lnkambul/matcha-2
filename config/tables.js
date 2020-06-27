@@ -12,7 +12,6 @@ var tables = {
 		" `pro_pic` varchar(250)," +
 		" `verified` int(2) NOT NULL DEFAULT 0," +
 		" `admin` int (1) NOT NULL DEFAULT 0," +
-		" `suspended` int (1) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
@@ -28,6 +27,7 @@ var tables = {
 		" `location` varchar(42) NOT NULL," +
 		" `bio` varchar(140)," +
 		" `popularity` int (2) NOT NULL DEFAULT 0," +
+		" `suspended` int (1) NOT NULL DEFAULT 0," +
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),

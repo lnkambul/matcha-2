@@ -33,9 +33,11 @@ exports.loginForm = (req, res) => {
 exports.list_users = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	var pars = {token: token, users: null, adminToken: adminToken, user: req.session.user, suggestions: null}
-	let selffilter = new Promise ((y, n) => {
-		Q.fetchallnot("profiles", 'username', req.session.user, (err, data) => {
+	var pars = {token: token, adminToken: adminToken, user: req.session.user, suggestions: null}
+	let filter = new Promise ((y, n) => {
+		params = ['username']
+		pvals = [req.session.user]
+		Q.fetchall("profiles", (err, data) => {
 			if (err) {
 				console.log(err)
 			}
@@ -43,62 +45,79 @@ exports.list_users = (req, res) => {
 				y(data)
 		})
 	})
-	selffilter.then(data => {
+	filter.then(data => {
 		if (data.length > 0) {
-			pars.users = data
-		}
-		else {
-			res.render('index', pars)
-		}
-		let distcalc = new Promise((resolve, reject) => {
-			console.log("finding matches near you, please wait...")
-			key.calculateDistance(req.session.user, data, (err, result) => {
-				if (err) {
-					console.log(err)
-					res.render('index', pars)
-				}
-				else if (result) {
-					resolve(result)
-				}
-			})
-		})
-		distcalc.then(outcome => {
-			let listDistances = new Promise ((resolve, reject) => {
-				orderRow = 'distance'
-				Q.fetchallOB(req.session.user, orderRow, (err, rows) => {
+			let distcalc = new Promise((resolve, reject) => {
+				key.calculateDistance(req.session.user, data, (err, result) => {
 					if (err) {
 						console.log(err)
 						res.render('index', pars)
 					}
-					else if (rows) {
-						pars.suggestions = rows
-						resolve(rows)
+					else if (result) {
+						resolve(result)
 					}
 				})
 			})
-			listDistances.then(rows => {
-				if (rows.length > 0) {
-					Q.countRows(req.session.user, (err, result) => {
+			distcalc.then(outcome => {
+				let listDistances = new Promise ((resolve, reject) => {
+					let orderRow = 'distance'
+					Q.fetchallOB(req.session.user, orderRow, (err, rows) => {
 						if (err) {
 							console.log(err)
+							res.render('index', pars)
 						}
-						else {
-							console.log(result, "hits!")
+						else if (rows) {
+							pars.suggestions = rows
+							resolve(rows)
 						}
 					})
-				}
+				})
+				listDistances.then(rows => {
+					if (rows.length > 0) {
+						Q.countRows(req.session.user, (err, result) => {
+							if (err) {
+								console.log(err)
+							}
+							else {
+							}
+						})
+					}
+				})
+			}).catch(err => {
+				throw(err)
 			})
-			listDistances.then( () => {
-				setTimeout(()=> {
+		}
+		else {
+			res.render('index', pars)
+		}
+		Q.tableExists(req.session.user, (err, result) => {
+			if (err) {
+				console.log("tableExists error : ", err)
+			}
+			else if (result === 1){
+				let cached = new Promise((resolve, reject) => {
+					let orderRow = 'distance'
+					Q.fetchallOB(req.session.user, orderRow, (error, rows) => {
+						if (error) {
+							console.log(error)
+							res.render('index', pars)
+						}
+						else if (rows) {
+							pars.suggestions = rows
+							resolve(rows)
+						}
+					})
+				})
+				cached.then(rows => {
 					res.render('index', pars)
-				}, 1000)
-			})
-			console.log("distance calculation ", outcome)
-		}).catch(err => {
-			throw(err)
+				}).catch(err => {console.log(err)})
+			}
+			else {
+				res.render('index', pars)
+			}
 		})
+		
 	})
-	
 }
 
 exports.formSignup = (req, res) => {
