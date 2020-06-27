@@ -35,8 +35,6 @@ exports.list_users = (req, res) => {
 	var adminToken = req.session.adminToken
 	var pars = {token: token, adminToken: adminToken, user: req.session.user, suggestions: null}
 	let filter = new Promise ((y, n) => {
-		params = ['username']
-		pvals = [req.session.user]
 		Q.fetchall("profiles", (err, data) => {
 			if (err) {
 				console.log(err)
@@ -60,8 +58,7 @@ exports.list_users = (req, res) => {
 			})
 			distcalc.then(outcome => {
 				let listDistances = new Promise ((resolve, reject) => {
-					let orderRow = 'distance'
-					Q.fetchallOB(req.session.user, orderRow, (err, rows) => {
+					Q.fetchall(req.session.user, (err, rows) => {
 						if (err) {
 							console.log(err)
 							res.render('index', pars)
@@ -96,8 +93,8 @@ exports.list_users = (req, res) => {
 			}
 			else if (result === 1){
 				let cached = new Promise((resolve, reject) => {
-					let orderRow = 'distance'
-					Q.fetchallOB(req.session.user, orderRow, (error, rows) => {
+					let orderCol = 'distance, popularity DESC'
+					Q.fetchallOB(req.session.user, orderCol, (error, rows) => {
 						if (error) {
 							console.log(error)
 							res.render('index', pars)

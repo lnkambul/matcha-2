@@ -57,8 +57,9 @@ query.fetchallOB = (t_name, orderBy, callback) => {
 	DB.fetch(sql, (err, res) => {
 		if (err)
 			callback(err, null)
-		else
+		else {
 			callback(null, res)
+		}
 	})
 }
 

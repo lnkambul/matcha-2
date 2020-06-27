@@ -256,7 +256,8 @@ exports.calculateDistance = (user, others, callback) => {
                         distance : null,
                         blocked : 0,
                         suspended : parseInt(others[i].suspended),
-                        suitable : null
+                        suitable : null,
+                        popularity : others[i].popularity
                     }
                     Q.fetchone("geolocation", ['latitude', 'longitude', 'city', 'country'], 'username', others[i].username, (err, result) => {
                         if (err) {
@@ -319,6 +320,8 @@ exports.calculateDistance = (user, others, callback) => {
                         " `blocked` int(1) NOT NULL," +
                         " `suspended` int(1) NOT NULL," +
                         " `suitable` int(1) NOT NULL," +
+                        " `popularity` int(2) NOT NULL," +
+                        " `shared-interests` int(3) NOT NULL DEFAULT 0," +
                         " PRIMARY KEY (`id`)" +
                         ") ENGINE=InnoDB"
                         conn.query(sql, (err, res) => {
@@ -332,8 +335,9 @@ exports.calculateDistance = (user, others, callback) => {
                     })
                    table.then(locationObject => {
                     Q.fetchone(user, ['id'], 'username', locationObject.username, (err, result) => {
-                        params = ['username', 'gender', 'distance', 'city', 'country', 'blocked', 'suspended', 'suitable']
-                        vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, locationObject.country, locationObject.blocked, locationObject.suspended, locationObject.suitable]
+                        params = ['username', 'gender', 'distance', 'city', 'country', 'blocked', 'suspended', 'suitable', 'popularity']
+                        vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, 
+                            locationObject.country, locationObject.blocked, locationObject.suspended, locationObject.suitable, locationObject.popularity]
                         if (result && result.length > 0) {
                             Q.update(user, params, vals, 'username', locationObject.username, (err, res) => {
                                 if (err) {
