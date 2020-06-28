@@ -139,9 +139,8 @@ exports.blockStatus = (req, res) => {
 	let promise = new Promise ((resolve, reject) => {
 		if (req.session.adminToken) {
 			adminController.auth(req, res, () => {
-				Q.fetchone("users", ['suspended'], 'username', req.body.status, (error, response) =>{
+				Q.fetchone("profiles", ['suspended'], 'username', req.body.status, (error, response) =>{
 					if (response && response.length > 0) {
-						console.log('suspension status obtained')
 						var val = (response[0].suspended) ? 3 : 4
 						resolve(val)
 					} 

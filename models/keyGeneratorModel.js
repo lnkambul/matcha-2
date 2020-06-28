@@ -8,7 +8,8 @@ var https = require ("https")
 var Q = require ("./queryModel")
 var Geo = require ("./geoModel")
 var conn = require ("./connModel")
-const { resolve } = require("path")
+//const { resolve } = require("path")
+var B = require ("./browseModel")
 
 
 
@@ -235,8 +236,7 @@ exports.calculateDistance = (user, others, callback) => {
                 const L1 = {
                     latitude: result[0].latitude,
                     longitude: result[0].longitude,
-                    //city: result[0].city,
-                    //country: result[0].country
+                    preference: others[0].preference
                 }
                 res(L1)
             }
@@ -245,7 +245,7 @@ exports.calculateDistance = (user, others, callback) => {
     userLocation.then(loc => {
         let distCalc = new Promise((y, n) => {
             var i
-            for (i = 0; i < others.length; i++) {
+            for (i = 1; i < others.length; i++) {
             setTimeout((i) => {
                 let otherLocation = new Promise((resolve, reject) => {
                     let locationObject = {
@@ -253,7 +253,11 @@ exports.calculateDistance = (user, others, callback) => {
                         gender: others[i].gender,
                         city: null,
                         country: null,
-                        distance : null
+                        distance : null,
+                        blocked : 0,
+                        suspended : parseInt(others[i].suspended),
+                        suitable : null,
+                        popularity : others[i].popularity
                     }
                     Q.fetchone("geolocation", ['latitude', 'longitude', 'city', 'country'], 'username', others[i].username, (err, result) => {
                         if (err) {
@@ -267,7 +271,36 @@ exports.calculateDistance = (user, others, callback) => {
                             locationObject.city = result[0].city
                             locationObject.country = result[0].country
                             locationObject.distance = Math.floor(randomLocation.distance(loc, L2)) / 1000
-                            resolve(locationObject)
+                            let blockedStatus = new Promise((res, rej) => {
+                                let table = 'blocked'
+			                    let params = ['blocker', 'username']
+			                    B.checkstat(user, locationObject.username, table, params, (err, result) => {
+                                    if (err) {
+                                        console.log("blocked status check error : ", err)
+                                    }
+                                    else {
+                                        let suitability = new Promise ((win, lose) => {
+                                            if ((loc.preference === "men" && others[i].gender === "male") ||
+                                                    (loc.preference === "women" && others[i].gender === "female") || 
+                                                        loc.preference === "both") {
+                                                locationObject.suitable = 1
+                                                win(locationObject)
+                                            }
+                                            else {
+                                                locationObject.suitable = 0
+                                                win(locationObject)
+                                            }
+                                        })
+                                        suitability.then(locationObject => {
+                                            locationObject.blocked = JSON.parse(result).status
+                                            res(locationObject)
+                                        }).catch(err => { callback(err, null) })
+                                    }
+                                })
+                            })
+                            blockedStatus.then(locationObject=> {
+                                resolve(locationObject)
+                            }).catch(err => callback(err, null))
                         }
                         else {
                             reject(-1)
@@ -284,6 +317,11 @@ exports.calculateDistance = (user, others, callback) => {
                         " `distance` int(6)," +
                         " `city` varchar(42)," +
                         " `country` varchar(42)," +
+                        " `blocked` int(1) NOT NULL," +
+                        " `suspended` int(1) NOT NULL," +
+                        " `suitable` int(1) NOT NULL," +
+                        " `popularity` int(2) NOT NULL," +
+                        " `shared-interests` int(3) NOT NULL DEFAULT 0," +
                         " PRIMARY KEY (`id`)" +
                         ") ENGINE=InnoDB"
                         conn.query(sql, (err, res) => {
@@ -297,8 +335,9 @@ exports.calculateDistance = (user, others, callback) => {
                     })
                    table.then(locationObject => {
                     Q.fetchone(user, ['id'], 'username', locationObject.username, (err, result) => {
-                        params = ['username', 'gender', 'distance', 'city', 'country']
-                        vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, locationObject.country]
+                        params = ['username', 'gender', 'distance', 'city', 'country', 'blocked', 'suspended', 'suitable', 'popularity']
+                        vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, 
+                            locationObject.country, locationObject.blocked, locationObject.suspended, locationObject.suitable, locationObject.popularity]
                         if (result && result.length > 0) {
                             Q.update(user, params, vals, 'username', locationObject.username, (err, res) => {
                                 if (err) {
@@ -319,7 +358,6 @@ exports.calculateDistance = (user, others, callback) => {
                             })
                         }
                     })
-                    //console.log(Math.floor(others[i].distance/1000), "km away")
                    }).catch(err => { callback(err, null) })
                 }).catch(err => { callback(err, null) })
                 otherLocation.then( () => {
@@ -328,13 +366,13 @@ exports.calculateDistance = (user, others, callback) => {
                     }
                 })
 
-            }, (i + 1) * 150, i)
+            }, (i + 1) * 10, i)
             }
         })
         distCalc.then(result => {
             setTimeout(() => {
                 callback(null, result)
-            }, 500)
+            }, 10)
         }).catch(err => { callback(err, null) })
     }).catch(err => { callback(err, null) })
 }

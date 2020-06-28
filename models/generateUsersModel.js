@@ -91,11 +91,13 @@ exports.initTestAccounts = (adminName, count, callback) => {
                                 console.log(`new user [${i + 1}]: ${succeed.username}  password : ${succeed.unhash} created`)
                                 //res(i)
                                 if (i == count - 1) {
-                                    res(count)
+                                    setTimeout(() =>{
+                                        res(count)
+                                    }, 10)
                                 }
                             }
                         })
-                    }, (i + 1) * 500, i)
+                    }, (i + 1) * 50, i)
                 }
             })
             promise.then(count => { 

@@ -57,8 +57,9 @@ query.fetchallOB = (t_name, orderBy, callback) => {
 	DB.fetch(sql, (err, res) => {
 		if (err)
 			callback(err, null)
-		else
+		else {
 			callback(null, res)
+		}
 	})
 }
 
@@ -69,6 +70,24 @@ query.fetchallnot = (t_name, param, pval, callback) => {
 			callback(err, null)
 		else
 			callback(null, res)
+	})
+}
+
+query.fetchallnotMCols = (t_name, params, pvals, callback) => {
+	var sql = "SELECT * FROM "+t_name+" WHERE NOT "
+	var chunk = ""
+	for(i = 0; i < params.length; i++) {
+		chunk += params[i]+"=\'"+pvals[i]+"\'"
+		if (i + 1 < params.length)
+			chunk += " AND NOT "
+	}
+	sql += chunk
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
 	})
 }
 
@@ -90,6 +109,20 @@ query.fetchone = (t_name, val, params, pval, callback) => {
 			callback(err, null)
 		else {
 			callback(null, res)
+		}
+	})
+}
+
+query.tableExists = (t_name, callback) => {
+	var sql =	"SELECT COUNT(*) as total FROM information_schema.tables" +
+				" WHERE table_schema = 'matcha_db'" +
+				` AND table_name = '${t_name}'`
+	DB.fetch(sql, (err, res) => {
+		if (err) {
+			callback(err, null)
+		}
+		else {
+			callback(null, res[0].total)
 		}
 	})
 }
