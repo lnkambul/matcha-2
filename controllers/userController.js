@@ -93,7 +93,7 @@ exports.list_users = (req, res) => {
 			}
 			else if (result === 1){
 				let cached = new Promise((resolve, reject) => {
-					let orderCol = 'distance, popularity DESC'
+					let orderCol = 'distance, sharedInterestsCount DESC, popularity DESC'
 					Q.fetchallOB(req.session.user, orderCol, (error, rows) => {
 						if (error) {
 							console.log(error)
@@ -231,7 +231,7 @@ exports.vAdmin =(req, res) => {
 		}
 		else {
 			let promise = new Promise((resolve, reject) => {
-				key.genPlaces(50, (error, success) => {
+				key.genPlaces(25, (error, success) => {
 					if (error) {
 						reject(error)
 					}

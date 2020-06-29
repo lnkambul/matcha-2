@@ -9,7 +9,7 @@ exports.parseForm = (form, callback) => {
         if (count > 0 && count <= 500)
             callback(null, count)
         else
-            callback(`requested test accounts ${count} out of allowed range`, null)
+            callback(`requested test accounts: ${count}, out of allowed range`, null)
     }
     else
         callback(`invalid request for ${count} test accounts`, null)
@@ -55,10 +55,11 @@ exports.genUser = (callback) => {
                 unhash : `${passes[0]}`,
                 age : "",
                 gender : "",
-                orientation : "",
+                //orientation : "",
                 preference : "",
                 interests : "",
-                location : "",
+                city : "",
+                country: "",
                 bio : ""
             }
             let name = new Promise ((resolve, reject) => {
@@ -72,25 +73,45 @@ exports.genUser = (callback) => {
                 })
             })
             name.then(promised => {
-            gen.genPlace(promised, (err, locate) => { if (err) { rej(err) } else { user.location = locate } })
-
+                gen.genPlace(promised, (err, location) => { 
+                    if (err) { rej(err) } 
+                    else { 
+                        user.city = location.city
+                        user.country = location.country 
+                    } 
+                })
             })
             gen.genName((err, fname) => { if (err) { rej(err) } else { user.firstName = fname } })
             gen.genName((err, lname) => { if (err) { rej(err) } else { user.lastName = lname } })
             gen.genEmail((err, mail) => { if(err) { rej(err) } else { user.email = mail } })
             gen.genAge((err, old) => { if (err) { rej(err) } else { user.age = old } })
             gen.genSex((err, sex) => { if (err) { rej(err) } else { user.gender = sex } })
-            gen.genOrientation((err, type) => { if (err) { rej(err) } else { user.orientation = type } })
+            //gen.genOrientation((err, type) => { if (err) { rej(err) } else { user.orientation = type } })
             gen.genPreference((err, pref) => { if (err) { rej(err) } else { user.preference = pref } })
             gen.genInterests((err, inter) => { if (err) { rej(err) } else { user.interests = inter } })
             gen.genBio((err, b) => { if (err) { rej(err) } else { user.bio = b } })
             res(user)
         })
         promise.then(user => {
+            if ((user.gender === 'male' && user.preference === 'women') ||
+                    (user.gender === 'female' && user.preference === 'men')) {
+                user.orientation = 'straight'
+            }
+            else if (user.gender === "male" && user.preference === 'men'){
+                user.orientation = 'gay'
+            }
+            else if (user.gender === 'female' && user.preference === 'women') {
+                user.orientation = 'lesbian'
+            }
+            else {
+                user.orientation = 'bisexual'
+            }
+        })
+        promise.then(user => {
         var uParams = ['username', 'first_name', 'last_name', 'email', 'password', 'verified']
         var uVals = [user.username, user.firstName, user.lastName, user.email, user.password, 2]
-        var pParams = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio']
-        var pVals = [user.username, user.age, user.gender, user.orientation, user.preference, user.interests, user.location, user.bio]
+        var pParams = ['username', 'age', 'gender', 'orientation', 'preference', 'interests', 'city', 'country', 'bio']
+        var pVals = [user.username, user.age, user.gender, user.orientation, user.preference, user.interests, user.city, user.country, user.bio]
         Q.insert("users", uParams, uVals, (err, res) => { if (err) { throw(err) } else { /*console.log(res)*/ } })
         Q.insert("profiles", pParams, pVals, (err, res) => { if (err) { throw(err) } else { /*console.log(res)*/ } })
         Q.fetchone("users", "id", 'username', user.username, (err, res) => {

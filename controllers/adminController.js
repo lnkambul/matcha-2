@@ -39,6 +39,7 @@ exports.processForm = (req, res) => {
                 res.redirect('/')
             }
             else {
+                res.redirect('/')
                 resolve(resolution)
             }
         })
@@ -48,7 +49,6 @@ exports.processForm = (req, res) => {
             gum.initTestAccounts(req.session.user, count, (err, result) => {
                 if (err) {
                     console.log(err)
-                    res.redirect('/')
                 }
                 else {
                     resolve(result)
@@ -57,14 +57,14 @@ exports.processForm = (req, res) => {
         })
         accounts.then(result => {
             console.log(result)
-            res.redirect('/')
+            //res.redirect('/')
         }).catch( err => {
             console.log(err.message)
-            res.redirect('/')
+            //res.redirect('/')
         })
     }).catch( err => {
         console.log(err.message)
-        res.redirect('/')
+        //res.redirect('/')
     })
     //res.redirect('/')
 }

@@ -1,28 +1,17 @@
 <%- include ('partials/header') %>
 <form action="/p" method="post">
 	<label for="age">age</label><br>
-	<input type="text" id="age" name="age" value="<%= age %>"><br>		
+	<input type="text" id="age" name="age" required value="<%= age %>"><br><br>		
 	
-	<label for="gender">gender:</label>
+	<label for="gender">gender:</label><br>
 	<input type="radio" id="male" name="gender" value="male" 
 	<%if(gender=="male"){%>checked<%}%>>
 	<label for="male">male</label>
 	<input type="radio" id="female" name="gender" value="female" 
 	<%if(gender=="female"){%>checked<%}%>>
-	<label for="female">female</label><br>
+	<label for="female">female</label><br><br>
 	
-	<label for="sexual_orientation">sexual orientation:</label>
-	<input type="radio" id="heterosexual" name="sexual_orientation" value="heterosexual"
-	<%if(orientation=="heterosexual"){%>checked<%}%>>
-	<label for="heterosexual">heterosexual</label>
-	<input type="radio" id="homosexual" name="sexual_orientation" value="homosexual"
-	<%if(orientation=="homosexual"){%>checked<%}%>>
-	<label for="homosexual">homosexual</label>
-	<input type="radio" id="bisexual" name="sexual_orientation" value="bisexual"
-	<%if(orientation=="bisexual"){%>checked<%}%>>
-	<label for="bisexual">bisexual</label><br>
-	
-	<label for="preference">preference:</label>
+	<label for="preference">preference:</label><br>
 	<input type="radio" id="men" name="preference" value="men"
 	<%if(preference=="men"){%>checked<%}%>>
 	<label for="men">men</label>
@@ -31,19 +20,22 @@
 	<label for="women">women</label>
 	<input type="radio" id="both" name="preference" value="both"
 	<%if(preference=="both"){%>checked<%}%>>
-	<label for="both">both</label><br>
+	<label for="both">both</label><br><br>
 
 	<label for="interests">interests</label><br>
-	<input type="text" id="interests" name="interests" value="<%= interests%>"><br>		
+	<input type="text" id="interests" name="interests" required value="<%= interests%>"><br><br>		
 
-	<label for="locate">location</label><br>
-	<input type="text" id="locate" name="locate" value="<%= locate%>"><br>		
-
+	<label for="city">city</label><br>
+	<input type="text" id="city" name="city" maxlength="42" required value="<%= city%>"><br>		
+	
+	<label for="country">country</label><br>
+	<input type="text" id="country" name="country" maxlength="42" required value="<%= country%>"><br><br>		
+	
 	<label for="bio">bio</label><br>
-	<textarea id="bio" name="bio" rows="4" cols="23"><%= bio%></textarea><br>
+	<textarea id="bio" name="bio" rows="4" cols="23"><%= bio%></textarea><br><br>
 
 	<label for="password">password</label><br>
-	<input type="password" id="password" name="password"><br>
+	<input type="password" id="password" name="password" required><br>
 	<br>
 	<input type="submit" value="submit">
 </form><br>

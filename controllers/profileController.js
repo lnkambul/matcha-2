@@ -1,6 +1,6 @@
 const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
-const params = ['age', 'gender', 'orientation', 'preference', 'interests', 'location', 'bio', 'popularity']
+const params = ['age', 'gender', /*'orientation',*/ 'preference', 'interests', 'city', 'country', 'bio', 'popularity']
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
 const http = require('http')
@@ -10,7 +10,6 @@ const adminController = require ('./adminController')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
-	var adminToken = req.session.adminToken
 	if (!token)
 		res.redirect('/login')
 	else {
@@ -48,10 +47,11 @@ exports.formProfile = (req, res) => {
 				token: token,
 				age: p.age,
 				gender: p.gender,
-				orientation: p.orientation,
+				//orientation: p.orientation,
 				preference: p.preference,
 				interests: p.interests,
-				locate: p.location,
+				city: p.city,
+				country: p.country,
 				bio: p.bio,
 				adminToken: adminToken,
 				user: req.session.user
@@ -183,8 +183,9 @@ exports.registerProfile = (req, res) => {
 		if (result && result.length > 0) {
 			var newProfile = new Profile(result[0].username, req.body)
 			Profile.validate(newProfile, (err, success) => {
-				if (err)
+				if (err) {
 					console.log("error ", err)
+				}
 				else {
 					Profile.register(result[0].username, req.body.password, newProfile, (err, success) => {
 						if (err)
