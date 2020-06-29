@@ -18,7 +18,7 @@ var Profile = function(username, profile) {
 
 //validate inputs
 Profile.validate = (profile, callback)  => {
-	var e = {age: null, gender: null, sexual_orientation: null, preference: null, interests: null, city: null, country: null, bio: null}
+	var e = {age: null, gender: null, /*sexual_orientation: null,*/ preference: null, interests: null, city: null, country: null, bio: null}
 	S.strage(profile.age, (err, res) => {e.age = err})
 	S.radio('gender', profile.gender, ['male', 'female'], (err, res) => {e.gender = err})
 	//S.radio('sexual_orientation', profile.sexual_orientation, ['heterosexual', 'homosexual', 'bisexual'], (err, res) => {e.sexual_orientation = err})
