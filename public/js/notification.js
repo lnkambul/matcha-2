@@ -1,4 +1,4 @@
-var socket = io()
+var socket = io($('#user').val())
 $('form').submit(function(e){
 	e.preventDefault()
 	socket.emit('chat message', $('#m').val())
