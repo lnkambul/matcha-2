@@ -24,13 +24,13 @@ exports.create = (username, latitude, longitude, city, country, callback) => {
 							callback(err, null)
 				}
 				else {
-					Q.update("profiles", ['location'], city, 'username', username, (err, res) => {
+					let vals = [city, country]
+					Q.update("profiles", ['city', 'country'], vals, 'username', username, (err, res) => {
 						if (err) {
 							console.log('location update : ', err)
 							callback(err, null)
 						} else {
-							console.log(`location updated`)
-							callback(null, "success")
+							callback(null, "location updated")
 						}
 					})
 				}
@@ -40,12 +40,13 @@ exports.create = (username, latitude, longitude, city, country, callback) => {
 		 		if (err)
 					 console.log(err)
 				else {
-					Q.update("profiles", ['location'], city, 'username', username, (err, res) => {
+					let vals = [city, country]
+					Q.update("profiles", ['city', 'country'], vals, 'username', username, (err, res) => {
 						if (err) {
 							callback(err, null)
 						}
 						else {
-							callback(null, "success")
+							callback(null, "location updated")
 						}
 					})
 				}

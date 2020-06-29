@@ -24,7 +24,8 @@ var tables = {
 		" `orientation` varchar(25) NOT NULL," +
 		" `preference` varchar(25) NOT NULL," +
 		" `interests` varchar(140) NOT NULL," +
-		" `location` varchar(42) NOT NULL," +
+		" `city` varchar(42) NOT NULL," +
+		" `country` varchar(42) NOT NULL," +
 		" `bio` varchar(140)," +
 		" `popularity` int (2) NOT NULL DEFAULT 0," +
 		" `suspended` int (1) NOT NULL DEFAULT 0," +

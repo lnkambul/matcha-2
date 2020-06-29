@@ -73,8 +73,8 @@ Secure.radio = (param, radio, vals, callback) => {
 Secure.locate = (str, callback) => {
 	if (str.length < 3 || str.length > 12)
 		callback("please enter valid location")
-	else if (!str.match(/^[a-zA-Z0-9_]+$/))
-		callback("location may only contain alphabets, numbers & an underscore")
+	else if (!str.match(/^[a-zA-Z-]+$/))
+		callback("location may only contain alphabets & a dash")
 	else
 		callback(null, str)
 

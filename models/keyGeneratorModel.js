@@ -202,17 +202,19 @@ exports.genPlace = (username, callback) => {
             })
         })
         place.then(res => {
-            let city = res[0].city
-            let country = res[0].country
-            let latitude = res[0].latitude
-            let longitude = res[0].longitude
+            let location = {
+            city : res[0].city,
+            country : res[0].country,
+            latitude : res[0].latitude,
+            longitude : res[0].longitude
+            }
             let creation = new Promise((y, n) => {
-                Geo.create(username, latitude, longitude, city, country, (err, result) => {
+                Geo.create(username, location.latitude, location.longitude, location.city, location.country, (err, result) => {
                     if (err) {
                         callback(err, null)
                     }
                     else {
-                        y(result)
+                        y(location)
                     }
                 })
 
@@ -236,7 +238,9 @@ exports.calculateDistance = (user, others, callback) => {
                 const L1 = {
                     latitude: result[0].latitude,
                     longitude: result[0].longitude,
-                    preference: others[0].preference
+                    gender: others[0].gender,
+                    orientation: others[0].orientation,
+                    interests: others[0].interests.split(',')
                 }
                 res(L1)
             }
@@ -251,6 +255,10 @@ exports.calculateDistance = (user, others, callback) => {
                     let locationObject = {
                         username: others[i].username,
                         gender: others[i].gender,
+                        orientation: others[i].orientation,
+                        interests: others[i].interests.split(','),
+                        commonInterestsCount: 0,
+                        //commonInterests: [],
                         city: null,
                         country: null,
                         distance : null,
@@ -280,11 +288,25 @@ exports.calculateDistance = (user, others, callback) => {
                                     }
                                     else {
                                         let suitability = new Promise ((win, lose) => {
-                                            if ((loc.preference === "men" && others[i].gender === "male") ||
-                                                    (loc.preference === "women" && others[i].gender === "female") || 
-                                                        loc.preference === "both") {
+                                            if ((loc.orientation === 'bisexual') ||
+                                                    (loc.orientation === 'gay' && others[i].orientation === 'gay') ||
+                                                        (loc.orientation === 'lesbian' && others[i].orientation === 'lesbian') || 
+                                                            (loc.orientation === 'straight' && loc.gender === 'male' && others[i].gender === 'female' && (others[i].orientation === 'straight' || others[i].orientation === 'bisexual')) ||
+                                                                (loc.orientation === 'straight' && loc.gender === 'female' && others[i].gender === 'male' && (others[i].orientation === 'straight' || others[i].orientation === 'bisexual'))) {
                                                 locationObject.suitable = 1
-                                                win(locationObject)
+                                                let common = new Promise((w, l) => {
+                                                    for(let j in loc.interests) {  
+                                                        if(locationObject.interests.indexOf(loc.interests[j]) > -1){
+                                                            locationObject.commonInterestsCount++
+                                                            //locationObject.commonInterests.push(loc.interests[j])
+                                                            //console.log(loc.interests[j])
+                                                        }
+                                                    }
+                                                    w(locationObject)
+                                                })
+                                                common.then(locationObject => {
+                                                    win(locationObject)
+                                                })
                                             }
                                             else {
                                                 locationObject.suitable = 0
@@ -298,7 +320,7 @@ exports.calculateDistance = (user, others, callback) => {
                                     }
                                 })
                             })
-                            blockedStatus.then(locationObject=> {
+                            blockedStatus.then(locationObject => {
                                 resolve(locationObject)
                             }).catch(err => callback(err, null))
                         }
@@ -321,7 +343,8 @@ exports.calculateDistance = (user, others, callback) => {
                         " `suspended` int(1) NOT NULL," +
                         " `suitable` int(1) NOT NULL," +
                         " `popularity` int(2) NOT NULL," +
-                        " `shared-interests` int(3) NOT NULL DEFAULT 0," +
+                        " `sharedInterestsCount` int(3) NOT NULL," +
+                        //" `sharedInterests` varchar(140)," +
                         " PRIMARY KEY (`id`)" +
                         ") ENGINE=InnoDB"
                         conn.query(sql, (err, res) => {
@@ -335,9 +358,10 @@ exports.calculateDistance = (user, others, callback) => {
                     })
                    table.then(locationObject => {
                     Q.fetchone(user, ['id'], 'username', locationObject.username, (err, result) => {
-                        params = ['username', 'gender', 'distance', 'city', 'country', 'blocked', 'suspended', 'suitable', 'popularity']
+                        params = ['username', 'gender', 'distance', 'city', 'country', 'blocked', 'suspended', 'suitable', 'popularity', 'sharedInterestsCount'/*, 'sharedInterests'*/]
                         vals = [locationObject.username, locationObject.gender, locationObject.distance, locationObject.city, 
-                            locationObject.country, locationObject.blocked, locationObject.suspended, locationObject.suitable, locationObject.popularity]
+                            locationObject.country, locationObject.blocked, locationObject.suspended, locationObject.suitable, 
+                            locationObject.popularity, locationObject.commonInterestsCount]
                         if (result && result.length > 0) {
                             Q.update(user, params, vals, 'username', locationObject.username, (err, res) => {
                                 if (err) {
