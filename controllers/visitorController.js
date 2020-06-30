@@ -16,7 +16,7 @@ exports.listVisitors = (req, res) => {
 			 visitors: visitors,
 			 adminToken: adminToken,
 			 user: req.session.user,
-			 soc: req.session.soc
+			 receiver: 'james'
 		})
 	})
 }

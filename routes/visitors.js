@@ -6,6 +6,6 @@ const socketController = require('../controllers/socketController')
 
 router.get('/', profileController.auth, socketController.notif, visitorController.listVisitors)
 
-router.get('/likes', profileController.auth, visitorController.listLikes)
+router.get('/likes', profileController.auth, socketController.like, visitorController.listLikes)
 
 module.exports = router

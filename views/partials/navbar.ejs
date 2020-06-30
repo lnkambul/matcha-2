@@ -9,7 +9,9 @@
     <div class="navbar-nav">
 	 	<% if (token) { %>
       	<a class="nav-item nav-link" href="/p/u">profile (<%=user%>)</a>
-      	<a class="nav-item nav-link" href="/visitors">visitors</a>
+      	<a class="nav-item nav-link" href="/visitors">visitors
+				<span class="v" id="<%=user%>"></span>
+      	</a>
       	<a class="nav-item nav-link" href="/visitors/likes">likes</a>
         <!-- admin -->
           <% if (adminToken) { %>
@@ -23,4 +25,7 @@
 		<% } %>
     </div>
   </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="/js/test.js"></script>
 </nav>
