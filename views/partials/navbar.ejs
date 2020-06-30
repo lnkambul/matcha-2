@@ -5,20 +5,28 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 
+  <form action="">
+  		<input type="hidden" id="user" value="<%=user%>">
+  </form>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
 	 	<% if (token) { %>
       	<a class="nav-item nav-link" href="/p/u">profile (<%=user%>)</a>
-      	<a class="nav-item nav-link" href="/visitors">visitors
-				<span class="v" id="<%=user%>"></span>
+      	<a class="nav-item nav-link" href="/chat">chat
+				<span class="dm" id="<%=user%>"></span>
       	</a>
-      	<a class="nav-item nav-link" href="/visitors/likes">likes</a>
+      	<a class="nav-item nav-link" href="/visitors">visitors
+				<span class="visited" id="<%=user%>"></span>
+      	</a>
+      	<a class="nav-item nav-link" href="/visitors/likes">likes
+				<span class="liked" id="<%=user%>"></span>
+      	</a>
         <!-- admin -->
           <% if (adminToken) { %>
             <a class="nav-item nav-link" href="/admin">admin</a>
           <%} %>
         <!-- eoc -->
-        <a class="nav-item nav-link" href="/logout">logout</a>
+        <a class="nav-item nav-link" href="/logout" id="logout">logout</a>
 	 	<%}else { %>
       	<a class="nav-item nav-link" href="/signup">signup</a>
       	<a class="nav-item nav-link" href="/login">login</a>
@@ -26,6 +34,6 @@
     </div>
   </div>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="/js/test.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="/js/navSocket.js"></script>
 </nav>

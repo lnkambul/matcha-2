@@ -5,7 +5,10 @@
 <button class="like" id="<%=match.username%>">like</button>
 </div>
 =======
-<p id="noti"></p>
+<form action="">
+<input type="hidden" id="user" value="<%=user%>">
+<input type="hidden" id="receiver" value="<%=match.username%>">
+</form>
 <p class="list-group-item"><%= match.username %></p>
 <p class="list-group-item"><%= match.popularity %>/10 rating</p>
 <p class="list-group-item"><%= match.age %> years old</p>
@@ -17,4 +20,5 @@
 <p class="list-group-item">"<%= match.bio %>"</p>
 <script src="/js/like.js"></script>
 <script src="/js/block.js"></script>
+<script src="/js/notify.js"></script>
 <%- include ('partials/footer') %>

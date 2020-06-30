@@ -1,9 +1,10 @@
-var socket = io($('#receiver').val())
+var socket = io('/'+$('#user').val())
+var chat = io('/'+$('#receiver').val())
 
 $('form').submit(function(e){
 	e.preventDefault()
 	socket.emit('chat message', $('#m').val())
-	socket.emit('notification', 'you have a visitor')
+	chat.emit('chat message', $('#m').val())
 	$('#m').val('')
 	return false
 })

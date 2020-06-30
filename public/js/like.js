@@ -1,3 +1,5 @@
+var recevier = io('/'+$('#receiver').val())
+
 var like = document.getElementsByClassName("like")
 const query = {status : like[0].id}
 //toggleVis(like, "none")
@@ -8,7 +10,7 @@ function checkStatus () {
     body: JSON.stringify(query),
     }).then(res => res.json()).then(data => {
       if (parseInt(data.status) === 1) {
-          like[0].innerHTML = "unlike"
+         like[0].innerHTML = "unlike"
       }
       else {
         like[0].innerHTML = "like"
@@ -27,6 +29,7 @@ like[0].addEventListener("click", () => {
     xhr.open("post", "/p/like", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify( { like : like[0].id } ) )
+    receiver.emit('liked', $('#receiver').val())
 
     xhr.onload = function (e) {
         if (xhr.readyState === 4) {

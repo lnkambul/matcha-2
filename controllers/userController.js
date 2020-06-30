@@ -4,6 +4,7 @@ const pass = require('../models/passwordModel')
 const gen = require('../models/generateUsersModel')
 const admin = require('../models/adminModel')
 const key = require('../models/keyGeneratorModel')
+const soc = require('../controllers/socketController')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
@@ -142,7 +143,7 @@ exports.registerUser = (req, res) => {
 						if (err)
 							console.log(err)
 						else {
-							console.log("registration successful")
+							console.log("registration successful (please check email for verification link)")
 							res.redirect('/')
 						}
 					})
@@ -152,7 +153,7 @@ exports.registerUser = (req, res) => {
 	})
 }
 
-exports.loginUser = (req, res) => {
+exports.loginUser = (req, res, next) => {
 	const newUser = new User(req.body)
 	/* admin navbar link */
 	let promise = new Promise ((resolve, reject) => {
@@ -182,7 +183,7 @@ exports.loginUser = (req, res) => {
 		vetted.then ((status) => {
 			let admin = (status === 1) ? "[admin]" : "[non-admin]"
 			console.log("login successful ", admin)
-			res.redirect('/')
+			next()
 		}).catch(err => { throw(err)})
 	}).catch(err => { 
 		console.log(err)
@@ -191,14 +192,14 @@ exports.loginUser = (req, res) => {
 	/* eoc */
 }
 
-exports.logoutUser = (req, res) => {
+exports.logoutUser = (req, res, next) => {
 	Q.delone("tokens", 'token', req.session.token, (err, result) => {
 		if (err)
 			console.log(err)
 		else {
 			console.log(`${req.session.user} logged out`)
 			req.session.reset()
-			res.redirect('/')
+			res.redirect('/login')
 		}
 	})
 }
