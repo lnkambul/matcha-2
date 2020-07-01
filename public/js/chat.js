@@ -5,6 +5,7 @@ $('form').submit(function(e){
 	e.preventDefault()
 	socket.emit('chat message', {u: $('#user').val(), msg: $('#m').val()})
 	chat.emit('chat message', {u: $('#user').val(), msg: $('#m').val()})
+	chat.emit('noti', $('#receiver').val())
 	$('#m').val('')
 	return false
 })

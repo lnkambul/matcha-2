@@ -13,7 +13,7 @@
 	 	<% if (token) { %>
       	<a class="nav-item nav-link" href="/p/u">profile (<%=user%>)</a>
       	<a class="nav-item nav-link" href="/chat">chat
-				<span class="dm" id="<%=user%>"></span>
+				<span class="notif" id="<%=user%>"></span>
       	</a>
       	<a class="nav-item nav-link" href="/visitors">visitors
 				<span class="visited" id="<%=user%>"></span>
@@ -34,6 +34,6 @@
     </div>
   </div>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="/js/navSocket.js"></script>
 </nav>
