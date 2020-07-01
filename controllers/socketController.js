@@ -11,9 +11,9 @@ exports.open = (req, res, next) => {
 		socket.on('liked', (liker) => {
 			nsp.emit('liked', liker)
 		})
-		socket.on('chat message', (msg) => {
-			nsp.emit('chat message', msg)
-			console.log(user+': '+msg)
+		socket.on('chat message', ({u, msg}) => {
+			nsp.emit('chat message', {u, msg})
+			console.log(u+': '+msg)
 		})
 		socket.on('close', () => {
 			socket.disconnect(true)
@@ -21,5 +21,5 @@ exports.open = (req, res, next) => {
    		console.log(`socket closed [${user} -> ${socket.id}]`)
 		})
 	})
-	res.redirect('/')
+	res.redirect('/chat/james')
 }
