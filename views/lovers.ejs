@@ -1,0 +1,9 @@
+<%- include ('partials/header') %>
+
+<% for (let i in lovers) {%>
+	<a href='/chat/<%=lovers[i].liked%>'><li class="list-group-item"><%=lovers[i].liked%></li></a>
+<%}%>
+<script src="/js/notify.js"></script>
+<%- include ('partials/footer') %>
+
+

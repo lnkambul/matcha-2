@@ -47,7 +47,6 @@ exports.formProfile = (req, res) => {
 				token: token,
 				age: p.age,
 				gender: p.gender,
-				//orientation: p.orientation,
 				preference: p.preference,
 				interests: p.interests,
 				city: p.city,
