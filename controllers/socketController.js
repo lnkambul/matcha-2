@@ -12,7 +12,6 @@ exports.open = (req, res, next) => {
    	if (soc[0] === socket.id)
    		console.log(`socket open [${user} -> ${socket.id}]`)
 		socket.on('visited', ({s, r}) => {
-			nsp.emit('visited', {s, r})
 			S.logVisit(user, s, r, (report) => {console.log(report)})
 			S.notifications(user, (logs) => {
 				if (logs)
@@ -20,7 +19,6 @@ exports.open = (req, res, next) => {
 			})
 		})
 		socket.on('liked', ({s, r}) => {
-			nsp.emit('liked', {s, r})
 			S.logLike(user, s, r, (report) => {console.log(report)})
 			S.notifications(user, (logs) => {
 				if (logs)
@@ -28,8 +26,6 @@ exports.open = (req, res, next) => {
 			})
 		})
 		socket.on('noti', ({s, r}) => {
-			console.log(`${r} received a message (from ${s})`)
-			nsp.emit('noti', {s, r})
 			S.logNoti(user, s, r, (report) => {console.log(report)})
 			S.notifications(user, (logs) => {
 				if (logs)
@@ -52,5 +48,5 @@ exports.open = (req, res, next) => {
    		console.log(`socket closed [${user} -> ${socket.id}]`)
 		})
 	})
-	res.redirect('/chat')
+	res.redirect('/notifications')
 }

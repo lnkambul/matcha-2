@@ -3,9 +3,9 @@ var chat = io('/'+$('#receiver').val())
 
 $('form').submit(function(e){
 	e.preventDefault()
+	socket.emit('noti', {s: $('#user').val(), r:$('#receiver').val()})
 	socket.emit('chat message', {s: $('#user').val(), r: $('#receiver').val(), msg: $('#m').val()})
 	chat.emit('chat message', {s: $('#user').val(), r: $('#receiver').val(), msg: $('#m').val()})
-	socket.emit('noti', {s: $('#user').val(), r:$('#receiver').val()})
 	chat.emit('noti', {s: $('#user').val(), r:$('#receiver').val()})
 	$('#m').val('')
 	return false

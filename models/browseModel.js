@@ -4,28 +4,7 @@ var Semaphore = require('async-mutex').Semaphore
 var withTimeout = require('async-mutex').withTimeout
 
 var Browse = function(){}
-/*
-Browse.like = (user, liked, callback) => {
-	var par = ['username', 'liked']
-	Q.fetchone("likes", par, 'liked', liked, (err, res) => {
-		if (res && res.length > 0) {
-			Q.delone("likes", 'liked', liked, (err, result) => {
-				if (err)
-					callback(err, null)
-				else
-					callback(null, `${user} unliked ${liked}`)
-			})
-		} else {
-			Q.insert("likes", par, [user, liked], (err, result) => {
-				if (err)
-					callback(err, null)
-				else
-					callback(null, `${user} liked ${liked}`)
-			})
-		}
-	})
-}
-*/
+
 Browse.popularity = (match, callback) => {
 	Q.fetchone("visits", ['visited'], 'visited', match, (err, a) => {
   		if (err)
@@ -211,7 +190,7 @@ Browse.checkMatch = (user, liked, callback) => {
 						callback(err+" mxm", null)
 					else {
 						Q.updateMRows("likes", ['lovers'], 1, params, [user, liked], (err, success) => {
-							callback(null, `${user} & ${liked} like each other!`)
+							callback(null, null, `${user} & ${liked} like each other!`)
 						})
 					}
 				})

@@ -11,8 +11,14 @@ exports.logChat = (user, sender, receiver, msg, callback) => {
 
 exports.logVisit = (user, sender, receiver, callback) => {
 	if (user === sender) {
-		Q.insert('notifications', ['sender', 'receiver', 'type'], [sender, receiver, 'visit'], (err, res) => {
-			callback(`${sender} sent a notification to ${receiver} [visit]`)
+		Q.fetchoneMRows('notifications', ['sender'], ['sender', 'receiver', 'type'], [sender, receiver, 'visit'], (err, data) => {
+			if (data && data.length > 0)
+				callback(`${sender} sent another notification to ${receiver} [visit]`)
+			else {
+				Q.insert('notifications', ['sender', 'receiver', 'type'], [sender, receiver, 'visit'], (err, res) => {
+					callback(`${sender} sent a notification to ${receiver} [visit]`)
+				})
+			}
 		})
 	} else if (user === receiver)
 		callback(`${user} received a notification from ${sender} [visit]`)
@@ -20,8 +26,14 @@ exports.logVisit = (user, sender, receiver, callback) => {
 
 exports.logNoti = (user, sender, receiver, callback) => {
 	if (user === sender) {
-		Q.insert('notifications', ['sender', 'receiver', 'type'], [sender, receiver, 'chat'], (err, res) => {
-			callback(`${sender} sent a notification to ${receiver} [message]`)
+		Q.fetchoneMRows('notifications', ['sender'], ['sender', 'receiver', 'type'], [sender, receiver, 'chat'], (err, data) => {
+			if (data && data.length > 0) 
+				callback(`${sender} sent another notification to ${receiver} [message]`)
+			else {
+				Q.insert('notifications', ['sender', 'receiver', 'type'], [sender, receiver, 'chat'], (err, res) => {
+					callback(`${sender} sent a notification to ${receiver} [message]`)
+				})
+			}
 		})
 	} else if (user === receiver)
 		callback(`${user} received a notification from ${sender} [message]`)
@@ -29,8 +41,14 @@ exports.logNoti = (user, sender, receiver, callback) => {
 
 exports.logLike = (user, sender, receiver, callback) => {
 	if (user === sender) {
-		Q.insert('notifications', ['sender', 'receiver', 'type'], [sender, receiver, 'like'], (err, res) => {
-			callback(`${sender} sent a notification to ${receiver} [like]`)
+		Q.fetchoneMRows('notifications', ['sender'], ['sender', 'receiver', 'type'], [sender, receiver, 'like'], (err, data) => {
+			if (data && data.length > 0) 
+				callback(`${sender} sent a notification to ${receiver} [like]`)
+			else {
+				Q.insert('notifications', ['sender', 'receiver', 'type'], [sender, receiver, 'like'], (err, res) => {
+					callback(`${sender} sent a notification to ${receiver} [like]`)
+				})
+			}
 		})
 	} else if (user === receiver)
 		callback(`${user} received a notification from ${sender} [like]`)
@@ -54,7 +72,6 @@ exports.notifications = (user, callback) => {
 				resolve(n)
 			})
 			promise.then(n => {callback(n)})
-		} else
-			console.log('no notifications')
+		}
 	})
 }

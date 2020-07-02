@@ -16,6 +16,7 @@ function checkStatus () {
       else {
         like[0].innerHTML = "like"
       }
+    	receiver.emit('liked', {s: $('#user').val(), r: $('#receiver').val()})
       console.log(data.status)
     }).catch((error) => {
       console.error('status check errror', error)
@@ -30,7 +31,6 @@ like[0].addEventListener("click", () => {
     xhr.open("post", "/p/like", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify( { like : like[0].id } ) )
-    receiver.emit('liked', {s: $('#user').val(), r: $('#receiver').val()})
     sender.emit('liked', {s: $('#user').val(), r: $('#receiver').val()})
 
     xhr.onload = function (e) {

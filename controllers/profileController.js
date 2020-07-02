@@ -78,10 +78,13 @@ exports.userProfile = (req, res) => {
 
 exports.matchProfile = (req, res) => {
 	var match = req.params.match
+	var user = req.session.user
 	Q.fetchone("profiles", ['username', params], 'username', match, (err, result) => {
 		if (err)
 			res.redirect('/')
 		else if (result.length > 0) {
+			Q.deloneMRows('notifications', ['sender', 'receiver', 'type'], [match, user, 'visit'], () => {})
+			Q.deloneMRows('notifications', ['sender', 'receiver', 'type'], [match, user, 'like'], () => {})
 			B.visit(req.session.user, match, (err, success) => {
 				if (err)
 					console.log(err)
@@ -109,12 +112,14 @@ exports.likeTweaked = (req, res) => {
 		} 
 		else {
 			res.send(result)
-			B.checkMatch(user, liked, (err, result) => {
+			B.checkMatch(user, liked, (err, result, lovers) => {
 				if (err) {
 					console.log(err)
 				} 
-				else {
+				else if (result){
 					console.log(result)
+				} else if (lovers) {
+					console.log(lovers)
 				}
 			})
 		}

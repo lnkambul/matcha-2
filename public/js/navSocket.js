@@ -1,18 +1,16 @@
 var visit = document.getElementsByClassName("visited")
 var liked = document.getElementsByClassName("liked")
 var chat = document.getElementsByClassName("notif")
-var socket = io('/'+$('#user').val())
+var notis = document.getElementsByClassName("notifications")
+var soc = io('/'+$('#user').val())
 
-socket.emit('refresh')
+soc.emit('refresh')
 
-socket.on('notifications', function({chats, visits, likes}){
-	if (chats > 0)
-		chat[0].innerHTML = `<sup style="color:red">${chats}</sup>`
-	if (visits > 0)
-		visit[0].innerHTML = `<sup style="color:teal">${visits}</sup>`
-	if (likes > 0)
-		liked[0].innerHTML = `<sup style="color:pink">${likes}</sup>`
+soc.on('notifications', function({chats, visits, likes}){
+	var sum = chats+visits+likes
+	if (sum > 0)
+		notis[0].innerHTML = `<sup style="color:red">${sum}</sup>`
 })
 $(document).on("click", "#logout", function(){
-	socket.emit('close')
+	soc.emit('close')
 })

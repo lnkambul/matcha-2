@@ -167,6 +167,31 @@ query.fetchoneMAndOr = (t_name, val, params, pvals, ovals, callback) => {
 	})
 }
 
+query.fetchoneMAndOr3 = (t_name, val, params, pvals, ovals, uvals, callback) => {
+	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
+	var chunk1 = ""
+	var chunk2 = ""
+	var chunk3 = ""
+	for(i = 0; i < params.length; i++) {
+		chunk1 += params[i]+"=\'"+pvals[i]+"\'"
+		chunk2 += params[i]+"=\'"+ovals[i]+"\'"
+		chunk3 += params[i]+"=\'"+uvals[i]+"\'"
+		if (i + 1 < params.length) {
+			chunk1 += " AND "
+			chunk2 += " AND "
+			chunk3 += " AND "
+		}
+	}
+	sql += chunk1+' OR '+chunk2+' OR '+chunk3
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
+
 query.deloneMRows = (t_name, params, pvals, callback) => {
 	var sql = "DELETE FROM "+t_name+" WHERE "
 	var chunk = ""
