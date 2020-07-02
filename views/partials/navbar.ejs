@@ -23,7 +23,9 @@
       	</a>
         <!-- admin -->
           <% if (adminToken) { %>
-            <a class="nav-item nav-link" href="/admin">admin</a>
+            <a class="nav-item nav-link" href="/admin">admin
+				<span id="notifications"></span>
+            </a>
           <%} %>
         <!-- eoc -->
         <a class="nav-item nav-link" href="/logout" id="logout">logout</a>

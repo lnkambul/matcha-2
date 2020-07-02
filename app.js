@@ -36,6 +36,7 @@ const sess = require('./config/secret')
 app.use(session(sess))
 global.token = null
 global.user = null
+global.notis = null
 
 //init socket connection
 const http = require('http').createServer(app)

@@ -1,3 +1,4 @@
+var sender = io('/'+$('#user').val())
 var recevier = io('/'+$('#receiver').val())
 
 var like = document.getElementsByClassName("like")
@@ -29,7 +30,8 @@ like[0].addEventListener("click", () => {
     xhr.open("post", "/p/like", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify( { like : like[0].id } ) )
-    receiver.emit('liked', $('#receiver').val())
+    receiver.emit('liked', {s: $('#user').val(), r: $('#receiver').val()})
+    sender.emit('liked', {s: $('#user').val(), r: $('#receiver').val()})
 
     xhr.onload = function (e) {
         if (xhr.readyState === 4) {

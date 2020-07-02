@@ -1,14 +1,13 @@
 <%- include ('partials/header') %>
+<form action="">
+<input type="hidden" id="user" value="<%=user%>">
+<input type="hidden" id="receiver" value="<%=match.username%>">
+</form>
 <img src='/uploads/<%=match.username%>' width="200" height="200">
 <div>
 <button class="block" id="<%=match.username%>"> <% if (adminToken) {%> suspend <% } else {%> block <% } %> </button>
 <button class="like" id="<%=match.username%>">like</button>
 </div>
-=======
-<form action="">
-<input type="hidden" id="user" value="<%=user%>">
-<input type="hidden" id="receiver" value="<%=match.username%>">
-</form>
 <p class="list-group-item"><%= match.username %></p>
 <p class="list-group-item"><%= match.popularity %>/10 rating</p>
 <p class="list-group-item"><%= match.age %> years old</p>

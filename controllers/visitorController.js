@@ -15,7 +15,7 @@ exports.listVisitors = (req, res) => {
 			token: token, 
 			 visitors: visitors,
 			 adminToken: adminToken,
-			 user: req.session.user
+			 user: req.session.user,
 		})
 	})
 }

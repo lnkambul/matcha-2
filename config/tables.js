@@ -67,6 +67,24 @@ var tables = {
 		" PRIMARY KEY (`id`)" +
 		") ENGINE=InnoDB"
 	),
+	notifications : (
+		"CREATE TABLE `notifications` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `sender` varchar(20) NOT NULL," +
+		" `receiver` varchar(20) NOT NULL," +
+		" `type` varchar(20) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
+	chats : (
+		"CREATE TABLE `chats` (" +
+		" `id` int(11) NOT NULL AUTO_INCREMENT," +
+		" `sender` varchar(20) NOT NULL," +
+		" `receiver` varchar(20) NOT NULL," +
+		" `message` varchar(400) NOT NULL," +
+		" PRIMARY KEY (`id`)" +
+		") ENGINE=InnoDB"
+	),
 	images : (
 		"CREATE TABLE `images` (" +
 		" `id` int(11) NOT NULL AUTO_INCREMENT," +
