@@ -190,6 +190,11 @@ Browse.checkMatch = (user, liked, callback) => {
 						callback(err+" mxm", null)
 					else {
 						Q.updateMRows("likes", ['lovers'], 1, params, [user, liked], (err, success) => {
+							Q.fetchoneMRows('notifications', ['sender'], ['sender', 'receiver', 'type'], [user, liked, 'love'], (err, data) => {
+								if (data && data.length == 0) {
+									Q.insert('notifications', ['sender', 'receiver', 'type'], [user, liked, 'love'], (err, res) => {})
+								}
+							})
 							callback(null, null, `${user} & ${liked} like each other!`)
 						})
 					}

@@ -52,17 +52,19 @@ exports.notifications = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
 	var chats = null
+	var matches = null
 	var likes = null
 	var visits = null
-	var notifications = null
 	let promise = new Promise ((resolve) => {
-		Q.fetchoneMAndOr3('notifications', ['sender', 'type'], ['receiver', 'type'], [user, 'chat'], [user, 'like'], [user, 'visit'], (err, notis) => {
-			var n = {c: [], v: [], l: []}
+		Q.fetchoneMAndOr4('notifications', ['sender', 'type'], ['receiver', 'type'], [user, 'chat'], [user, 'like'], [user, 'visit'], [user, 'love'], (err, notis) => {
+			var n = {c: [], m: [], v: [], l: []}
 			for (let i in notis) {
 				if (notis[i].type === 'chat')
 					n.c = [...n.c, notis[i].sender]
 				else if (notis[i].type === 'like')
 					n.l = [...n.l, notis[i].sender]
+				else if (notis[i].type === 'love')
+					n.m = [...n.m, notis[i].sender]
 				else if (notis[i].type === 'visit')
 					n.v = [...n.v, notis[i].sender]
 			}
@@ -75,6 +77,7 @@ exports.notifications = (req, res) => {
 			chats: n.c,
 			likes: n.l,
 			visits: n.v,
+			matches: n.m,
 			adminToken: adminToken,
 			user: user,
 		})

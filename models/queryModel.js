@@ -167,22 +167,25 @@ query.fetchoneMAndOr = (t_name, val, params, pvals, ovals, callback) => {
 	})
 }
 
-query.fetchoneMAndOr3 = (t_name, val, params, pvals, ovals, uvals, callback) => {
+query.fetchoneMAndOr4 = (t_name, val, params, pvals, ovals, uvals, xvals, callback) => {
 	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
 	var chunk1 = ""
 	var chunk2 = ""
 	var chunk3 = ""
+	var chunk4 = ""
 	for(i = 0; i < params.length; i++) {
 		chunk1 += params[i]+"=\'"+pvals[i]+"\'"
 		chunk2 += params[i]+"=\'"+ovals[i]+"\'"
 		chunk3 += params[i]+"=\'"+uvals[i]+"\'"
+		chunk4 += params[i]+"=\'"+xvals[i]+"\'"
 		if (i + 1 < params.length) {
 			chunk1 += " AND "
 			chunk2 += " AND "
 			chunk3 += " AND "
+			chunk4 += " AND "
 		}
 	}
-	sql += chunk1+' OR '+chunk2+' OR '+chunk3
+	sql += chunk1+' OR '+chunk2+' OR '+chunk3+' OR '+chunk4
 	DB.fetch(sql, (err, res) => {
 		if (err)
 			callback(err, null)

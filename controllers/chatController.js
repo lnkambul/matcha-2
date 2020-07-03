@@ -37,6 +37,7 @@ exports.chat = (req, res) => {
 	var adminToken = req.session.adminToken
 	var messages = null
 	Q.deloneMRows('notifications', ['sender', 'receiver', 'type'], [receiver, user, 'chat'], () => {})
+	Q.deloneMRows('notifications', ['sender', 'receiver', 'type'], [receiver, user, 'love'], () => {})
 	Q.fetchoneMAndOr('chats', ['sender', 'message'], ['sender', 'receiver'], [user, receiver], [receiver, user], (err, data) => {
 		if (err)
 			console.log(err)
