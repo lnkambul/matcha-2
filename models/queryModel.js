@@ -145,6 +145,31 @@ query.fetchoneMRows = (t_name, val, params, pvals, callback) => {
 	})
 }
 
+query.fetchoneMRowNot = (t_name, val, params, pvals, ovals, callback) => {
+	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
+	var chunk1 = ""
+	var chunk2 = ""
+	for(i = 0; i < params.length; i++) {
+		chunk1 += params[i]+"=\'"+pvals[i]+"\'"
+		chunk2 += params[i]+"=\'"+ovals[i]+"\'"
+		if (i + 1 < params.length) {
+			chunk1 += " AND NOT "
+			chunk2 += " AND NOT "
+		}
+	}
+	if (ovals[0])
+		sql += chunk1 +' OR '+chunk2
+	else
+		sql += chunk1
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
+
 query.fetchoneMAndOr = (t_name, val, params, pvals, ovals, callback) => {
 	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
 	var chunk1 = ""

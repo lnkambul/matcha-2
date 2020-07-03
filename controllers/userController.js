@@ -34,7 +34,27 @@ exports.loginForm = (req, res) => {
 exports.list_users = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
-	var pars = {token: token, adminToken: adminToken, user: req.session.user, suggestions: null}
+	var user = req.session.user
+	var gender = 'male'
+	var bi = null
+	var pars = {token: token, adminToken: adminToken, user: user, suggestions: null}
+	let findGender = new Promise ((resolve, reject) => {
+		Q.fetchone('profiles', ['preference'], 'username', user, (err, data) => {
+			if (data && data.length > 0) {
+				if (data[0].preference === 'women')
+					gender = 'female'
+				else if (data[0].preference === 'both')
+					bi = 'female'
+				Q.fetchoneMRowNot('profiles', ['username'], ['gender', 'username'], [gender, user], [bi, user], (err, matches) => {
+					if (matches && matches.length > 0)
+						resolve(matches)
+				})
+			}
+		})
+	})
+	findGender.then((found, not) => {
+		console.log(found)
+	})
 	let filter = new Promise ((y, n) => {
 		Q.fetchall("profiles", (err, data) => {
 			if (err) {
@@ -198,7 +218,6 @@ exports.logoutUser = (req, res, next) => {
 			console.log(err)
 		else {
 			var t = new Date()
-			console.log(t.toLocaleString())
 			Q.update('profiles', ['last_seen'], t.toLocaleString(), 'username', req.session.user, () => {})
 			console.log(`${req.session.user} logged out`)
 			req.session.reset()

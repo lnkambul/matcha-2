@@ -33,7 +33,7 @@ exports.open = (req, res, next) => {
 			})
 		})
 		socket.on('refresh', () => {
-			S.notifications(user, (logs) => {
+		S.notifications(user, (logs) => {
 				if (logs)
 					nsp.emit('notifications', {chats: logs.c, visits: logs.v, likes: logs.l})
 			})
