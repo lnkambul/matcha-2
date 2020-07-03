@@ -1,6 +1,6 @@
 const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
-const params = ['age', 'gender', /*'orientation',*/ 'preference', 'interests', 'city', 'country', 'bio', 'popularity']
+const params = ['age', 'gender', 'preference', 'interests', 'city', 'country', 'bio', 'popularity', 'last_seen']
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
 const http = require('http')
@@ -101,7 +101,6 @@ exports.matchProfile = (req, res) => {
 		}
 	})
 }
-
 
 exports.likeTweaked = (req, res) => {
 	var user = req.session.user

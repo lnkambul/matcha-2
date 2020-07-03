@@ -197,6 +197,9 @@ exports.logoutUser = (req, res, next) => {
 		if (err)
 			console.log(err)
 		else {
+			var t = new Date()
+			console.log(t.toLocaleString())
+			Q.update('profiles', ['last_seen'], t.toLocaleString(), 'username', req.session.user, () => {})
 			console.log(`${req.session.user} logged out`)
 			req.session.reset()
 			res.redirect('/login')

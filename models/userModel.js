@@ -109,6 +109,7 @@ User.login = (user, callback) => {
 							})
 						})
 						insure.then(token => {
+							Q.update('profiles', ['last_seen'], 0, 'username', user.username, (err, res) => {})
 							callback(null, token)
 						})
 					})

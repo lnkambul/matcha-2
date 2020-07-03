@@ -9,6 +9,11 @@
 <button class="like" id="<%=match.username%>">like</button>
 </div>
 <p class="list-group-item"><%= match.username %></p>
+<p class="list-group-item"><%if (match.last_seen == 0) {%>
+online
+<%}else {%>
+offline (last seen: <%=match.last_seen%>)
+<%}%></p>
 <p class="list-group-item"><%= match.popularity %>/10 rating</p>
 <p class="list-group-item"><%= match.age %> years old</p>
 <p class="list-group-item"><%= match.gender %></p>
