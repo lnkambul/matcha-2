@@ -144,6 +144,23 @@ query.fetchoneMRows = (t_name, val, params, pvals, callback) => {
 		}
 	})
 }
+query.fetchoneMOrRows = (t_name, val, params, pvals, callback) => {
+	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
+	var chunk = ""
+	for(i = 0; i < pvals.length; i++) {
+		chunk += params[0]+"=\'"+pvals[i]+"\'"
+		if (i + 1 < pvals.length)
+			chunk += " OR "
+	}
+	sql += chunk
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
 
 query.fetchoneMRowNot = (t_name, val, params, pvals, ovals, callback) => {
 	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
@@ -160,7 +177,7 @@ query.fetchoneMRowNot = (t_name, val, params, pvals, ovals, callback) => {
 	if (ovals[0])
 		sql += chunk1 +' OR '+chunk2
 	else
-		sql += chunk1
+		sql += `${chunk1}`
 	DB.fetch(sql, (err, res) => {
 		if (err)
 			callback(err, null)

@@ -5,6 +5,7 @@ const gen = require('../models/generateUsersModel')
 const admin = require('../models/adminModel')
 const key = require('../models/keyGeneratorModel')
 const soc = require('../controllers/socketController')
+const B = require('../models/browseModel')
 
 exports.auth = (req, res, next) => {
 	var token = req.session.token
@@ -35,24 +36,24 @@ exports.list_users = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
 	var user = req.session.user
-	var gender = 'male'
-	var bi = null
 	var pars = {token: token, adminToken: adminToken, user: user, suggestions: null}
-	let findGender = new Promise ((resolve, reject) => {
-		Q.fetchone('profiles', ['preference'], 'username', user, (err, data) => {
-			if (data && data.length > 0) {
-				if (data[0].preference === 'women')
-					gender = 'female'
-				else if (data[0].preference === 'both')
-					bi = 'female'
-				Q.fetchoneMRowNot('profiles', ['username'], ['gender', 'username'], [gender, user], [bi, user], (err, matches) => {
-					if (matches && matches.length > 0)
-						resolve(matches)
-				})
-			}
+	let findSuggestions = new Promise ((resolve, reject) => {
+		B.findLocals(user, (err, locals) => {
+			if (err)
+				reject(err)
+			else
+				resolve(locals)
 		})
 	})
-	findGender.then((found, not) => {
+	findSuggestions.then((locals) => {
+		pars.suggestions = locals
+		res.render('index', pars)
+	})
+	.catch(e => {
+		 console.log(e)
+		 res.render('index', pars)
+	})
+	/*	findGender.then((found, not) => {
 		console.log(found)
 	})
 	let filter = new Promise ((y, n) => {
@@ -135,7 +136,7 @@ exports.list_users = (req, res) => {
 			}
 		})
 		
-	})
+	})*/
 }
 
 exports.formSignup = (req, res) => {

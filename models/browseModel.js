@@ -204,4 +204,44 @@ Browse.checkMatch = (user, liked, callback) => {
 	})
 }
 
+Browse.findLocals = (username, callback) => {
+	var gender = 'male'
+	var bi = null
+	var locals = []
+	Q.fetchone('profiles', ['id', 'preference', 'city', 'interests'], 'username', username, (err, profile) => {
+		if (profile && profile.length > 0) {
+			if (profile[0].preference === 'women')
+				gender = 'female'
+			else if(profile[0].preference === 'both')
+				bi = 'female'
+			var interests = profile[0].interests.split(',')
+			Q.fetchoneMRowNot('profiles', ['id', 'username', 'gender', 'city', 'interests'], ['gender', 'username'], [gender, username], [bi, username], (err, gMatch) => {
+				if (gMatch && gMatch.length > 0) {
+					for (let i in gMatch) {
+						let ptags = gMatch[i].interests.split(',')
+						for (let j in ptags) {
+							if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
+								locals.push(gMatch[i])
+						}
+					}
+					for (let i in gMatch) {
+							if (gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
+								locals.push(gMatch[i])
+					}
+					for (let i in gMatch) {
+						let ptags = gMatch[i].interests.split(',')
+						for (let j in ptags) {
+							if (interests.includes(ptags[j]) && !locals.includes(gMatch[i])) 
+								locals.push(gMatch[i])
+						}
+					}
+					callback(null, locals)
+				} else
+					callback('no matches in your area')
+			})
+		} else
+			callback('no preference')
+	})
+}
+
 module.exports = Browse
