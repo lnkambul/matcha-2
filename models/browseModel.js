@@ -215,14 +215,30 @@ Browse.findLocals = (username, callback) => {
 			else if(profile[0].preference === 'both')
 				bi = 'female'
 			var interests = profile[0].interests.split(',')
-			Q.fetchoneMRowNot('profiles', ['id', 'username', 'gender', 'city', 'interests'], ['gender', 'username'], [gender, username], [bi, username], (err, gMatch) => {
-				if (gMatch && gMatch.length > 0) {
+			Q.fetchoneMRowNot('profiles', ['username', 'gender', 'city', 'interests', 'suspended', 'popularity'], ['gender', 'username'], [gender, username], [bi, username], (err, bMatch) => {
+				if (bMatch && bMatch.length > 0) {
+					var gMatch = []
+					for (let i in bMatch) {
+						if (bMatch[i].suspended === 0)
+							gMatch.push(bMatch[i])
+					}
+					for (let i in gMatch) {
+						let ptags = gMatch[i].interests.split(',')
+						for (let j in ptags) {
+							if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && gMatch[i].popularity >= 5 && !locals.includes(gMatch[i])) 
+								locals.push(gMatch[i])
+						}
+					}
 					for (let i in gMatch) {
 						let ptags = gMatch[i].interests.split(',')
 						for (let j in ptags) {
 							if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
 								locals.push(gMatch[i])
 						}
+					}
+					for (let i in gMatch) {
+							if (gMatch[i].city === profile[0].city && gMatch[i].popularity >= 5 && !locals.includes(gMatch[i])) 
+								locals.push(gMatch[i])
 					}
 					for (let i in gMatch) {
 							if (gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
