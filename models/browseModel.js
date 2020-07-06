@@ -2,6 +2,7 @@ const Q = require('./queryModel')
 var Mutex = require('async-mutex').Mutex
 var Semaphore = require('async-mutex').Semaphore
 var withTimeout = require('async-mutex').withTimeout
+var S = require('./securityModel')
 
 var Browse = function(){}
 
@@ -257,6 +258,17 @@ Browse.findLocals = (username, callback) => {
 			})
 		} else
 			callback('no preference')
+	})
+}
+
+Browse.search = (username, search, callback) => {
+	Q.fetchone('profiles', ['username', 'gender', 'city'], search.filter, search.find, (err, profiles) => {
+		 if (err) {
+			console.log(err)
+			callback(err)
+		 }
+		else if (profiles.length > 0)
+			callback(null, profiles)
 	})
 }
 
