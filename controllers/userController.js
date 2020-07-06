@@ -85,7 +85,7 @@ exports.find_users = (req, res) => {
 	var user = req.session.user
 	var pars = {token: token, adminToken: adminToken, user: user, suggestions: null}
 	let searchSuggestions = new Promise ((resolve, reject) => {
-		B.search(user, search, (err, found) => {
+		B.search(search, (err, found) => {
 			if (err)
 				reject(err)
 			else
@@ -97,7 +97,8 @@ exports.find_users = (req, res) => {
 		res.render('index', pars)
 	})
 	.catch(e => {
-		 console.log(e)
+		console.log(e)
+		res.redirect('/')
 	})
 }
 

@@ -261,15 +261,83 @@ Browse.findLocals = (username, callback) => {
 	})
 }
 
-Browse.search = (username, search, callback) => {
-	Q.fetchone('profiles', ['username', 'gender', 'city'], search.filter, search.find, (err, profiles) => {
-		 if (err) {
-			console.log(err)
-			callback(err)
-		 }
-		else if (profiles.length > 0)
-			callback(null, profiles)
-	})
+Browse.search = (search, callback) => {
+	var pars = ['username', 'gender', 'city']
+	if (search.filter === 'age') {
+	  S.ageRange(search.find, (err, exp, range) => {
+			if (err)
+				callback(err)
+			else if (exp) {
+				Q.fetchone('profiles', pars, 'age', exp, (err, profiles) => {
+					if (err)
+						callback(err)
+					callback(null, profiles)
+				})
+			} else if (range) {
+				Q.fetchoneRange('profiles', pars, 'age', range[0], range[1], (err, profiles) => {
+				if (err)
+					callback(err)
+				else
+					callback(null, profiles)
+				})
+			}
+		})
+	} else if (search.filter === "popularity"){
+		S.popRange(search.find, (err, exp, range) => {
+			if (err)
+				callback(err)
+			else if (exp) {
+				Q.fetchone('profiles', pars, 'popularity', exp, (err, profiles) => {
+					if (err)
+						callback(err)
+					callback(null, profiles)
+				})
+			} else if (range) {
+				Q.fetchoneRange('profiles', pars, 'popularity', range[0], range[1], (err, profiles) => {
+				if (err)
+					callback(err)
+				else
+					callback(null, profiles)
+				})
+
+			}
+		})
+	} else if (search.filter === "city"){
+		S.locate(search.find, (err, city) => {
+			if (err)
+				callback(err)
+			Q.fetchone('profiles', pars, 'city', city, (err, profiles) => {
+				if (err)
+					callback(err)
+				callback(null, profiles)
+			})
+		})
+	} else if (search.filter === "interests"){
+		S.tags(search.find, (err, range) => {
+			if (err)
+				callback(err)
+			Q.fetchoneMOrRows('interests', ['user_list'], ['interest'], range, (err, list) => {
+				if (err)
+					callback(err)
+				else if (list) {
+					var users = []
+					for (let a in list) {
+						var data = list[a].user_list.split(',')
+						for (let i in data) {
+							if (!users.includes(data[i]))
+								users.push(data[i])
+						}
+					}
+					Q.fetchoneMOrRows('profiles', pars, ['id'], users, (err, profiles) => {
+						if (err)
+							callback(err)
+						else if (profiles.length > 0)
+							callback(null, profiles)
+					})
+				}
+			})
+		})
+	}
 }
 
 module.exports = Browse

@@ -187,6 +187,19 @@ query.fetchoneMRowNot = (t_name, val, params, pvals, ovals, callback) => {
 	})
 }
 
+query.fetchoneRange = (t_name, val, param, range1, range2, callback) => {
+	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
+	var chunk = ` ${param} BETWEEN ${range1} AND ${range2}`
+	sql += chunk
+	DB.fetch(sql, (err, res) => {
+		if (err)
+			callback(err, null)
+		else {
+			callback(null, res)
+		}
+	})
+}
+
 query.fetchoneMAndOr = (t_name, val, params, pvals, ovals, callback) => {
 	var sql = "SELECT "+val+" FROM "+t_name+" WHERE "
 	var chunk1 = ""

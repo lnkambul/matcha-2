@@ -120,4 +120,39 @@ Secure.createToken = (pass, callback) => {
 	callback(c)
 }
 
+Secure.ageRange = (age, callback) => {
+	var ar = age.split('-')
+	var msg = null
+	if (ar.length > 2)
+		msg = 'age must be less than 100, separated by a single dash'
+	for (let i in ar) {
+		if (ar[i].length < 1 || ar[i].length > 2 || ar[i] > 100 || !ar[i].match(/^[0-9]+$/))
+			msg = 'age must be less than 100, separated by a single dash'
+	}
+	if (msg)
+		callback(msg, null, null)
+	else if (ar.length === 1)
+		callback(null, ar, null)
+	else
+		callback(null, null, ar)
+
+}
+
+Secure.popRange = (pop, callback) => {
+	var ar = pop.split('-')
+	var msg = null
+	if (ar.length > 2)
+		msg = 'popularity must be less than 10, separated by a single dash'
+	for (let i in ar) {
+		if (ar[i].length < 1 || ar[i].length > 2 || ar[i] > 10 || !ar[i].match(/^[0-9]+$/))
+			msg = 'popularity must be less than 10, separated by a single dash'
+	}
+	if (msg)
+		callback(msg, null, null)
+	else if (ar.length === 1)
+		callback(null, ar, null)
+	else
+		callback(null, null, ar)
+}
+
 module.exports = Secure
