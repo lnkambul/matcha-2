@@ -219,45 +219,77 @@ Browse.findLocals = (username, callback) => {
 			Q.fetchoneMRowNot('profiles', ['username', 'gender', 'city', 'interests', 'suspended', 'popularity'], ['gender', 'username'], [gender, username], [bi, username], (err, bMatch) => {
 				if (bMatch && bMatch.length > 0) {
 					var gMatch = []
-					for (let i in bMatch) {
-						if (bMatch[i].suspended === 0)
-							gMatch.push(bMatch[i])
-					}
-					for (let i in gMatch) {
-						let ptags = gMatch[i].interests.split(',')
-						for (let j in ptags) {
-							if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && gMatch[i].popularity >= 5 && !locals.includes(gMatch[i])) 
-								locals.push(gMatch[i])
+					var bloc = new Promise ((resolve, reject) => {
+						Q.fetchone('blocked', ['username'], 'blocker', username, (err, block) => {
+							if (block && block.length > 0)
+								resolve(block)
+							else
+								resolve(null)
+						})
+					})
+					bloc.then(block => {
+						var flag = []
+						for (let i in block)
+							flag.push(block[i].username)
+						for (let i in bMatch) {
+							if (bMatch[i].suspended === 0 && !flag.includes(bMatch[i].username))
+								gMatch.push(bMatch[i])
 						}
-					}
-					for (let i in gMatch) {
-						let ptags = gMatch[i].interests.split(',')
-						for (let j in ptags) {
-							if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
-								locals.push(gMatch[i])
+						for (let i in gMatch) {
+							let ptags = gMatch[i].interests.split(',')
+							for (let j in ptags) {
+								if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && gMatch[i].popularity >= 5 && !locals.includes(gMatch[i])) 
+									locals.push(gMatch[i])
+							}
 						}
-					}
-					for (let i in gMatch) {
-							if (gMatch[i].city === profile[0].city && gMatch[i].popularity >= 5 && !locals.includes(gMatch[i])) 
-								locals.push(gMatch[i])
-					}
-					for (let i in gMatch) {
-							if (gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
-								locals.push(gMatch[i])
-					}
-					for (let i in gMatch) {
-						let ptags = gMatch[i].interests.split(',')
-						for (let j in ptags) {
-							if (interests.includes(ptags[j]) && !locals.includes(gMatch[i])) 
-								locals.push(gMatch[i])
+						for (let i in gMatch) {
+							let ptags = gMatch[i].interests.split(',')
+							for (let j in ptags) {
+								if (interests.includes(ptags[j]) && gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
+									locals.push(gMatch[i])
+							}
 						}
-					}
-					callback(null, locals)
+						for (let i in gMatch) {
+								if (gMatch[i].city === profile[0].city && gMatch[i].popularity >= 5 && !locals.includes(gMatch[i])) 
+									locals.push(gMatch[i])
+						}
+						for (let i in gMatch) {
+								if (gMatch[i].city === profile[0].city && !locals.includes(gMatch[i])) 
+									locals.push(gMatch[i])
+						}
+						for (let i in gMatch) {
+							let ptags = gMatch[i].interests.split(',')
+							for (let j in ptags) {
+								if (interests.includes(ptags[j]) && !locals.includes(gMatch[i])) 
+									locals.push(gMatch[i])
+							}
+						}
+						callback(null, locals)
+					})
 				} else
 					callback('no matches in your area')
 			})
 		} else
 			callback('no preference')
+	})
+}
+
+Browse.filterBlock = (user, results, callback) => {
+	Q.fetchone('blocked', ['username'], 'blocker', user, (err, block) => {
+		if (err)
+			callback(err)
+		else if (block.length > 0) {
+			var flag = []
+			var clean = []
+			for (let i in block)
+				flag.push(block[i].username)
+			for (let i in results) {
+				if (!flag.includes(results[i].username))
+					clean.push(results[i])
+			}
+			callback(null, clean)
+		} else
+			callback(null, results)
 	})
 }
 

@@ -90,8 +90,14 @@ exports.find_users = (req, res) => {
 		B.search(search, (err, found) => {
 			if (err)
 				reject(err)
-			else
-				resolve(found)
+			else {
+				B.filterBlock(user, found, (err, clean) => {
+					if (err)
+						reject(err)
+					else
+						resolve(clean)
+				})
+			}
 		})
 	})
 	searchSuggestions.then((found) => {
