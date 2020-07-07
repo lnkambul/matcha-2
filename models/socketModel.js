@@ -1,4 +1,5 @@
 const Q = require('./queryModel')
+const B = require('./browseModel')
 
 exports.logChat = (user, sender, receiver, msg, callback) => {
 	if (user === sender) {
@@ -60,16 +61,22 @@ exports.notifications = (user, callback) => {
 			console.log(err)
 		else if (res.length > 0) {
 			let promise = new Promise ((resolve, reject) => {
-				var n = {c: 0, v: 0, l: 0}
-				for (let i in res) {
-					if (res[i].type === 'chat')
-						n.c++
-					else if (res[i].type === 'visit')
-						n.v++
-					else if (res[i].type === 'like')
-						n.l++
-				}
-				resolve(n)
+				B.filterNoti(user, res, (err, clean) => {
+					if (err)
+						console.log(err)
+					else {
+						var n = {c: 0, v: 0, l: 0}
+						for (let i in clean) {
+							if (clean[i].type === 'chat')
+								n.c++
+							else if (clean[i].type === 'visit')
+								n.v++
+							else if (clean[i].type === 'like')
+								n.l++
+						}
+						resolve(n)
+					}
+				})
 			})
 			promise.then(n => {callback(n)})
 		}

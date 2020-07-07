@@ -35,29 +35,60 @@ exports.auth = (req, res, next) => {
 exports.formProfile = (req, res) => {
 	var token = req.session.token
 	var adminToken = req.session.adminToken
+	var pro = {age: null, gender: null, preference: null, interests: null, city: null, country: null, bio: null}
 	if (token)
 		Q.fetchone("profiles", params, 'username', req.session.user, (err, result) => { 
 			if (err)
 				res.redirect('/login')
 			else if (result.length > 0)
-				var p = result[0]
-			else
-				var p = []
+				pro = result[0]
 			res.render('profileForm', {
 				token: token,
-				age: p.age,
-				gender: p.gender,
-				preference: p.preference,
-				interests: p.interests,
-				city: p.city,
-				country: p.country,
-				bio: p.bio,
+				p: pro,
 				adminToken: adminToken,
 				user: req.session.user
 			})
 		})
 	else
 		res.redirect('/login')
+}
+
+exports.registerProfile = (req, res) => {
+	var sess = req.session
+	var user = req.session.user
+	var token = req.session.token
+	var adminToken = req.session.adminToken
+	var t = {token: token, adminToken: adminToken}
+	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
+		if (result && result.length > 0) {
+			var newProfile = new Profile(result[0].username, req.body)
+			Profile.validate(newProfile, (err, success) => {
+				if (err) {
+					console.log("error ", err)
+					res.render('profileForm', {user: user, token: token, adminToken: adminToken, p: req.body, e: err})
+				}
+				else {
+					Profile.register(result[0].username, req.body.password, newProfile, (err, success) => {
+						if (err) {
+							console.log(err)
+							res.render('profileForm', {user: user, token: token, adminToken: adminToken, p: req.body, e: err})
+						}
+						else {
+							/*successful profile registration/update triggers geolocation function*/
+							exports.geolocation(req)
+							/*end of modifications to registerProfile*/
+							console.log('profile updated')
+							res.redirect('/p/upload')
+						}
+					})
+				}
+			})
+		}
+		else {
+			console.log("please log in to register")
+			res.redirect('/login')
+		}		
+	})
 }
 
 exports.userProfile = (req, res) => {
@@ -177,37 +208,6 @@ exports.blockStatus = (req, res) => {
 	}).catch(err => {
 		console.log(err)
 		res.send(JSON.stringify({error: err}))
-	})
-}
-
-exports.registerProfile = (req, res) => {
-	var sess = req.session
-	Q.fetchone("tokens", ['username'], 'token', sess.token, (err, result) => {
-		if (result && result.length > 0) {
-			var newProfile = new Profile(result[0].username, req.body)
-			Profile.validate(newProfile, (err, success) => {
-				if (err) {
-					console.log("error ", err)
-				}
-				else {
-					Profile.register(result[0].username, req.body.password, newProfile, (err, success) => {
-						if (err)
-							console.log('failed to update profile')
-						else {
-							/*successful profile registration/update triggers geolocation function*/
-							exports.geolocation(req)
-							/*end of modifications to registerProfile*/
-							console.log('profile updated')
-							res.redirect('/p/upload')
-						}
-					})
-				}
-			})
-		}
-		else {
-			console.log("please log in to register")
-			res.redirect('/login')
-		}		
 	})
 }
 

@@ -18,23 +18,23 @@
       	<a class="nav-item nav-link" href="/notifications">notifications
 				<span class="notifications" id="<%=user%>"></span></a>
          <a class="nav-item nav-link" href="/logout" id="logout">logout</a>
+         <form action="/" method="post">
+				<select name="filter" id="filter">
+					<option value="city">city</option>
+					<option value="age">age</option>
+					<option value="popularity">popularity</option>
+					<option value="interests">interests</option>
+				</select>
+				<input type="text" name="find" id="find" placeholder="search..." size="10">
+				<input type="submit" value="search">
+			</form>
 	 	<%}else { %>
       	<a class="nav-item nav-link" href="/signup">signup</a>
       	<a class="nav-item nav-link" href="/login">login</a>
 		<% } %>
     </div>
   </div>
-  <form action="/" method="post">
-		<select name="filter" id="filter">
-			<option value="city">city</option>
-			<option value="age">age</option>
-			<option value="popularity">popularity</option>
-			<option value="interests">interests</option>
-		</select>
-		<input type="text" name="find" id="find" placeholder="search..." size="10">
-		<input type="submit" value="search">
-	</form>
-  <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="/js/navSocket.js"></script>
 </nav>

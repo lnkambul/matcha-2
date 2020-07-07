@@ -46,6 +46,7 @@ app.set('socket', io)
 //init admin token
 global.adminToken = null
 global.distance = null
+global.e = null
 
 //routes
 let index = require('./routes/index')

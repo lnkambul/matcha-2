@@ -50,6 +50,7 @@ exports.list_users = (req, res) => {
 		res.render('index', pars)
 	})
 	.catch(e => {
+		 pars.e = e
 		 console.log(e)
 		 res.render('index', pars)
 	})
@@ -70,11 +71,12 @@ exports.search_users = (req, res) => {
 	})
 	searchSuggestions.then((locals) => {
 		pars.suggestions = locals
-		res.render('search', pars)
+		res.render('index', pars)
 	})
 	.catch(e => {
+		 pars.e = e
 		 console.log(e)
-		 res.render('search', pars)
+		 res.render('index', pars)
 	})
 }
 
@@ -88,8 +90,14 @@ exports.find_users = (req, res) => {
 		B.search(search, (err, found) => {
 			if (err)
 				reject(err)
-			else
-				resolve(found)
+			else {
+				B.filterBlock(user, found, (err, clean) => {
+					if (err)
+						reject(err)
+					else
+						resolve(clean)
+				})
+			}
 		})
 	})
 	searchSuggestions.then((found) => {
@@ -97,16 +105,18 @@ exports.find_users = (req, res) => {
 		res.render('index', pars)
 	})
 	.catch(e => {
+		pars.e = e
 		console.log(e)
-		res.redirect('/')
+		res.render('index', pars)
 	})
 }
 
 exports.formSignup = (req, res) => {
+	var i = {username: null, first_name: null, last_name: null, email: null}
 	if (req.session.token)
 		res.redirect('/logout')
 	else
-		res.render('signup')
+		res.render('signup', {i: i})
 }
 
 exports.registerUser = (req, res) => {
@@ -114,13 +124,13 @@ exports.registerUser = (req, res) => {
 	User.validate(newUser, (err, result) => {
 		if (err) {
 			console.log("registration failed", err)
-			res.redirect('/signup')
+			res.render('signup', {i: newUser, e: err})
 		}
 		else {
 			User.check(newUser, (err, result) => {
 				if (err) {
 					console.log("registration failed", err)
-					res.redirect('/signup')
+					res.render('signup', {i: newUser, e: err})
 				}
 				else {
 					User.create(newUser, (err, result) => {
@@ -128,7 +138,7 @@ exports.registerUser = (req, res) => {
 							console.log(err)
 						else {
 							console.log("registration successful (please check email for verification link)")
-							res.redirect('/')
+							res.render('login', {e: 'registration successful (please check email for verification link)'})
 						}
 					})
 				}
@@ -171,7 +181,7 @@ exports.loginUser = (req, res, next) => {
 		}).catch(err => { throw(err)})
 	}).catch(err => { 
 		console.log(err)
-		res.redirect('/login')
+		res.render('login', {e: err})
 	})
 	/* eoc */
 }
