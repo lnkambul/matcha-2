@@ -1,4 +1,5 @@
 const Q = require('../models/queryModel')
+const B = require('../models/browseModel')
 
 exports.listVisitors = (req, res) => {
 	var token = req.session.token
@@ -57,18 +58,24 @@ exports.notifications = (req, res) => {
 	var visits = null
 	let promise = new Promise ((resolve) => {
 		Q.fetchoneMAndOr4('notifications', ['sender', 'type'], ['receiver', 'type'], [user, 'chat'], [user, 'like'], [user, 'visit'], [user, 'love'], (err, notis) => {
-			var n = {c: [], m: [], v: [], l: []}
-			for (let i in notis) {
-				if (notis[i].type === 'chat')
-					n.c = [...n.c, notis[i].sender]
-				else if (notis[i].type === 'like')
-					n.l = [...n.l, notis[i].sender]
-				else if (notis[i].type === 'love')
-					n.m = [...n.m, notis[i].sender]
-				else if (notis[i].type === 'visit')
-					n.v = [...n.v, notis[i].sender]
-			}
-			resolve(n)
+			B.filterNoti(user, notis, (err, clean) => {
+				if (err)
+					console.log(err)
+				else {
+					var n = {c: [], m: [], v: [], l: []}
+					for (let i in clean) {
+						if (notis[i].type === 'chat')
+							n.c = [...n.c, clean[i].sender]
+						else if (notis[i].type === 'like')
+							n.l = [...n.l, clean[i].sender]
+						else if (notis[i].type === 'love')
+							n.m = [...n.m, clean[i].sender]
+						else if (notis[i].type === 'visit')
+							n.v = [...n.v, clean[i].sender]
+					}
+					resolve(n)
+				}
+			})
 		})
 	})
 	promise.then(n => {

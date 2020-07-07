@@ -274,6 +274,25 @@ Browse.findLocals = (username, callback) => {
 	})
 }
 
+Browse.filterNoti = (user, results, callback) => {
+	Q.fetchone('blocked', ['username'], 'blocker', user, (err, block) => {
+		if (err)
+			callback(err)
+		else if (block.length > 0) {
+			var flag = []
+			var clean = []
+			for (let i in block)
+				flag.push(block[i].username)
+			for (let i in results) {
+				if (!flag.includes(results[i].sender))
+					clean.push(results[i])
+			}
+			callback(null, clean)
+		} else
+			callback(null, results)
+	})
+}
+
 Browse.filterBlock = (user, results, callback) => {
 	Q.fetchone('blocked', ['username'], 'blocker', user, (err, block) => {
 		if (err)
