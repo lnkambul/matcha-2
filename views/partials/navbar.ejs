@@ -17,17 +17,19 @@
       	<a class="nav-item nav-link" href="/visitors/likes">likes</a>
       	<a class="nav-item nav-link" href="/notifications">notifications
 				<span class="notifications" id="<%=user%>"></span></a>
-         <a class="nav-item nav-link" href="/logout" id="logout">logout</a>
-         <form action="/" method="post">
-				<select name="filter" id="filter" class="">
-					<option value="city">city</option>
-					<option value="age">age</option>
-					<option value="popularity">popularity</option>
-					<option value="interests">interests</option>
-				</select>
-				<input type="text" name="find" id="find" placeholder="search..." size="10">
-				<input type="submit" value="search">
-			</form>
+         <a class="nav-item nav-link" href="/logout" id="logout">logout</a><br>
+         <div>
+         	<form action="/" method="post">
+					<select name="filter" id="filter" class="">
+						<option value="city">city</option>
+						<option value="age">age</option>
+						<option value="popularity">popularity</option>
+						<option value="interests">interests</option>
+					</select>
+					<input type="text" name="find" id="find" placeholder="search..." size="10">
+					<input type="submit" value="search">
+				</form>
+			</div>
 	 	<%}else { %>
       	<a class="nav-item nav-link" href="/signup">signup</a>
       	<a class="nav-item nav-link" href="/login">login</a>
