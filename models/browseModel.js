@@ -263,6 +263,7 @@ Browse.findLocals = (username, callback) => {
 
 Browse.search = (search, callback) => {
 	var pars = ['username', 'gender', 'city']
+	var no = 'no matches found'
 	if (search.filter === 'age') {
 	  S.ageRange(search.find, (err, exp, range) => {
 			if (err)
@@ -271,7 +272,10 @@ Browse.search = (search, callback) => {
 				Q.fetchone('profiles', pars, 'age', exp, (err, profiles) => {
 					if (err)
 						callback(err)
-					callback(null, profiles)
+					else if (profiles.length > 0)
+						callback(null, profiles)
+					else
+						callback(no)
 				})
 			} else if (range) {
 				Q.fetchoneRange('profiles', pars, 'age', range[0], range[1], (err, profiles) => {
@@ -290,16 +294,20 @@ Browse.search = (search, callback) => {
 				Q.fetchone('profiles', pars, 'popularity', exp, (err, profiles) => {
 					if (err)
 						callback(err)
-					callback(null, profiles)
+					else if (profiles.length > 0)
+						callback(null, profiles)
+					else
+						callback(no)
 				})
 			} else if (range) {
 				Q.fetchoneRange('profiles', pars, 'popularity', range[0], range[1], (err, profiles) => {
-				if (err)
-					callback(err)
-				else
-					callback(null, profiles)
+					if (err)
+						callback(err)
+					else if (profiles.length > 0)
+						callback(null, profiles)
+					else
+						callback(no)
 				})
-
 			}
 		})
 	} else if (search.filter === "city"){
@@ -309,7 +317,10 @@ Browse.search = (search, callback) => {
 			Q.fetchone('profiles', pars, 'city', city, (err, profiles) => {
 				if (err)
 					callback(err)
-				callback(null, profiles)
+				else if (profiles.length > 0)
+					callback(null, profiles)
+				else
+					callback(no)
 			})
 		})
 	} else if (search.filter === "interests"){
@@ -328,12 +339,17 @@ Browse.search = (search, callback) => {
 								users.push(data[i])
 						}
 					}
-					Q.fetchoneMOrRows('profiles', pars, ['id'], users, (err, profiles) => {
-						if (err)
-							callback(err)
-						else if (profiles.length > 0)
-							callback(null, profiles)
-					})
+					if (users.length > 0) {
+						Q.fetchoneMOrRows('profiles', pars, ['id'], users, (err, profiles) => {
+							if (err)
+								callback(err)
+							else if (profiles.length > 0)
+								callback(null, profiles)
+							else
+								callback(no)
+						})
+					} else
+					callback(no)
 				}
 			})
 		})

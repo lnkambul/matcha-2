@@ -50,6 +50,7 @@ exports.list_users = (req, res) => {
 		res.render('index', pars)
 	})
 	.catch(e => {
+		 pars.e = e
 		 console.log(e)
 		 res.render('index', pars)
 	})
@@ -70,11 +71,12 @@ exports.search_users = (req, res) => {
 	})
 	searchSuggestions.then((locals) => {
 		pars.suggestions = locals
-		res.render('search', pars)
+		res.render('index', pars)
 	})
 	.catch(e => {
+		 pars.e = e
 		 console.log(e)
-		 res.render('search', pars)
+		 res.render('index', pars)
 	})
 }
 
@@ -97,8 +99,9 @@ exports.find_users = (req, res) => {
 		res.render('index', pars)
 	})
 	.catch(e => {
+		pars.e = e
 		console.log(e)
-		res.redirect('/')
+		res.render('index', pars)
 	})
 }
 
