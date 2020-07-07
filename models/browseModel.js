@@ -313,7 +313,7 @@ Browse.filterBlock = (user, results, callback) => {
 }
 
 Browse.search = (search, callback) => {
-	var pars = ['username', 'gender', 'city', 'bio']
+	var pars = ['username', 'gender', 'city', 'interests','bio']
 	var no = 'no matches found'
 	if (search.filter === 'age') {
 	  S.ageRange(search.find, (err, exp, range) => {
