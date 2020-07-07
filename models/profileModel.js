@@ -17,7 +17,7 @@ var Profile = function(username, profile) {
 
 //validate inputs
 Profile.validate = (profile, callback)  => {
-	var e = {age: null, gender: null, sexual_orientation: null, preference: null, interests: null, locate: null, locate2: null, bio: null}
+	var e = {age: null, gender: null, preference: null, interests: null, locate: null, locate2: null, bio: null}
 	S.strage(profile.age, (err, res) => {e.age = err})
 	S.radio('gender', profile.gender, ['male', 'female'], (err, res) => {e.gender = err})
 	S.radio('preference', profile.preference, ['men', 'women', 'both'], (err, res) => {e.preference = err})
@@ -113,14 +113,14 @@ Profile.register = (username, newpassword, p, callback) => {
 				resolve(res)
 			}
 			else
-				callback("password error")
+				callback({password: 'password error'})
 		})
 	})
 	promise.then(res => {
 		var id = res[0].id
 		S.findHash(newpassword, res[0].password, (err, res) => {
 			if (err)
-				callback('password incorrect', null)
+				callback({password: 'password incorrect'}, null)
 			else {
 				var s_orientation = ""
 				if ((p.gender === 'male' && p.preference === 'women') || (p.gender === 'female' && p.preference === 'men')) {

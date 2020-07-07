@@ -103,10 +103,11 @@ exports.find_users = (req, res) => {
 }
 
 exports.formSignup = (req, res) => {
+	var i = {username: null, first_name: null, last_name: null, email: null}
 	if (req.session.token)
 		res.redirect('/logout')
 	else
-		res.render('signup')
+		res.render('signup', {i: i})
 }
 
 exports.registerUser = (req, res) => {
@@ -114,13 +115,13 @@ exports.registerUser = (req, res) => {
 	User.validate(newUser, (err, result) => {
 		if (err) {
 			console.log("registration failed", err)
-			res.redirect('/signup')
+			res.render('signup', {i: newUser, e: err})
 		}
 		else {
 			User.check(newUser, (err, result) => {
 				if (err) {
 					console.log("registration failed", err)
-					res.redirect('/signup')
+					res.render('signup', {i: newUser, e: err})
 				}
 				else {
 					User.create(newUser, (err, result) => {
@@ -128,7 +129,7 @@ exports.registerUser = (req, res) => {
 							console.log(err)
 						else {
 							console.log("registration successful (please check email for verification link)")
-							res.redirect('/')
+							res.render('login', {e: 'registration successful (please check email for verification link)'})
 						}
 					})
 				}
@@ -171,7 +172,7 @@ exports.loginUser = (req, res, next) => {
 		}).catch(err => { throw(err)})
 	}).catch(err => { 
 		console.log(err)
-		res.redirect('/login')
+		res.render('login', {e: err})
 	})
 	/* eoc */
 }

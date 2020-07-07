@@ -6,7 +6,7 @@ var Secure = function(){}
 Secure.password = (pass, callback) => {
 	var msg = "password must contain at least one "
 	if (pass.length < 8)
-		callback("password too short", null)
+		callback("password too short (must contain atleast 8 characters)", null)
 	else if (pass.search(/[0-9]/) < 0)
 		callback(msg+"digit")
 	else if (pass.search(/[A-Z]/) < 0)
@@ -30,10 +30,10 @@ Secure.string = (field, str, callback) => {
 
 Secure.strage = (str, callback) => {
 	if (str.length < 1 || str.length > 3 || !str.match(/^[0-9]+$/))
-		callback("please enter a valid number", null)
+		callback("please enter a valid age", null)
 	else if (parseInt(str) < 18)
 		callback("you must be over 18 to create a profile", null)
-	else if (parseInt(str) > 121)
+	else if (parseInt(str) > 100)
 		callback("how are you still alive?")
 	else
 		callback(null, str)
