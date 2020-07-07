@@ -1,7 +1,10 @@
 <%- include ('partials/header') %>
 <img src='/uploads/<%=profile.username%>' width="150" height="150"><br>
 <a href='/p/upload'>upload photos</a><br>
-<a href='/p'>edit profile</a></p>
+<a href='/p'>edit profile</a></br>
+<% if (adminToken) {%>
+<a href='/admin'>admin</a></p>
+<%}%>
 <p><%= profile.username %></p>
 <p><%= profile.age %></p>
 <p><%= profile.gender %></p>

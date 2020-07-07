@@ -1,6 +1,6 @@
 const Profile = require('../models/profileModel')
 const Q = require('../models/queryModel')
-const params = ['age', 'gender', /*'orientation',*/ 'preference', 'interests', 'city', 'country', 'bio', 'popularity']
+const params = ['age', 'gender', 'preference', 'interests', 'city', 'country', 'bio', 'popularity', 'last_seen']
 const upload = require('../models/imageModel')
 const Geo = require('../models/geoModel')
 const http = require('http')
@@ -47,7 +47,6 @@ exports.formProfile = (req, res) => {
 				token: token,
 				age: p.age,
 				gender: p.gender,
-				//orientation: p.orientation,
 				preference: p.preference,
 				interests: p.interests,
 				city: p.city,
@@ -79,10 +78,13 @@ exports.userProfile = (req, res) => {
 
 exports.matchProfile = (req, res) => {
 	var match = req.params.match
+	var user = req.session.user
 	Q.fetchone("profiles", ['username', params], 'username', match, (err, result) => {
 		if (err)
 			res.redirect('/')
 		else if (result.length > 0) {
+			Q.deloneMRows('notifications', ['sender', 'receiver', 'type'], [match, user, 'visit'], () => {})
+			Q.deloneMRows('notifications', ['sender', 'receiver', 'type'], [match, user, 'like'], () => {})
 			B.visit(req.session.user, match, (err, success) => {
 				if (err)
 					console.log(err)
@@ -100,7 +102,6 @@ exports.matchProfile = (req, res) => {
 	})
 }
 
-
 exports.likeTweaked = (req, res) => {
 	var user = req.session.user
 	var liked = req.body.like
@@ -110,12 +111,14 @@ exports.likeTweaked = (req, res) => {
 		} 
 		else {
 			res.send(result)
-			B.checkMatch(user, liked, (err, result) => {
+			B.checkMatch(user, liked, (err, result, lovers) => {
 				if (err) {
 					console.log(err)
 				} 
-				else {
+				else if (result){
 					console.log(result)
+				} else if (lovers) {
+					console.log(lovers)
 				}
 			})
 		}

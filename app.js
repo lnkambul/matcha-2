@@ -36,8 +36,9 @@ const sess = require('./config/secret')
 app.use(session(sess))
 global.token = null
 global.user = null
+global.notis = null
 
-//init connection
+//init socket connection
 const http = require('http').createServer(app)
 io = require('socket.io')(http)
 app.set('socket', io)
@@ -55,6 +56,8 @@ let verify = require('./routes/verify')
 let forgotpassword = require('./routes/forgotpassword')
 let profile = require('./routes/profile')
 let visitors = require('./routes/visitors')
+let chat = require('./routes/chat')
+let notifications = require('./routes/notifications')
 app.use('/', index)
 app.use('/signup', signup)
 app.use('/login', login)
@@ -63,6 +66,8 @@ app.use('/v', verify)
 app.use('/f', forgotpassword)
 app.use('/p', profile)
 app.use('/visitors', visitors)
+app.use('/chat', chat)
+app.use('/notifications', notifications)
 
 //admin routes
 let admin = require('./routes/admin')

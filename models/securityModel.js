@@ -74,7 +74,7 @@ Secure.locate = (str, callback) => {
 	if (str.length < 3 || str.length > 12)
 		callback("please enter valid location")
 	else if (!str.match(/^[a-zA-Z- ]+$/))
-		callback("location may only contain alphabets, a space &/or a dash")
+		callback("location may only contain alphabets & a dash")
 	else
 		callback(null, str)
 
@@ -118,6 +118,41 @@ Secure.findHash = (pass, hash, callback) => {
 Secure.createToken = (pass, callback) => {
 	var c = crypto.SHA256(pass+Date.now(), 'test').toString()
 	callback(c)
+}
+
+Secure.ageRange = (age, callback) => {
+	var ar = age.split('-')
+	var msg = null
+	if (ar.length > 2)
+		msg = 'age must be less than 100, separated by a single dash'
+	for (let i in ar) {
+		if (ar[i].length < 1 || ar[i].length > 2 || ar[i] > 100 || !ar[i].match(/^[0-9]+$/))
+			msg = 'age must be less than 100, separated by a single dash'
+	}
+	if (msg)
+		callback(msg, null, null)
+	else if (ar.length === 1)
+		callback(null, ar, null)
+	else
+		callback(null, null, ar)
+
+}
+
+Secure.popRange = (pop, callback) => {
+	var ar = pop.split('-')
+	var msg = null
+	if (ar.length > 2)
+		msg = 'popularity must be less than 10, separated by a single dash'
+	for (let i in ar) {
+		if (ar[i].length < 1 || ar[i].length > 2 || ar[i] > 10 || !ar[i].match(/^[0-9]+$/))
+			msg = 'popularity must be less than 10, separated by a single dash'
+	}
+	if (msg)
+		callback(msg, null, null)
+	else if (ar.length === 1)
+		callback(null, ar, null)
+	else
+		callback(null, null, ar)
 }
 
 module.exports = Secure
