@@ -1,30 +1,53 @@
 <%- include ('partials/header') %>
-<img src='/uploads/<%=profile.username%>' width="150" height="150"><br>
-<a href='/p/upload'>upload photos</a><br>
-<a href='/p'>edit profile</a></br>
-<% if (adminToken) {%>
-<a href='/admin'>admin</a></p>
-<%}%>
-<p><%= profile.username %></p>
-<p><%= profile.age %></p>
-<p><%= profile.gender %></p>
-<p><%= profile.orientation %></p>
-<p><%= profile.preference %></p>
-<p><%= profile.interests %></p>
-<p><%= profile.city %></p>
-<p><%= profile.country %></p>
-<p><%= profile.bio %></p>
+	<div class="card col mb-2">
+		<img src='/uploads/<%=profile.username%>' height="500" onerror="this.onerror=null;this.src='/uploads/avatar.jpg'">
+		<div class="card-body card-img-overlay text-danger">
+			<h3 class="text-warning">
+			<%= profile.username %>
+			</h3>
+			<h3 class="btn bg-warning">
+			<%= profile.age %> years old
+			</h3>
+			<br>
+			<h3 class="btn bg-warning">
+			<%= profile.gender %>
+			</h3>
+			<br>
+			<h3 class="btn bg-warning">
+			interested in <%= profile.preference %>
+			</h3>
+			<br>
+			<h3 class="btn bg-warning">
+			likes <%= profile.interests %>
+			</h3>
+			<br>
+			<h3 class="btn bg-warning">
+			lives in <%= profile.city %>, <%= profile.country %>
+			</h3>
+			<br>
+			<h3 class="btn bg-warning">
+			"<%= profile.bio %>"
+			</h3>
+			<br>
+			<a href='/p/upload' class="btn bg-danger">upload photos</a>
+			<a href='/p' class="btn bg-danger">edit profile</a>
+			<% if (adminToken) {%>
+			<a href='/admin' class="btn bg-info">admin</a>
+			<%}%>
+
 
 	<!-- init admin -->
     <form method="post" id="adminForm" action="/p/va">
 		<br><label for="admin">admin</label>
 		<input type="checkbox" id="admin" name="admin" style="margin-left: 1%;"></br>
-		<label for="passkey" style="display: none;" class="verify">passkey</label><br>
-		<input type="password" style="display: none;" class="verify" id="passkey" name="key" required><br><br>
-		<button class="verify" style="display: none;" id="kingme" type="submit">verify</button><br>
-		</form><br>
+		<label for="passkey" style="display: none;" class="verify">passkey</label>
+		<input type="password" style="display: none;" class="verify" id="passkey" name="key" required>
+		<button class="verify btn bg-info" style="display: none;" id="kingme" type="submit">verify</button>
+		</form>	
+		</div>
+	</div>
 		<!-- js include for async admin verification -->
-			<script src="/js/admin.js"></script>
+		<script src="/js/admin.js"></script>
 	<!-- eoc -->
 
 <%- include ('partials/footer') %>

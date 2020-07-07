@@ -3,25 +3,58 @@
 <input type="hidden" id="user" value="<%=user%>">
 <input type="hidden" id="receiver" value="<%=match.username%>">
 </form>
-<img src='/uploads/<%=match.username%>' width="200" height="200">
-<div>
-<button class="block" id="<%=match.username%>"> <% if (adminToken) {%> suspend <% } else {%> block <% } %> </button>
-<button class="like" id="<%=match.username%>">like</button>
-</div>
-<p class="list-group-item"><%= match.username %></p>
-<p class="list-group-item"><%if (match.last_seen == 0) {%>
+
+<div class="card col mb-2" width="auto">
+	<img src='/uploads/<%=match.username%>' height="500" width="auto" onerror="this.onerror=null;this.src='/uploads/avatar.jpg'">
+	<div class="card-body card-img-overlay text-danger">
+		<h1 class="text-warning">
+		<%=match.username%>
+		</h1>
+		<h3 class="btn bg-warning">
+		<%if (match.last_seen == 0) {%>
 online
 <%}else {%>
 offline (last seen: <%=match.last_seen%>)
-<%}%></p>
-<p class="list-group-item"><%= match.popularity %>/10 rating</p>
-<p class="list-group-item"><%= match.age %> years old</p>
-<p class="list-group-item"><%= match.gender %></p>
-<!-- <p class="list-group-item"><%= match.orientation %></p> -->
-<p class="list-group-item">prefers <%= match.preference %></p>
-<p class="list-group-item">likes: <%= match.interests %></p>
-<p class="list-group-item">from <%= match.city %>, <%= match.country %></p>
-<p class="list-group-item">"<%= match.bio %>"</p>
+<%}%>
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		<%= match.popularity %>/10 rating
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		<%= match.age %> years old
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		<%= match.gender %>
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		interested in <%= match.preference %>
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		likes <%= match.interests %>
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		<%= match.city %>, <%= match.country %>
+		</h3>
+		</br>
+		<h3 class="btn bg-warning">
+		"<%= match.bio %>"
+		</h3>
+		</br>
+		<div>
+			<button class="block btn bg-danger" id="<%=match.username%>"> <% if (adminToken) {%> suspend <% } else {%> block <% } %> </button>
+			<button class="like btn bg-danger" id="<%=match.username%>">like</button>
+			<a href="/chat/<%=match.username%>" class="btn bg-info">chat</a>
+		</div>
+
+	</div>
+
+</div>
 <script src="/js/like.js"></script>
 <script src="/js/block.js"></script>
 <script src="/js/notify.js"></script>

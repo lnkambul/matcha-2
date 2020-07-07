@@ -216,7 +216,7 @@ Browse.findLocals = (username, callback) => {
 			else if(profile[0].preference === 'both')
 				bi = 'female'
 			var interests = profile[0].interests.split(',')
-			Q.fetchoneMRowNot('profiles', ['username', 'gender', 'city', 'interests', 'suspended', 'popularity'], ['gender', 'username'], [gender, username], [bi, username], (err, bMatch) => {
+			Q.fetchoneMRowNot('profiles', ['username', 'gender', 'city', 'interests', 'suspended', 'popularity', 'bio'], ['gender', 'username'], [gender, username], [bi, username], (err, bMatch) => {
 				if (bMatch && bMatch.length > 0) {
 					var gMatch = []
 					var bloc = new Promise ((resolve, reject) => {
@@ -313,7 +313,7 @@ Browse.filterBlock = (user, results, callback) => {
 }
 
 Browse.search = (search, callback) => {
-	var pars = ['username', 'gender', 'city']
+	var pars = ['username', 'gender', 'city', 'interests','bio']
 	var no = 'no matches found'
 	if (search.filter === 'age') {
 	  S.ageRange(search.find, (err, exp, range) => {
