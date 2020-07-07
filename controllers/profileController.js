@@ -55,6 +55,7 @@ exports.formProfile = (req, res) => {
 
 exports.registerProfile = (req, res) => {
 	var sess = req.session
+	var user = req.session.user
 	var token = req.session.token
 	var adminToken = req.session.adminToken
 	var t = {token: token, adminToken: adminToken}
@@ -64,13 +65,13 @@ exports.registerProfile = (req, res) => {
 			Profile.validate(newProfile, (err, success) => {
 				if (err) {
 					console.log("error ", err)
-					res.render('profileForm', {token: token, adminToken: adminToken, p: req.body, e: err})
+					res.render('profileForm', {user: user, token: token, adminToken: adminToken, p: req.body, e: err})
 				}
 				else {
 					Profile.register(result[0].username, req.body.password, newProfile, (err, success) => {
 						if (err) {
 							console.log(err)
-							res.render('profileForm', {token: token, adminToken: adminToken, p: req.body, e: err})
+							res.render('profileForm', {user: user, token: token, adminToken: adminToken, p: req.body, e: err})
 						}
 						else {
 							/*successful profile registration/update triggers geolocation function*/
