@@ -7,11 +7,9 @@
 <div class="card col mb-2" width="auto">
 	<img src='/uploads/<%=match.username%>' height="500" width="auto" onerror="this.onerror=null;this.src='/uploads/avatar.jpg'">
 	<div class="card-body card-img-overlay text-danger">
-		
 		<h1 class="text-warning">
 		<%=match.username%>
 		</h1>
-
 		<h3 class="btn bg-warning">
 		<%if (match.last_seen == 0) {%>
 online
@@ -20,7 +18,6 @@ offline (last seen: <%=match.last_seen%>)
 <%}%>
 		</h3>
 		</br>
-
 		<h3 class="btn bg-warning">
 		<%= match.popularity %>/10 rating
 		</h3>
@@ -52,6 +49,7 @@ offline (last seen: <%=match.last_seen%>)
 		<div>
 			<button class="block btn bg-danger" id="<%=match.username%>"> <% if (adminToken) {%> suspend <% } else {%> block <% } %> </button>
 			<button class="like btn bg-danger" id="<%=match.username%>">like</button>
+			<a href="/chat/<%=match.username%>" class="btn bg-info">chat</a>
 		</div>
 
 	</div>
