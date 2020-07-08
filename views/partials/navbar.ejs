@@ -5,46 +5,30 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="/">matcha</a>
+			<a class="navbar-brand btn text-danger" href="/">
+				<i class="fa fa-heartbeat text-danger"></i> matcha
+			</a>
 		</div>
 		<button type="button" class="navbar-toggler mr-sm-2 my-2" data-toggle="collapse" data-target="#navcol">
-				<span class="navbar-toggler-icon"></span>
+				<i class="fa fa-bars text-danger"></i>
 		</button>
 		<div class="navbar-collapse collapse" id="navcol">
 			<ul class="nav navbar-nav">	
 				<% if (token) { %>
+					<li><a class="nav-link" href="/p/u">profile (<%=user%>)</a></li>
+					<li><a class="nav-item nav-link" href="/chat">chat</a></li>
+					<li><a class="nav-item nav-link" href="/visitors">visitors</a></li>
+					<li><a class="nav-item nav-link" href="/visitors/likes">likes</a></li>
 					<li>
-					<a class="nav-link" href="/p/u">profile (<%=user%>)</a>
+						<a class="nav-item nav-link" href="/notifications">
+							notifications <span class="notifications" id="<%=user%>"></span>
+						</a>
 					</li>
-					<li>
-					<a class="nav-item nav-link" href="/chat">chat</a>
-					</li>
-					<li>
-					<a class="nav-item nav-link" href="/visitors">visitors</a>
-					</li>
-					<li>
-					<a class="nav-item nav-link" href="/visitors/likes">likes</a>
-					</li>
-					<li>
-					<a class="nav-item nav-link" href="/notifications">notifications
-						<span class="notifications" id="<%=user%>"></span>
-					</a>
-					</li>
-					<li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-					<a class="nav-item nav-link" href="/logout" id="logout">logout</a>
-					</li>
-	 			<%}else { %>
-					<li>
-					<a class="nav-item nav-link" href="/signup">signup</a>
-					</li>
-					<li>
-					<a class="nav-item nav-link" href="/login">login</a>
-					</li>
-				<% } %>
-			</ul>
-			<form action="/" method="post" class="navbar-form form-inline">
+					<li><a class="nav-item nav-link" href="/logout" id="logout">logout</a></li>
+	 		</ul>
+	 		<form action="/" method="post" class="navbar-form form-inline">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<select name="filter" id="filter" class="btn text-info btn-outline-secondary form-control">
@@ -60,10 +44,14 @@
 					</div>
 				</div>
 			</form>
-		</div>	
+	 				<%}else { %>
+			<ul class="nav navbar-nav navbar-right">
+					<li><a class="nav-item nav-link" href="/signup">signup</a></li>
+					<li><a class="nav-item nav-link" href="/login">login</a></li>
+				<% } %>
+			</ul>
+					</div>	
 	</div>
 </nav>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/navSocket.js"></script>
-
-

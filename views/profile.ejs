@@ -1,43 +1,21 @@
 <%- include ('partials/header') %>
-	<div class="card col mb-2">
+	<div class="card col mb-2 bg-transparent">
 		<img src='/uploads/<%=profile.username%>' height="500" onerror="this.onerror=null;this.src='/uploads/avatar.jpg'">
-		<div class="card-body card-img-overlay text-danger">
-			<h3 class="text-warning">
-			<%= profile.username %>
-			</h3>
-			<h3 class="btn bg-warning">
-			<%= profile.age %> years old
-			</h3>
-			<br>
-			<h3 class="btn bg-warning">
-			<%= profile.gender %>
-			</h3>
-			<br>
-			<h3 class="btn bg-warning">
-			interested in <%= profile.preference %>
-			</h3>
-			<br>
-			<h3 class="btn bg-warning">
-			likes <%= profile.interests %>
-			</h3>
-			<br>
-			<h3 class="btn bg-warning">
-			lives in <%= profile.city %>, <%= profile.country %>
-			</h3>
-			<br>
-			<h3 class="btn bg-warning">
-			"<%= profile.bio %>"
-			</h3>
-			<br>
+		<div class="card-body card-img-overlay text-danger bg-transparent">
+			<h3 class="text-warning"><%= profile.username %></h3>
+			<h3 class="btn bg-warning"><%= profile.age %> years old</h3><br>
+			<h3 class="btn bg-warning"><%= profile.gender %></h3><br>
+			<h3 class="btn bg-warning">interested in <%= profile.preference %></h3><br>
+			<h3 class="btn bg-warning">likes <%= profile.interests %></h3><br>
+			<h3 class="btn bg-warning">lives in <%= profile.city %>, <%= profile.country %></h3><br>
+			<h3 class="btn bg-warning">"<%= profile.bio %>"</h3><br>
 			<a href='/p/upload' class="btn bg-danger">upload photos</a>
 			<a href='/p' class="btn bg-danger">edit profile</a>
 			<% if (adminToken) {%>
 			<a href='/admin' class="btn bg-info">admin</a>
 			<%}%>
-
-
 	<!-- init admin -->
-    <form method="post" id="adminForm" action="/p/va">
+    	<form method="post" id="adminForm" action="/p/va">
 		<br><label for="admin">admin</label>
 		<input type="checkbox" id="admin" name="admin" style="margin-left: 1%;"></br>
 		<label for="passkey" style="display: none;" class="verify">passkey</label>
