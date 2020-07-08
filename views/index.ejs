@@ -1,4 +1,17 @@
 <%- include ('partials/header') %>
+
+	<div>
+		<form action="/sort" method="post">
+		   <select name="sort" id="sort">
+			   <option value="city">city</option>
+			   <option value="age">age</option>
+			   <option value="popularity">popularity</option>
+			   <option value="interests">interests</option>
+		   </select>
+		   <input type="submit" value="sort">
+	   </form>
+   </div>
+
 <%if (e) {%><span style="color:red"><%=e%></span><%}%>
 
 <div class="row row-cols-1 row-cols-md-3">

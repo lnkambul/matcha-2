@@ -111,6 +111,10 @@ exports.find_users = (req, res) => {
 	})
 }
 
+exports.sort_users = (req, res) => {
+	
+}
+
 exports.formSignup = (req, res) => {
 	var i = {username: null, first_name: null, last_name: null, email: null}
 	if (req.session.token)
