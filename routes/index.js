@@ -9,6 +9,7 @@ router.get('/', profileController.auth, userController.list_users)
 
 router.post('/', profileController.auth, userController.find_users)
 
+//router.post('/sort', profileController.auth, userController.sort_users)
 
 //router.get('/:map', userController.auth, visitorController.lost)
 
