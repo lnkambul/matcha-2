@@ -264,6 +264,10 @@ Browse.findLocals = (username, callback) => {
 									locals.push(gMatch[i])
 							}
 						}
+						for (let i in gMatch) {
+							if (!locals.includes(gMatch[i]))
+								locals.push(gMatch[i])
+						}
 						callback(null, locals)
 					})
 				} else
