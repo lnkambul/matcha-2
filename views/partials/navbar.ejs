@@ -2,7 +2,7 @@
 <form action="">
 	<input type="hidden" id="user" value="<%=user%>">
 </form>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<a class="navbar-brand btn text-danger" href="/">
@@ -31,14 +31,14 @@
 	 		<form action="/" method="post" class="navbar-form form-inline">
 				<div class="input-group">
 					<div class="input-group-prepend">
-						<select name="filter" id="filter" class="btn text-info btn-outline-secondary form-control">
+						<select name="filter" id="filter" class="btn text-info btn-outline-secondary form-control bg-dark">
 							<option value="city">city</option>
 							<option value="age">age</option>
 							<option value="popularity">popularity</option>
 							<option value="interests">interests</option>
 						</select>
 					</div>
-					<input type="search" name="find" id="find" placeholder="search..." class="form-control">
+					<input type="search" name="find" id="find" placeholder="search..." class="form-control col-md-4" required>
 					<div class="input-group-append">
 						<button type="submit" class="btn btn-outline-info bg-light border-left-0 border"><i class="fa fa-search"></i></button>
 					</div>
