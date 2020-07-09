@@ -1,18 +1,21 @@
 <%- include ('partials/header') %>
-
-	<div>
-		<form action="/sort" method="post">
-		   <select name="sort" id="sort">
-			   <option value="city">city</option>
-			   <option value="age">age</option>
-			   <option value="popularity">popularity</option>
-			   <option value="interests">interests</option>
-		   </select>
-		   <input type="submit" value="sort">
-	   </form>
-   </div>
-
-<%if (e) {%><span style="color:red"><%=e%></span><%}%>
+<form action="/filter" method="post" class="form-inline my-4">
+	<div class="input-group">
+		<div class="input-group-prepend">
+			<select name="sort" id="sort" class="btn text-info btn-outline-secondary form-control bg-dark">
+				<option value="city">city</option>
+				<option value="age">age</option>
+				<option value="popularity">popularity</option>
+				<option value="interests">interests</option>
+			</select>
+		</div>
+		<input type="by" name="by" id="find" placeholder="filter..." class="form-control col-md-6" required>
+		<div class="input-group-append">
+			<button type="submit" class="btn btn-outline-info bg-light border-left-0 border"><i class="fa fa-filter"></i></button>
+		</div>
+	</div>
+</form>
+<%if (e) {%><span class="text-danger"><%=e%></span><%}%>
 
 <div class="row row-cols-1 row-cols-md-3">
 <% if (suggestions) { for (let i in suggestions) {%>
