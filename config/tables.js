@@ -1,136 +1,74 @@
-'use strict';
+const database = require('./database')
 
-var tables = {
-	users : (
-		"CREATE TABLE `users` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" `first_name` varchar(25) NOT NULL," +
-		" `last_name` varchar(25) NOT NULL," + 
-		" `email` varchar(60) NOT NULL," +
-		" `password` varchar(100) NOT NULL," +
-		" `pro_pic` varchar(250)," +
-		" `verified` int(2) NOT NULL DEFAULT 0," +
-		" `admin` int (1) NOT NULL DEFAULT 0," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	profiles : (
-		"CREATE TABLE `profiles` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" `age` varchar(3)," +
-		" `gender` varchar(25) NOT NULL," +
-		" `orientation` varchar(25) NOT NULL," +
-		" `preference` varchar(25) NOT NULL," +
-		" `interests` varchar(140) NOT NULL," +
-		" `city` varchar(42) NOT NULL," +
-		" `country` varchar(42) NOT NULL," +
-		" `bio` varchar(140)," +
-		" `popularity` int (2) NOT NULL DEFAULT 0," +
-		" `suspended` int (1) NOT NULL DEFAULT 0," +
-		" `last_seen` varchar(30) NOT NULL DEFAULT 0," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	interests : (
-		"CREATE TABLE `interests` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `interest` varchar(20) NOT NULL," +
-		" `user_list` varchar(2500)," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	likes : (
-		"CREATE TABLE `likes` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" `liked` varchar(20) NOT NULL," +
-		" `lovers` int (1) NOT NULL DEFAULT 0," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	blocked : (
-		"CREATE TABLE `blocked` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" `blocker` varchar(20) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	visits : (
-		"CREATE TABLE `visits` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `visitor` varchar(20) NOT NULL," +
-		" `visited` varchar(20) NOT NULL," +
-		" `year` int(4) NOT NULL," +
-		" `month` int(2) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	notifications : (
-		"CREATE TABLE `notifications` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `sender` varchar(20) NOT NULL," +
-		" `receiver` varchar(20) NOT NULL," +
-		" `type` varchar(20) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	chats : (
-		"CREATE TABLE `chats` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `sender` varchar(20) NOT NULL," +
-		" `receiver` varchar(20) NOT NULL," +
-		" `message` varchar(400) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	images : (
-		"CREATE TABLE `images` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" `img_src` varchar(250) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	tokens : (
-		"CREATE TABLE `tokens` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20)," +
-		" `type` varchar(20) NOT NULL," +
-		" `token` varchar(250) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	geolocation : (
-		"CREATE TABLE `geolocation` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" `latitude` DECIMAL(6, 4)," +
-		" `longitude` DECIMAL(6, 4)," +
-		" `city` varchar(42)," +
-		" `country` varchar(42)," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	test : (
-		"CREATE TABLE `test` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `username` varchar(20) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
-	places : (
-		"CREATE TABLE `places` (" +
-		" `id` int(11) NOT NULL AUTO_INCREMENT," +
-		" `latitude` DECIMAL(6, 4)," +
-		" `longitude` DECIMAL(6, 4)," +
-		" `city` varchar(42) NOT NULL," +
-		" `country` varchar(42) NOT NULL," +
-		" PRIMARY KEY (`id`)" +
-		") ENGINE=InnoDB"
-	),
+exports.tablesArray = (callback) => {
+    let promise = new Promise((res, rej) => {
+        database.dbname((err , name) => {
+            if (err) {
+                console.log(err)
+                rej(err)
+            }
+            else {
+                res(name)
+            }
+        })
+    })
+    promise.then(dbname => {
+        let tables = []
+
+        let users = `CREATE TABLE IF NOT EXISTS ${dbname}.users (`
+                        +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
+                        +`username varchar(20) UNIQUE NOT NULL, `
+                        +`firstname varchar(50) NOT NULL, `
+                        +`lastname varchar(50) NOT NULL, `
+                        +`email varchar(140) NOT NULL, `
+                        +`password varchar(60) NOT NULL, `
+                        +`gender varchar(10) DEFAULT NULL, `
+                        +`preference varchar(5) DEFAULT 'both', `
+                        +`bio varchar(140) DEFAULT NULL, `
+                        +`interests varchar(60) DEFAULT NULL, `
+                        +`pics int(1) UNSIGNED DEFAULT 0, `
+                        +`visitors int(12) UNSIGNED DEFAULT 0, `
+                        +`likes int(12) UNSIGNED DEFAULT 0, `
+                        +`matches int(12) UNSIGNED DEFAULT 0, `
+                        +`city varchar (85) DEFAULT NULL, `
+                        +`country varchar (60) DEFAULT NULL, `
+                        +`verified int(1) UNSIGNED DEFAULT 0, `
+                        +`suspended int(1) UNSIGNED DEFAULT 0, `
+                        +`lastseen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `
+                        +`PRIMARY KEY (id)`
+                        +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
+        
+        let likes = `CREATE TABLE IF NOT EXISTS ${dbname}.likes (`
+                        +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
+                        +`liker int(12) UNSIGNED NOT NULL, `
+                        +`likee int(12) UNSIGNED NOT NULL, `
+                        +`reciprocated int(1) UNSIGNED DEFAULT 0, `
+                        +`PRIMARY KEY (id), `
+                        +`FOREIGN KEY (liker) REFERENCES ${dbname}.users(id), `
+                        +`FOREIGN KEY (likee) REFERENCES ${dbname}.users(id)`
+                        +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
+        
+        let blocks = `CREATE TABLE IF NOT EXISTS ${dbname}.blocks (`
+                        +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
+                        +`blocker int(12) UNSIGNED NOT NULL, `
+                        +`blockee int(12) UNSIGNED NOT NULL, `
+                        +`PRIMARY KEY (id), `
+                        +`FOREIGN KEY (blocker) REFERENCES ${dbname}.users(id), `
+                        +`FOREIGN KEY (blockee) REFERENCES ${dbname}.users(id)`
+                        +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
+        
+        let places = `CREATE TABLE IF NOT EXISTS ${dbname}.places (`
+                        +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
+                        +`city varchar(20) NOT NULL, `
+                        +`country varchar(20) NOT NULL, `
+                        +`latitude decimal(6, 4) NOT NULL, `
+                        +`longitude decimal(6, 4) NOT NULL, `
+                        +`PRIMARY KEY (id), `
+                        +`FOREIGN KEY (user) REFERENCES ${dbname}.users(id)`
+                        +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
+    
+        callback(null, tables = [...tables, users, likes, blocks, places])
+    }).catch(err => {
+        callback(err, null)
+    })
 }
-
-module.exports = tables;
