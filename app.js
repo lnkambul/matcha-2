@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const app = express()
 
 /* handlebars middleware */
-app.engine('handlebars', exphbs({defaultLayout: 'main'}))
+app.engine('handlebars', exphbs({defaultLayout: 'anon'}))
 app.set('view engine', 'handlebars')
 
 /*body-parser middleware */

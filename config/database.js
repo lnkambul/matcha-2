@@ -1,6 +1,6 @@
 const connex = require('./setup')
 const tables = require('./tables')
-//const dbname = 'inIIit'
+//const dbname = 'reel'
 
 
 exports.create = (callback) => {
