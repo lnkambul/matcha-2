@@ -1,7 +1,19 @@
 const tables = require('./tables')
 const credentials = require('./credentials')
-//const connex = require('./setup')
+const connex = require('./setup')
 
+exports.authenticate = async(next) => {
+    try {
+        let flagType = await credentials.checkFlag()
+        if (flagType && flagType === 'database') {
+            next('configs', 'setup')
+        }
+    }
+    catch(err) { 
+        console.log('database authenticate error:', err) 
+    }
+    next('index', 'main')
+}
 
 exports.createDatabase = async() => {
     /* creates the app database */
@@ -97,18 +109,5 @@ exports.setDbName = (dbname) => {
     }
     catch {
         console.log('set database name error', err)
-    }
-}
-
-exports.setFlag = (type) => {
-    /* sets a flag indicating source of failed verification error */
-    try {
-        if (!credentials.checkExists('temp')) {
-            credentials.createFolder('temp')
-        }
-        credentials.writeVal('temp/flag.txt', type)
-    }
-    catch (err) {
-        console.log('set flag error:', err)
     }
 }
