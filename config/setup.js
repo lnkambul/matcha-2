@@ -1,15 +1,13 @@
-const mysql = require('mysql')
-const connex = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-})
+const connex = require ('./dblogin')
+const database = require ('./database')    
+    
 connex.connect((err) => {
+    /* establishes connection to the mysql database */
     if (err) {
-        console.log(err.message)
+        database.setFlag('database')
     }
     else {
-        console.log(`connected`)
+        console.log(`connected to database`)
     }
 })
 

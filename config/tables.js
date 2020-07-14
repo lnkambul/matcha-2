@@ -1,20 +1,10 @@
 const database = require('./database')
 
-exports.tablesArray = (callback) => {
-    let promise = new Promise((res, rej) => {
-        database.dbname((err , name) => {
-            if (err) {
-                console.log(err)
-                rej(err)
-            }
-            else {
-                res(name)
-            }
-        })
-    })
-    promise.then(dbname => {
-        let tables = []
-
+exports.tablesArray = async() => {
+    /* initializes an array with the database tables' sql creation queries */
+    try {
+        let dbname = await database.getDbName()
+        
         let users = `CREATE TABLE IF NOT EXISTS ${dbname}.users (`
                         +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
                         +`username varchar(20) UNIQUE NOT NULL, `
@@ -37,7 +27,7 @@ exports.tablesArray = (callback) => {
                         +`lastseen TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `
                         +`PRIMARY KEY (id)`
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
-        
+            
         let likes = `CREATE TABLE IF NOT EXISTS ${dbname}.likes (`
                         +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
                         +`liker int(12) UNSIGNED NOT NULL, `
@@ -47,7 +37,7 @@ exports.tablesArray = (callback) => {
                         +`FOREIGN KEY (liker) REFERENCES ${dbname}.users(id), `
                         +`FOREIGN KEY (likee) REFERENCES ${dbname}.users(id)`
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
-        
+            
         let blocks = `CREATE TABLE IF NOT EXISTS ${dbname}.blocks (`
                         +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
                         +`blocker int(12) UNSIGNED NOT NULL, `
@@ -56,7 +46,7 @@ exports.tablesArray = (callback) => {
                         +`FOREIGN KEY (blocker) REFERENCES ${dbname}.users(id), `
                         +`FOREIGN KEY (blockee) REFERENCES ${dbname}.users(id)`
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
-        
+            
         let places = `CREATE TABLE IF NOT EXISTS ${dbname}.places (`
                         +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
                         +`city varchar(20) NOT NULL, `
@@ -66,9 +56,11 @@ exports.tablesArray = (callback) => {
                         +`PRIMARY KEY (id), `
                         +`FOREIGN KEY (user) REFERENCES ${dbname}.users(id)`
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
-    
-        callback(null, tables = [...tables, users, likes, blocks, places])
-    }).catch(err => {
-        callback(err, null)
-    })
+        
+        let tables = [users, likes, blocks, places]
+        return (tables)
+    }
+    catch(err) {
+        console.log('tables array error:', err)
+    }
 }
