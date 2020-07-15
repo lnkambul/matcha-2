@@ -1,11 +1,11 @@
 const express = require('express')
-const database = require('./config/database')
+const auth = require('./config/auth')
 const router = express.Router()
 
 /* logged in routes */
 
 router.get('/', (req, res) => {
-    database.authenticate((page, layout) => { res.render(page, { layout: layout }) })
+    auth.authenticate((page, layout) => { res.render(page, { layout: layout }) })
 })
 
 router.get('/profile', (req, res) => {

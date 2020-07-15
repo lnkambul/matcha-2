@@ -1,10 +1,10 @@
 const connex = require ('./dblogin')
-const credentials = require ('./credentials')    
+const auth = require ('./auth')    
     
-connex.connect((err) => {
+connex.connect(err => {
     /* establishes connection to the mysql database */
     if (err) {
-        credentials.setFlag(`database`)
+        auth.setFlag(`database`)
     }
     else {
         console.log(`connected to database`)

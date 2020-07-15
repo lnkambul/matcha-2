@@ -10,9 +10,11 @@ const app = express()
 app.engine('handlebars', exphbs({defaultLayout: 'setup'}))
 app.set('view engine', 'handlebars')
 
-/*body-parser middleware */
+/* body-parser middleware */
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+/* database credentials authentification middleware */
 
 /* set static folder */
 app.use(express.static(path.join(__dirname, 'public')))

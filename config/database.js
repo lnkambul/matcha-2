@@ -1,19 +1,7 @@
-const tables = require('./tables')
-const credentials = require('./credentials')
-const connex = require('./setup')
-
-exports.authenticate = async(next) => {
-    try {
-        let flagType = await credentials.checkFlag()
-        if (flagType && flagType === 'database') {
-            next('configs', 'setup')
-        }
-    }
-    catch(err) { 
-        console.log('database authenticate error:', err) 
-    }
-    next('index', 'main')
-}
+const tables = require ('./tables')
+const credentials = require ('./credentials')
+const connex = require ('./setup')
+const auth = require ('./auth')
 
 exports.createDatabase = async() => {
     /* creates the app database */
@@ -84,11 +72,11 @@ exports.initializeDatabase = async() => {
 exports.getDbName = _=> {
     /* returns the database name */
     try {
-        if (credentials.checkExists('credentials') && credentials.checkExists('credentials/dbname')) {
-            let dbname = credentials.getFileContents('credentials', 'dbname')
+        if (auth.checkExists('credentials') && auth.checkExists('credentials/dbname')) {
+            let dbname = auth.getFileContents('credentials', 'dbname')
             return (dbname)
         }
-        else if (!credentials.checkExists('credentials')) {
+        else if (!auth.checkExists('credentials')) {
             credentials.createFolder('credentials')
         }
         credentials.writeVal('credentials/dbname.txt', 'reel')
@@ -102,7 +90,7 @@ exports.getDbName = _=> {
 exports.setDbName = (dbname) => {
     /* sets the databse name */
     try {
-        if (!credentials.checkExists('credentials')) {
+        if (!auth.checkExists('credentials')) {
             credentials.createFolder('credentials')
         }
         credentials.writeVal('credentials/dbname.txt', dbname)

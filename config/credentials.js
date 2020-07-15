@@ -3,19 +3,6 @@ const path = require ('path')
 const mysql = require ('mysql')
 //const bcrypt = require ('bcrypt')
 
-exports.checkExists = (file) => {
-    /* checks if the credentials folder exists */
-    try {
-        if (!fs.existsSync(path.join(__dirname, file))) {
-            return(false)
-        }
-        return(true)
-    }
-    catch (err) {
-        console.log('check file existence error:', err)    
-    }
-}
-
 exports.getLogins = async(path) => {
     /* fetches login details from file */
     try {
@@ -30,34 +17,15 @@ exports.getLogins = async(path) => {
     }
 }
 
-exports.getFileContents = async(fpath, filename) => {
-    /* reads in contents of specified file */
-    try {
-        let filePath = path.join(__dirname, fpath, filename)
-        if (!this.checkExists(fpath)) {
-            throw(`${fpath} not found`)
-        }
-        else if (!this.checkExists(filePath)) {
-            throw(`${filePath} not found`)
-        }
-        let data = fs.readFile(filePath, 'utf8')
-        return (data)
-    }
-    catch (err) {
-        console.log('get file contents error:', err)
-        return (null)
-    }
-}
-
 exports.createFolder = (folder) => {
     /* creates folder */
     try {
-        fs.mkdirSync(path.join(__dirname, folder, (err) =>{
+        fs.mkdirSync(path.join(__dirname, folder), (err) =>{
             if (err) {
                 throw(`failed to create ${folder}`)
             }
             console.log(`${folder} created`)
-        }))
+        })
     }
     catch (err) {
         console.log('folder creation error:', err)
@@ -102,31 +70,6 @@ exports.writeVal = (file, val) => {
     }
     catch (err) {
         console.log('writing to file error:', err)
-    }
-}
-
-exports.setFlag = (type) => {
-    /* sets a flag indicating source of failed verification error */
-    try {
-        if (!this.checkExists('temp')) {
-            this.createFolder('temp')
-        }
-        credentials.writeVal('temp/flag.txt', type)
-    }
-    catch (err) {
-        console.log('set flag error:', err)
-    }
-}
-
-exports.checkFlag = async() => {
-    /* checks whether or not a flag has been set, returns flag if found */
-    try {
-        let flagType = this.getFileContents('temp', 'flag.txt')
-        return (flagType)
-    }
-    catch (err) {
-        console.log('check flag error:', err)
-        return (null)
     }
 }
 
