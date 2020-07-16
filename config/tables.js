@@ -1,6 +1,6 @@
 const database = require('./database')
 
-exports.tablesArray = async() => {
+exports.tablesArray = async(callback) => {
     /* initializes an array with the database tables' sql creation queries */
     try {
         let dbname = await database.getDbName()
@@ -58,9 +58,10 @@ exports.tablesArray = async() => {
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
         
         let tables = [users, likes, blocks, places]
-        return (tables)
+        callback (null, tables)
     }
     catch(err) {
         console.log('tables array error:', err)
+        callback (err, null)
     }
 }

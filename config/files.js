@@ -13,7 +13,7 @@ exports.createFolder = (folder, callback) => {
         })
     }
     catch (err) {
-        console.log('folder creation error:', err)
+        console.log('folder creation error thrown:', err)
         callback (err, null)
     }
 }
@@ -31,7 +31,7 @@ exports.writeVal = (file, val, callback) => {
         })
     }
     catch (err) {
-        console.log('writing to file error:', err)
+        console.log('writing to file error thrown:', err)
         callback (err, null)
     }
 }
@@ -44,11 +44,11 @@ exports.getFileContents = async(fpath, callback) => {
             throw(`${fpath} not found`)
         }
         fs.readFile(path.join(__dirname, filePath), 'utf-8', (err, data) => {
-            callback (null, data)  
+            callback (null, data)
         })
     }
     catch (err) {
-        console.log('get file contents error:', err)
+        console.log('get file contents error thrown:', err)
         callback (err, null)
     }
 }
@@ -62,7 +62,7 @@ exports.checkExists = (file) => {
         return(true)
     }
     catch (err) {
-        console.log('check file existence error:', err)    
+        console.log('check file existence error thrown:', err)    
     }
 }
 

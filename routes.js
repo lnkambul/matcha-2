@@ -1,11 +1,11 @@
 const express = require('express')
-const auth = require('./config/auth')
+const config = require('./config/router')
 const router = express.Router()
 
 /* logged in routes */
 
 router.get('/', (req, res) => {
-    auth.authenticate((page, layout) => { res.render(page, { layout: layout }) })
+    config.main((page, layout) => { res.render(page, { layout: layout }) })
 })
 
 router.get('/profile', (req, res) => {
@@ -40,7 +40,7 @@ router.get('/dbconfigs', (req, res) => {
 })
 
 router.post('/dbconfigs', (req, res) => {
-    auth.mysqlLogin(req, (page, layout) => { res.render(page, { layout: layout }) })
+    config.mysqlLogin(req, (page, layout) => { res.render(page, { layout: layout }) })
 })
 
 router.get('/emailconfigs', (req, res) => {
