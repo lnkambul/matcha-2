@@ -1,9 +1,8 @@
 const tables = require ('./tables')
-const credentials = require ('./credentials')
+const files = require ('./files')
 const connex = require ('./setup')
-const auth = require ('./auth')
 
-exports.createDatabase = async() => {
+exports.createDatabase = async(callback) => {
     /* creates the app database */
     try {
         let dbname = await this.getDbName()
@@ -11,15 +10,17 @@ exports.createDatabase = async() => {
                     + `CHARACTER SET utf8 COLLATE utf8_general_ci`
         connex.query(sql, (err, rows) => {
             if (err) {
-                throw(err)
+                console.log('failed to connect to database:', err)
+                callback(err, null)
             }
             else {
-                return(rows)
+                callback(null, rows)
             }
         })
     }
     catch (err) {
         console.log('create database error:', err)
+        callback(err, null)
     }
 }
 
@@ -56,44 +57,47 @@ exports.createTables = async() => {
     }
 }
 
-exports.initializeDatabase = async() => {
+exports.initializeDatabase = async(callback) => {
     /* initializes the app database and accompanying tables */
     try {
-        let db = this.createDatabase()
-        let tables = this.createTables()
+        let db = await this.createDatabase((err, res) => {if (err) { throw(err) }})
+        let tables = this.createTables((err, res) => { if (err) { throw(err) } })
         let database = await Promise.all([db, tables])
-        return (database)
+        callback (null, database)
     }
     catch (err) {
         console.log('initialize database error:', err)
+        callback (err, null)
     }
 } 
 
-exports.getDbName = _=> {
+exports.getDbName = async(callback) => {
     /* returns the database name */
     try {
-        if (auth.checkExists('credentials') && auth.checkExists('credentials/dbname')) {
-            let dbname = auth.getFileContents('credentials', 'dbname')
-            return (dbname)
+        if (files.checkExists('credentials') && files.checkExists('credentials/dbname')) {
+            files.getFileContents('credentials/dbname', (err, res) => {
+                callback (null, res)
+            })
         }
-        else if (!auth.checkExists('credentials')) {
-            credentials.createFolder('credentials')
+        else if (!files.checkExists('credentials')) {
+            files.createFolder('credentials')
+            files.writeVal('credentials/dbname.txt', 'reel')
+            callback(null, 'reel')
         }
-        credentials.writeVal('credentials/dbname.txt', 'reel')
-        return('reel')
     }
     catch (err) {
         console.log('get database name error:', err)
+        callback (err, null)
     }
 }
 
 exports.setDbName = (dbname) => {
     /* sets the databse name */
     try {
-        if (!auth.checkExists('credentials')) {
-            credentials.createFolder('credentials')
+        if (!files.checkExists('credentials')) {
+            files.createFolder('credentials')
         }
-        credentials.writeVal('credentials/dbname.txt', dbname)
+        files.writeVal('credentials/dbname.txt', dbname)
     }
     catch {
         console.log('set database name error', err)

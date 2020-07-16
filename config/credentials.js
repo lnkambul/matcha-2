@@ -1,42 +1,27 @@
-const fs = require ('fs')
-const path = require ('path')
 const mysql = require ('mysql')
+const files = require ('./files')
 //const bcrypt = require ('bcrypt')
 
-exports.getLogins = async(path) => {
+exports.getLogins = async(path, callback) => {
     /* fetches login details from file */
     try {
         let username = this.getFileContents(path, 'username')
         let password = this.getFileContents(path, 'password')
         let logins = await Promise.all([username, password])
 
-        return(logins)
+        callback (null, logins)
     }
     catch (err) {
         console.log('check login details error:', err)
+        callback (err, null)
     }
 }
 
-exports.createFolder = (folder) => {
-    /* creates folder */
-    try {
-        fs.mkdirSync(path.join(__dirname, folder), (err) =>{
-            if (err) {
-                throw(`failed to create ${folder}`)
-            }
-            console.log(`${folder} created`)
-        })
-    }
-    catch (err) {
-        console.log('folder creation error:', err)
-    }
-}
-
-exports.verifyCredentials = async(user, password, hostname) => {
-    /* tries to log in to mysql with the user-provided details */
+exports.verifyDb = async(user, password, hostname, callback) => {
+    /* verifies mysql logins */
     try {
         let connection = mysql.createConnection({
-            host: hostname || 'localhost',
+            host: hostname,
             user: user,
             password : password
         })
@@ -44,51 +29,30 @@ exports.verifyCredentials = async(user, password, hostname) => {
             if (err) {
                 throw (err)
             }
-            let content = `const mysql = require('mysql')\n\n`
-                            +`const connex = mysql.createConnection({\n`
-                            +`host: ${connection.host},\nuser: ${user},\npassword: ${password}\n`
-                            +`})\n\nmodule.exports = connex`
-            this.writeVal('config/dblogin.js', content)
-            return (connection)
+            try {
+                let credentials = new Map ([['hostname', hostname], ['user', user], ['password', password]])
+                if(!files.checkExists('../credentials')) {
+                    files.createFolder('../credentials')
+                }
+                for (const [key, value] of credentials) {
+                    files.writeVal(`../credentials/${key}`, value, (err, res) => {
+                        if (err) {
+                            throw(err)
+                        }
+                        else {
+
+                        }
+                    })
+                }
+            }
+            catch (err) {
+                console.log (`error encountered while updating mysql credentials:`, err)
+            }
+            callback (null, connection)
         })
     }
     catch (err) {
         console.log('verify database login credentials error:', err)
+        callback (err, null)
     }
 }
-
-exports.writeVal = (file, val) => {
-    /* writes data to file */
-    try {
-        let filePath = path.join(__dirname, file)
-        fs.writeFile(filePath, val, err => {
-            if (err) {
-                throw(err)
-            }
-            console.log(`${file} updated`)
-        })
-    }
-    catch (err) {
-        console.log('writing to file error:', err)
-    }
-}
-
-/*
-exports.saltNHash = (key, callback) => {
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-             throw (err)
-        }
-        else {
-            bcrypt.hash(key, salt, (err, hash) => {
-                if (err) {
-                    throw (err)
-                }
-                else {
-                    return (hash)
-                }
-            })
-        }
-    })
-}
-*/

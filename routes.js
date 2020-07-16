@@ -39,6 +39,10 @@ router.get('/dbconfigs', (req, res) => {
     res.render('configs', { layout: 'setup' })
 })
 
+router.post('/dbconfigs', (req, res) => {
+    auth.mysqlLogin(req, (page, layout) => { res.render(page, { layout: layout }) })
+})
+
 router.get('/emailconfigs', (req, res) => {
     res.render('configs', { layout: 'setup' })
 })

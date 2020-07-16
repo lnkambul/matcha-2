@@ -1,11 +1,15 @@
 <h1>mysql login</h1>
-<form class="form">
-    <div class="formbody">
-        <label for="username">username</label>
-        <input type="text" class="forminput" placeholder="mysql username..." label="username" name="username">
-        <label for="password">password</label>
-        <input type="password" class="forminput" placeholder="mysql password..." label="password" name="password">
-        <input type="submit" class="formsubmit" value="submit" />
-    </div>
-</form> 
+<div>
+    <form method="post" action="/dbconfigs" class="form">
+        <div class="formbody">
+            <label for="username">username</label><br>
+            <input type="text" class="formInput" placeholder="mysql username..." label="username" name="username" required><br>
+            <label for="password">password</label><br>
+            <input type="password" class="formInput" placeholder="mysql password..." label="password" name="password" required><br>
+            <label for="hostname">hostname</label><br>
+            <input type="text" class="formInput" placeholder="mysql hostname..." label="hostname" name="hostname"><br>
+            <input type="submit" class="formsubmit" value="submit" />
+            </div>
+    </form>
+</div> 
     
