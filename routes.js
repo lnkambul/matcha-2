@@ -1,5 +1,6 @@
-const express = require('express')
-const config = require('./config/router')
+const express = require ('express')
+const user = require ('./user/router')
+const config = require ('./config/router')
 const router = express.Router()
 
 /* logged in routes */
@@ -33,6 +34,10 @@ router.get('/signup', (req, res) => {
     res.render('signup', { layout: 'anon' })
 })
 
+router.post('/signup', (req, res) => {
+    user.main(req.body, (page, layout) => { res.render( page, { layout: layout }) })
+})
+
 /* setup routes */
 
 router.get('/dbconfigs', (req, res) => {
@@ -40,7 +45,7 @@ router.get('/dbconfigs', (req, res) => {
 })
 
 router.post('/dbconfigs', (req, res) => {
-    config.mysqlLogin(req, (page, layout) => { res.render(page, { layout: layout }) })
+    config.mysqlLogin(req.body, (page, layout) => { res.render(page, { layout: layout }) })
 })
 
 router.get('/emailconfigs', (req, res) => {

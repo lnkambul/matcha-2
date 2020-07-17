@@ -8,7 +8,7 @@ exports.main = async(next) => {
                     next('configs', 'setup')
                 }
                 else {
-                    next('index', 'main')
+                    next('index', 'anon')
                 }
             })
     }
@@ -18,17 +18,17 @@ exports.main = async(next) => {
     }
 }
 
-exports.mysqlLogin = async(req, next) => {
+exports.mysqlLogin = async(form, next) => {
     /* captures and processes mysql login credentials */
     try {
-        let hostname = req.body.hostname || 'localhost'
-        credentials.verifyDbLogins(req.body.username, req.body.password, hostname, (err, res) => {
+        let hostname = form.hostname || 'localhost'
+        credentials.verifyDbLogins(form.username, form.password, hostname, (err, res) => {
             if (err) {
                 console.log('mysql login error:', err)
                 next('configs', 'setup')
             }
             else {
-                next('index', 'main')
+                next('index', 'anon')
             }
         })
     }
