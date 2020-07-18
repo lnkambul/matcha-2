@@ -1,29 +1,26 @@
 const mysql = require ('mysql')
 const files = require ('./files')
 
-exports.getDbLogins = async(callback) => {
+exports.getDbLogins = ( callback ) => {
     /* fetches mysql login details from file */
     try {
-        let promise = new Promise ((res, rej) => {
-            let logins = new Map ([['user', null], ['password', null], ['hostname', null]])
-            for (let [key, value] of logins) {
-                files.getFileContents(`mysql/${key}`, (err, res) =>{
-                    if (err) {
-                        rej (err)
-                    }
-                    else {
-                        value = res
-                    }
-                })
-            }
-            res (logins)
-        })
-        promise.then (logins => {
-            callback (null, logins)
-        }).catch (err => { 
-            console.log('get mysql login details failed:', err)
-            callback (err, null)
-        })
+            let promises = ['user', 'password', 'hostname'].map ( value => {
+                return (
+                    new Promise((resolve, reject) => {
+                        files.getFileContents(`mysql/${value}`, (err, res) => {
+                            if ( err ) {
+                                reject ( err )
+                            }
+                            else {
+                                resolve ( res )
+                            }
+                        })
+                    })
+                )
+            })
+            Promise.all(promises).then ( logins => {
+                callback(null, {user: logins[0], password: logins[1], hostname: logins[2]})
+            }).catch (err => { console.log(err) })  
     }
     catch (err) {
         console.log('get mysql login details error thrown:', err)
@@ -44,7 +41,7 @@ exports.verifyDbLogins = async(user, password, hostname, callback) => {
                     files.createFolder('mysql')
                 }
                 for (const [key, value] of credentials) {
-                    files.writeVal(`mysql/${key}`, value, (err, res) => {
+                    files.writeVal(`mysql/${key}`, value, (err) => {
                         if (err) {
                             callback(err, null)
                         }

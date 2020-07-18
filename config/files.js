@@ -24,19 +24,18 @@ exports.writeVal = (file, val, callback) => {
         let filePath = path.join(__dirname, file)
         fs.writeFile(filePath, val, err => {
             if (err) {
-                throw(err)
+                callback (err)
             }
             console.log(`${file} updated`)
-            callback (null, `${file} updated`)
         })
     }
     catch (err) {
         console.log('writing to file error thrown:', err)
-        callback (err, null)
+        callback (err)
     }
 }
 
-exports.getFileContents = async(fpath, callback) => {
+exports.getFileContents = (fpath, callback) => {
     /* reads in contents of specified file */
     try {
         let filePath = path.join(fpath)
@@ -44,7 +43,12 @@ exports.getFileContents = async(fpath, callback) => {
             throw(`${fpath} not found`)
         }
         fs.readFile(path.join(__dirname, filePath), 'utf-8', (err, data) => {
+            if (err) {
+                callback (err, null)
+            }
+            else {
             callback (null, data)
+            }
         })
     }
     catch (err) {

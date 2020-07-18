@@ -5,14 +5,14 @@ const credentials = require ('./credentials')
 exports.createDb = async(callback) => {
     /* creates the app database */
     try {
-        let promise = new Promise((res, rej) => {
+        let promise = new Promise((resolve, reject) => {
             this.getDbName((err, res) => {
                 if (err) {
                     console.log('database name retreival error:', err)
-                    rej (err)
+                    reject (err)
                 }
                 else {
-                    const dbname = res
+                    resolve (res)
                 }
             })
         })
@@ -24,15 +24,17 @@ exports.createDb = async(callback) => {
                     console.log('failed to connect to database:', err)
                     callback (err, null)
                 }
-                res.query(sql, (err, rows) => {
-                    if (err) {
-                        console.log('failed to initialize database:', err)
-                        callback (err, null)
-                    }
-                    else {
-                        callback (null, rows)
-                    }
-                })
+                else {
+                    res.query(sql, (err, rows) => {
+                        if (err) {
+                            console.log('failed to initialize database:', err)
+                            callback (err, null)
+                        }
+                        else {
+                            callback (null, rows)
+                        }
+                    })
+                }
             })
         }).catch (err => {
             console.log ('create database error thrown:', err)
@@ -53,7 +55,7 @@ exports.createTables = async(callback) => {
                 console.log('tables array error:', err)
                 callback (err, null)
             }
-            credentials.query((error, connection) => {
+            credentials.connection((error, connection) => {
                 if (error) {
                     callback (error, null)
                 }
@@ -87,21 +89,21 @@ exports.createTables = async(callback) => {
 exports.initDb = async(callback) => {
     /* initializes the app database and accompanying tables */
     try {
-        await this.createDb((err, res) => {
+        this.createDb((err, res) => {
             if (err) {
                 console.log('initialize database error:', err)
                 callback (err)
             }
-        })
+        })/*
         this.createTables((err, res) => {
             if (err) {
                 console.log('initialize tables error', err)
                 callback (err)
             }
             else {
-                console.log('database created successfully')
+                console.log(res)
             }
-        })
+        })*/
     }
     catch (err) {
         console.log('initialize database error thrown:', err)
@@ -112,16 +114,16 @@ exports.initDb = async(callback) => {
 exports.getDbName = async(callback) => {
     /* returns the database name */
     try {
-        if (files.checkExists('credentials') && files.checkExists('credentials/dbname')) {
-            files.getFileContents('credentials/dbname', (err, res) => {
+        let def = 'reel'
+        if (files.checkExists('mysql') && files.checkExists('mysql/dbname')) {
+            files.getFileContents('mysql/dbname', (err, res) => {
                 callback (null, res)
             })
         }
-        else if (!files.checkExists('credentials')) {
-            files.createFolder('credentials')
+        else {
+            this.setDbName(def)
+            callback (null, def)
         }
-        files.writeVal('credentials/dbname.txt', 'reel')
-        callback (null, 'reel')
     }
     catch (err) {
         console.log('get database name error thrown:', err)
@@ -132,10 +134,14 @@ exports.getDbName = async(callback) => {
 exports.setDbName = (dbname) => {
     /* sets the database name */
     try {
-        if (!files.checkExists('credentials')) {
-            files.createFolder('credentials')
+        if (!files.checkExists('mysql')) {
+            files.createFolder('mysql')
         }
-        files.writeVal('credentials/dbname.txt', dbname)
+        files.writeVal('mysql/dbname', dbname, (err) => { 
+            if (err) {
+                console.log('write database name error', err)
+            }
+         })
     }
     catch {
         console.log('set database name error thrown', err)
