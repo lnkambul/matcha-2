@@ -7,7 +7,7 @@ exports.username = ( username, callback ) => {
         callback ( 'username must be between 3 and 20 characters in length', null )
     }
     else {
-        callback ( null, 'username' )
+        callback ( null, username )
     }
 }
 
@@ -21,17 +21,17 @@ exports.password = ( password, callback ) => {
         callback ( 'password must be at least 8 characters in length', null )
     }
     else {
-        callback ( null, 'password' )
+        callback ( null, password )
     }
 }
 
-exports.email = ( address, callback ) => {
+exports.email = ( email, callback ) => {
     let regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-    if ( !regex.test ( address )) {
+    if ( !regex.test ( email )) {
         callback ( 'invalid email address', null )
     }
     else {
-        callback ( null, 'email' )
+        callback ( null, email )
     }
 }
 
@@ -41,6 +41,6 @@ exports.name = ( name, callback ) => {
         callback ( 'name can only contain letters and a dash', null )
     }
     else {
-        callback ( null, 'name' )
+        callback ( null, name )
     }
 }

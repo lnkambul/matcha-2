@@ -27,7 +27,20 @@ exports.validate = async ( form, callback ) => {
             )
         })
         Promise.all ( validated ).then ( _=> {
-            callback ( null, user )
+            this.hash ( form.password, ( err, hash ) => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    let hashed = new Promise (( res, rej ) => {
+                        user.password = hash
+                        res ( user.password )
+                    })
+                    hashed.then ( _=> {
+                        callback ( null, user )
+                    })
+                }
+            })
         }).catch ( err => {
             callback ( err, null )
         })
@@ -45,7 +58,7 @@ exports.switcher = async ( key, value, callback ) => {
                     callback ( err, null )
                 }
                 else {
-                    callback ( null, key )
+                    callback ( null, res )
                 }
             })
             break
@@ -55,7 +68,7 @@ exports.switcher = async ( key, value, callback ) => {
                     callback ( err, null )
                 }
                 else {
-                    callback ( null, key )
+                    callback ( null, res )
                 }
             })
             break
@@ -65,7 +78,7 @@ exports.switcher = async ( key, value, callback ) => {
                     callback ( err, null )
                 }
                 else {
-                    callback ( null, key )
+                    callback ( null, res )
                 }
             })
             break
@@ -75,7 +88,7 @@ exports.switcher = async ( key, value, callback ) => {
                     callback ( err, null )
                 }
                 else {
-                    callback ( null, key )
+                    callback ( null, res )
                 }
             })
     }

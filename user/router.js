@@ -1,6 +1,6 @@
 const creation = require ('./creation')
 
-exports.main = async ( form, next ) => {
+exports.main = ( form, next ) => {
     /* checks database login credentials */
     try {
         creation.validate ( form, ( err, res ) => {
