@@ -12,22 +12,21 @@ exports.validate = async ( form, callback ) => {
                     'lastname': form.lastname,
                     'email': form.email
         }
-        let promises = Object.entries ( user ).map ( key => {
+        let validated = Object.entries ( user ).map ( ([ key, value ]) => {
             return (
                 new Promise (( res, rej ) => {
-                    console.log ( key )
-                    this.switcher ( key[0], key[1], err => {
+                    this.switcher ( key, value, ( err, val ) => {
                         if ( err ) {
                             rej ( err )
                         }
                         else {
-                            res ( key )
+                            res ( val )
                         }
                     })
                 })
             )
         })
-        Promise.all ( promises ).then ( valid => {
+        Promise.all ( validated ).then ( valid => {
             console.log ( 'valid:', valid )
             callback ( null, user )
         }).catch ( err => {
@@ -42,16 +41,16 @@ exports.validate = async ( form, callback ) => {
 exports.switcher = async ( key, value, callback ) => {
     switch ( key ) {
         case 'username':
-            validate.username ( value, err => { if ( err ) { callback ( err ) } })
+            validate.username ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
             break
         case 'password':
-            validate.password ( value, err => { if ( err ) { callback ( err ) } })
+            validate.password ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
             break
         case 'email':
-            validate.email ( value, err => { if ( err ) { callback ( err ) } })
+            validate.email ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
             break
         default:
-            validate.name ( value, err => { if ( err ) { callback ( err ) } })
+            validate.name ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
     }
 }
 
