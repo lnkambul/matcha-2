@@ -6,13 +6,13 @@ const query = require ( './query' )
 exports.validate = async ( form, callback ) => {
     try {
         let user = {
-                    'username': form.username,
-                    'password': form.password,
-                    'firstname': form.firstname,
-                    'lastname': form.lastname,
-                    'email': form.email
+            'username' : form.username,
+            'password' : form.password,
+            'firstname' : form.firstname,
+            'lastname' : form.lastname,
+            'email' : form.email
         }
-        let validated = Object.entries ( user ).map ( ([ key, value ]) => {
+        let validated = Object.entries ( user ).map (([ key, value ]) => {
             return (
                 new Promise (( res, rej ) => {
                     this.switcher ( key, value, ( err, val ) => {
@@ -26,8 +26,7 @@ exports.validate = async ( form, callback ) => {
                 })
             )
         })
-        Promise.all ( validated ).then ( valid => {
-            console.log ( 'valid:', valid )
+        Promise.all ( validated ).then ( _=> {
             callback ( null, user )
         }).catch ( err => {
             callback ( err, null )
@@ -41,23 +40,62 @@ exports.validate = async ( form, callback ) => {
 exports.switcher = async ( key, value, callback ) => {
     switch ( key ) {
         case 'username':
-            validate.username ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
+            validate.username ( value, ( err, res ) => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, key )
+                }
+            })
             break
         case 'password':
-            validate.password ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
+            validate.password ( value, ( err, res ) => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, key )
+                }
+            })
             break
         case 'email':
-            validate.email ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
+            validate.email ( value, ( err, res ) => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, key )
+                }
+            })
             break
         default:
-            validate.name ( value, ( err, res ) => { if ( err ) { callback ( err, null ) } else { callback ( null, key ) } })
+            validate.name ( value, ( err, res ) => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, key )
+                }
+            })
     }
 }
 
 exports.capture = async ( user, callback ) => {
     try {
-        database.initDb ( err => { if ( err ) { callback ( err, null ) } })
-        query.create ( user, 'users', err => { if ( err ) { callback ( err, null ) } })
+        database.initDb ( err => {
+            if ( err ) {
+                callback ( err, null )
+            }
+        })
+        query.create ( 'users', user, ( err, res ) => {
+            if ( err ) {
+                callback ( err, null )
+            }
+            else {
+                callback ( null, res )
+            }
+        })
     }
     catch ( err ) {
         callback ( err, null )

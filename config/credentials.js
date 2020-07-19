@@ -20,7 +20,7 @@ exports.getDbLogins = async ( callback ) => {
             })
             Promise.all ( credentials ).then ( logins => {
                 callback ( null, { user: logins[0], password: logins[1], hostname: logins[2] })
-            }).catch ( err => { callback ( err, null ) })  
+            }).catch ( err => { callback ( err, null ) })
     }
     catch ( err ) {
         callback ( err, null )
@@ -30,25 +30,31 @@ exports.getDbLogins = async ( callback ) => {
 exports.verifyDbLogins = async ( user, password, hostname, callback ) => {
     /* verifies mysql logins */
     try {
-        this.connection (( err,res ) => {
+        this.connection (( err, res ) => {
             if ( err ) {
                 callback ( err, null )
             }
-            try {
-                let credentials = new Map ([ [ 'hostname', hostname ], [ 'user', user ], [ 'password', password ] ])
+            else {
                 if( !files.checkExists ( 'mysql' )) {
-                    files.createFolder ( 'mysql', err => { if ( err ) { callback ( err, null ) } } )
+                    files.createFolder ( 'mysql', err => {
+                        if ( err ) {
+                            callback ( err, null )
+                        }
+                    })
                 }
-                for ( const [ key, value ] of credentials ) {
+                let credentials = {
+                    'hostname' : hostname,
+                    'user' : user,
+                    'password' : password
+                }
+                let mapped = Object.entries ( credentials )
+                for ( const [ key, value ] of mapped ) {
                     files.writeVal ( `mysql/${ key }`, value, ( err ) => {
                         if ( err ) {
                             callback ( err, null )
                         }
                     })
                 }
-            }
-            catch ( err ) {
-               callback ( err, null )
             }
         })
     }
@@ -74,7 +80,6 @@ exports.connection = async ( callback ) => {
                         callback ( err, null )
                     }
                     else {
-                        console.log ( `connected to database` )
                         callback ( null, connection )
                     }
                 })

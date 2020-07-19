@@ -20,7 +20,6 @@ exports.createDb = async( callback ) => {
                     + `CHARACTER SET utf8 COLLATE utf8_general_ci`
             credentials.connection (( err, res ) => {
                 if ( err ) {
-                    console.log ( 'failed to connect to database:', err )
                     callback ( err, null )
                 }
                 else {
