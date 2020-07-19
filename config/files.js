@@ -6,15 +6,12 @@ exports.createFolder = ( folder, callback ) => {
     try {
         fs.mkdirSync ( path.join( __dirname, folder ), ( err ) =>{
             if ( err ) {
-                throw( `failed to create ${ folder }`)
+                callback ( err )
             }
-            console.log ( `${ folder } created` )
-            callback ( null, `${ folder } created` )
         })
     }
     catch ( err ) {
-        console.log ( 'folder creation error thrown:', err )
-        callback ( err, null )
+        callback ( err )
     }
 }
 
@@ -26,11 +23,12 @@ exports.writeVal = ( file, val, callback ) => {
             if ( err ) {
                 callback ( err )
             }
-            console.log ( `${ file } updated` )
+            else {
+                console.log ( `${ file } updated` )
+            }
         })
     }
     catch ( err ) {
-        console.log ( 'writing to file error thrown:', err )
         callback ( err )
     }
 }
@@ -38,9 +36,9 @@ exports.writeVal = ( file, val, callback ) => {
 exports.getFileContents = ( fpath, callback ) => {
     /* reads in contents of specified file */
     try {
-        let filePath = path.join( fpath )
+        let filePath = path.join ( fpath )
         if ( !this.checkExists ( fpath )) {
-            throw ( `${ fpath } not found` )
+            callback ( `${ fpath } not found`, null )
         }
         fs.readFile ( path.join ( __dirname, filePath ), 'utf-8', ( err, data ) => {
             if ( err ) {
@@ -52,13 +50,12 @@ exports.getFileContents = ( fpath, callback ) => {
         })
     }
     catch ( err ) {
-        console.log( 'get file contents error thrown:', err )
         callback ( err, null )
     }
 }
 
 exports.checkExists = ( file ) => {
-    /* checks if the credentials folder exists */
+    /* checks if a file/folder exists */
     try {
         if ( !fs.existsSync ( path.join( __dirname, file ))) {
             return ( false )
@@ -66,6 +63,6 @@ exports.checkExists = ( file ) => {
         return ( true )
     }
     catch ( err ) {
-        console.log ( 'check file existence error thrown:', err )    
+        throw ( err )    
     }
 }

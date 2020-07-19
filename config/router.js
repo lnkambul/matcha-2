@@ -5,6 +5,7 @@ exports.main = async ( next ) => {
     try {
             credentials.connection (( err, res ) => {
                 if ( err ) {
+                    console.log ('mysql connection error:', err)
                     next ( 'configs', 'setup' )
                 }
                 else {
@@ -13,7 +14,7 @@ exports.main = async ( next ) => {
             })
     }
     catch( err ) { 
-        console.log( 'database authenticate error thrown:', err )
+        console.log ( 'database error:', err )
         next ( 'configs', 'setup' )
     }
 }
@@ -22,9 +23,9 @@ exports.mysqlLogin = async ( form, next ) => {
     /* captures and processes mysql login credentials */
     try {
         let hostname = form.hostname || 'localhost'
-        credentials.verifyDbLogins ( form.username, form.password, hostname, ( err, res ) => {
+        credentials.verifyDbLogins ( form.username, form.password, hostname, ( err ) => {
             if ( err ) {
-                console.log( 'mysql login error:', err )
+                console.log ( 'mysql login details verification error:', err )
                 next ( 'configs', 'setup' )
             }
             else {
@@ -33,7 +34,7 @@ exports.mysqlLogin = async ( form, next ) => {
         })
     }
     catch ( err ) {
-        console.log ( 'mysql login error thrown:', err )
+        console.log ( 'mysql login error:', err )
         next ( 'configs', 'setup' )
     }
 }

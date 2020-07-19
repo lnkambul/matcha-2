@@ -8,7 +8,6 @@ exports.createDb = async( callback ) => {
         let promise = new Promise (( resolve, reject ) => {
             this.getDbName (( err, res ) => {
                 if ( err ) {
-                    console.log ( 'database name retreival error:', err )
                     reject ( err )
                 }
                 else {
@@ -21,13 +20,12 @@ exports.createDb = async( callback ) => {
                     + `CHARACTER SET utf8 COLLATE utf8_general_ci`
             credentials.connection (( err, res ) => {
                 if ( err ) {
-                    console.log( 'failed to connect to database:', err )
+                    console.log ( 'failed to connect to database:', err )
                     callback ( err, null )
                 }
                 else {
                     res.query ( sql, ( err, rows ) => {
                         if ( err ) {
-                            console.log ( 'failed to initialize database:', err )
                             callback ( err, null )
                         }
                         else {
@@ -37,12 +35,10 @@ exports.createDb = async( callback ) => {
                 }
             })
         }).catch ( err => {
-            console.log ( 'create database error thrown:', err )
             callback ( err, null )
         })
     }
     catch (err) {
-        console.log ( 'create database error thrown:', err )
         callback ( err, null )
     }
 }
@@ -50,63 +46,59 @@ exports.createDb = async( callback ) => {
 exports.createTables = async( callback ) => {
     /* creates the app database tables */
     try {
-        tables.tablesArray(( err, res ) => {
+        tables.tablesArray (( err, res ) => {
             if ( err ) {
-                console.log ( 'tables array error:', err )
                 callback ( err, null )
             }
-            credentials.connection(( error, connection ) => {
+            credentials.connection (( error, connection ) => {
                 if ( error ) {
                     callback ( error, null )
                 }
-                let promise = new Promise ( async ( resolve, reject ) => {
-                    let tabs = []
-                    for ( const val of res ) {
-                        let sql = val
-                        await connection.query( sql, ( err, rows ) => {
-                            if ( err ) {
-                                console.log( 'create tables error:', err )
-                                callback ( err, null )
-                            }
-                            else {
-                                tabs = [...tabs, rows]
-                            }
+                let tabs = res .map ( value => {
+                    return (
+                        new Promise (( resolve, reject ) => {
+                            connection.query ( value, ( err, rows ) => {
+                                if ( err ) {
+                                    reject ( err )
+                                }
+                                else {
+                                    resolve ( rows )
+                                }
+                            })
                         })
-                    }
-                    resolve ( tabs )
+                    )
                 })
-                promise.then (_=> {
-                    callback ( null, 'tables created successfully' )
+                Promise.all ( tabs ).then ( tabs => {
+                    callback ( null, tabs )
+                }).catch ( err => {
+                    callback (err, null)
                 })
             })
         })
     }
     catch ( err ) {
-        console.log ( 'table creation error thrown:', err )
+        callback ( err, null )
     }
 }
 
 exports.initDb = async ( callback ) => {
     /* initializes the app database and accompanying tables */
     try {
-        this.createDb(( err, res ) => {
+        this.createDb (( err, res ) => {
             if ( err ) {
-                console.log ( 'initialize database error:', err )
                 callback ( err )
             }
         })
         this.createTables (( err, res ) => {
             if ( err ) {
-                console.log ( 'initialize tables error', err )
                 callback ( err )
             }
             else {
-                console.log ( res )
+                console.log ( `tables created` )
             }
         })
     }
     catch ( err ) {
-        console.log ( 'initialize database error thrown:', err )
         callback ( err, null )
     }
 } 
@@ -114,19 +106,23 @@ exports.initDb = async ( callback ) => {
 exports.getDbName = async ( callback ) => {
     /* returns the database name */
     try {
-        let def = 'reel'
         if ( files.checkExists ( 'mysql' ) && files.checkExists ( 'mysql/dbname' )) {
             files.getFileContents ( 'mysql/dbname', ( err, res ) => {
-                callback ( null, res )
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, res )
+                }
             })
         }
         else {
+            let def = 'reel'
             this.setDbName ( def )
             callback ( null, def )
         }
     }
     catch ( err ) {
-        console.log( 'get database name error thrown:', err )
         callback ( err, null )
     }
 }
@@ -135,15 +131,15 @@ exports.setDbName = ( dbname ) => {
     /* sets the database name */
     try {
         if ( !files.checkExists ( 'mysql' )) {
-            files.createFolder ( 'mysql' )
+            files.createFolder ( 'mysql', err => { if ( err ) { console.log ( 'create folder error:', err) } })
         }
         files.writeVal ( 'mysql/dbname', dbname, ( err ) => { 
             if ( err ) {
-                console.log ( 'write database name error', err )
+                console.log ( 'write database name error:', err )
             }
          })
     }
     catch {
-        console.log ( 'set database name error thrown', err )
+        console.log ( 'set database name error thrown:', err )
     }
 }

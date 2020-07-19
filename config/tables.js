@@ -50,8 +50,9 @@ exports.tablesArray = async ( callback ) => {
                             +`FOREIGN KEY (blockee) REFERENCES ${ dbname }.users(id)`
                             +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
                 
-            let places = `CREATE TABLE IF NOT EXISTS ${ dbname }.places (`
+            let location = `CREATE TABLE IF NOT EXISTS ${ dbname }.location (`
                             +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
+                            +`user int(12) UNSIGNED NOT NULL, `
                             +`city varchar(20) NOT NULL, `
                             +`country varchar(20) NOT NULL, `
                             +`latitude decimal(6, 4) NOT NULL, `
@@ -60,12 +61,11 @@ exports.tablesArray = async ( callback ) => {
                             +`FOREIGN KEY (user) REFERENCES ${ dbname }.users(id)`
                             +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
 
-            let tables = [ users, likes, blocks, places ]
+            let tables = [ users, likes, blocks, location ]
             callback ( null, tables )
         })
     }
     catch ( err ) {
-        console.log( 'tables array error thrown:', err )
         callback ( err, null )
     }
 }
