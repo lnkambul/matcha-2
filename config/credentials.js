@@ -101,7 +101,7 @@ exports.email = async (  recepient, callback ) => {
         service: 'gmail',
         auth: {
           user: 'lnkambul@student.wethinkcode.co.za',
-          pass: 'dobbyisafreeelf'
+          pass: ''
         }
     })
       
