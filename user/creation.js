@@ -32,7 +32,7 @@ exports.validate = async ( form, callback ) => {
                     callback ( err, null )
                 }
                 else {
-                    let hashed = new Promise (( res, rej ) => {
+                    let hashed = new Promise (( res ) => {
                         user.password = hash
                         res ( user.password )
                     })
@@ -51,46 +51,52 @@ exports.validate = async ( form, callback ) => {
 }
 
 exports.switcher = async ( key, value, callback ) => {
-    switch ( key ) {
-        case 'username':
-            validate.username ( value, ( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    callback ( null, res )
-                }
-            })
-            break
-        case 'password':
-            validate.password ( value, ( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    callback ( null, res )
-                }
-            })
-            break
-        case 'email':
-            validate.email ( value, ( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    callback ( null, res )
-                }
-            })
-            break
-        default:
-            validate.name ( value, ( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    callback ( null, res )
-                }
-            })
+    /* sends input to the appropriate validator function */
+    try {
+        switch ( key ) {
+            case 'username':
+                validate.username ( value, ( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        callback ( null, res )
+                    }
+                })
+                break
+            case 'password':
+                validate.password ( value, ( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        callback ( null, res )
+                    }
+                })
+                break
+            case 'email':
+                validate.email ( value, ( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        callback ( null, res )
+                    }
+                })
+                break
+            default:
+                validate.name ( value, ( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        callback ( null, res )
+                    }
+                })
+        }
+    }
+    catch ( err ) {
+        callback ( err, null )
     }
 }
 
