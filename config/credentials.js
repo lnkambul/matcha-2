@@ -2,40 +2,36 @@ const mysql = require ( 'mysql' )
 const nodemailer = require ( 'nodemailer' )
 const files = require ( './files' )
 
-exports.getDbLogins = async ( callback ) => {
-    /* fetches mysql login details from file */
+exports.getLogins = async ( array, folder, callback ) => {
+    /* fetches login details from file */
     try {
-            let credentials = [ 'user', 'password', 'hostname' ].map ( value => {
-                return (
-                    new Promise (( resolve, reject ) => {
-                        files.getFileContents ( `mysql/${ value }`, ( err, res ) => {
-                            if ( err ) {
-                                reject ( err )
-                            }
-                            else {
-                                resolve ( res )
-                            }
-                        })
+        let credentials = array.map ( value => {
+            return (
+                new Promise (( resolve, reject ) => {
+                    files.getFileContents ( `${ folder }/${ value }`, ( err, res ) => {
+                        if ( err ) {
+                            reject ( err )
+                        }
+                        else {
+                            resolve ( res )
+                        }
                     })
-                )
-            })
-            Promise.all ( credentials ).then ( logins => {
-                callback ( null, {
-                    user : logins[0],
-                    password : logins[1],
-                    hostname : logins[2]
                 })
-            }).catch ( err => { callback ( err, null ) })
+            )
+        })
+        Promise.all ( credentials ).then ( logins => {
+            callback ( null, logins )
+        }).catch ( err => { callback ( err, null ) })
     }
     catch ( err ) {
         callback ( err, null )
     }
 }
 
-exports.verifyDbLogins = async ( user, password, hostname, callback ) => {
+exports.verifyDb = async ( user, password, hostname, callback ) => {
     /* verifies mysql logins */
     try {
-        this.connection (( err, res ) => {
+        this.connection (( err, connection ) => {
             if ( err ) {
                 callback ( err, null )
             }
@@ -47,19 +43,24 @@ exports.verifyDbLogins = async ( user, password, hostname, callback ) => {
                         }
                     })
                 }
+
                 let credentials = {
                     'user' : user,
                     'password' : password,
                     'hostname' : hostname
                 }
+
                 let mapped = Object.entries ( credentials )
+
                 for ( const [ key, value ] of mapped ) {
                     files.writeVal ( `mysql/${ key }`, value, ( err ) => {
                         if ( err ) {
-                            callback ( err, null )
+                            console.log ( err )
                         }
                     })
                 }
+
+                callback ( null, connection )
             }
         })
     }
@@ -70,16 +71,20 @@ exports.verifyDbLogins = async ( user, password, hostname, callback ) => {
 
 exports.connection = async ( callback ) => {
     try {
-        this.getDbLogins (( err, res ) => {
+        let params = [ 'user', 'password', 'hostname' ]
+        let folder = 'mysql'
+
+        this.getLogins ( params, folder, ( err, res ) => {
             if ( err ) {
                 callback ( err, null )
             }
             else {
                 let connection = mysql.createConnection ({
-                    user: res.user,
-                    password : res.password,
-                    host: res.hostname,
+                    user: res[0],
+                    password : res[1],
+                    host: res[2],
                 })
+
                 connection.connect ( err => {
                     if ( err ) {
                         callback ( err, null )
@@ -96,27 +101,88 @@ exports.connection = async ( callback ) => {
     }
 }
 
-exports.email = async (  recepient, callback ) => {
-    let transporter = nodemailer.createTransport ({
-        service: 'gmail',
-        auth: {
-          user: 'lnkambul@student.wethinkcode.co.za',
-          pass: ''
-        }
-    })
-      
-    let mailOptions = {
-        from: 'lnkambul@student.wethinkcode.co.za',
-        to: recepient,
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+exports.setEmail = async ( user, password, callback ) => {
+    /* sets and verifies gmail logins */
+    try {
+        let text = 'success!'
+        let subject = 'this is a test email'
+        let recepient = user
+
+        this.email ( recepient, subject, text, ( err, res )  => {
+            if ( err ) {
+                callback ( err, null )
+            }
+            else {
+                if( !files.checkExists ( 'email' )) {
+                    files.createFolder ( 'email', err => {
+                        if ( err ) {
+                            callback ( err, null )
+                        }
+                    })
+                }
+
+                let credentials = {
+                    'user' : user,
+                    'password' : password,
+                }
+
+                let mapped = Object.entries ( credentials )
+
+                for ( const [ key, value ] of mapped ) {
+                    files.writeVal ( `email/${ key }`, value, ( err ) => {
+                        if ( err ) {
+                            console.log ( err )
+                        }
+                    })
+                }
+
+                callback (null, res )
+            }
+        })
     }
-      
-    transporter.sendMail (mailOptions, ( err, info ) => {
-        if ( err ) {
-          callback ( err, null )
-        } else {
-          callback ( null, info.response )
-        }
-      });
+    catch ( err ) {
+        callback ( err, null )
+    }
+}
+
+exports.email = async ( recepient, subject, text, callback ) => {
+    /* sends email */
+    try {
+        let params = [ 'user', 'password' ]
+        let folder = 'email'
+
+        this.getLogins ( params, folder, ( err, res ) => {
+            if ( err ) {
+                callback ( err, null )
+            }
+            else {
+                let transporter = nodemailer.createTransport ({
+                    service: 'gmail',
+                    auth: {
+                    user: res[0],
+                    pass: res[1]
+                    }
+                })
+                
+                let mailOptions = {
+                    from: 'reel',
+                    to: recepient,
+                    subject: subject,
+                    text: text
+                }
+                
+                transporter.sendMail (mailOptions, ( err, info ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    } 
+                    else {
+                        callback ( null, info.response )
+                    }
+                })
+            }
+        })
+    }
+    catch ( err ) {
+        callback ( err, null )
+    }
 }
