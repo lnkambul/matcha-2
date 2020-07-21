@@ -4,14 +4,17 @@ const path = require ( 'path' )
 exports.createFolder = ( folder, callback ) => {
     /* creates folder */
     try {
-        fs.mkdirSync ( path.join( __dirname, folder ), ( err ) =>{
+        fs.mkdirSync ( path.join( __dirname, folder ), err =>{
             if ( err ) {
-                callback ( err )
+                callback ( err, null )
+            }
+            else {
+                callback ( null, `${ folder } created` )
             }
         })
     }
     catch ( err ) {
-        callback ( err )
+        callback ( err, null )
     }
 }
 
@@ -21,15 +24,15 @@ exports.writeVal = ( file, val, callback ) => {
         let filePath = path.join ( __dirname, file )
         fs.writeFile ( filePath, val, err => {
             if ( err ) {
-                callback ( err )
+                callback ( err, null )
             }
             else {
-                console.log ( `${ file } updated` )
+                callback ( null, `${ file } updated` )
             }
         })
     }
     catch ( err ) {
-        callback ( err )
+        callback ( err, null )
     }
 }
 

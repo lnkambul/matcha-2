@@ -21,7 +21,9 @@ exports.getLogins = async ( array, folder, callback ) => {
         })
         Promise.all ( credentials ).then ( logins => {
             callback ( null, logins )
-        }).catch ( err => { callback ( err, null ) })
+        }).catch ( err => {
+            callback ( err, null )
+        })
     }
     catch ( err ) {
         callback ( err, null )
@@ -101,44 +103,71 @@ exports.connection = async ( callback ) => {
     }
 }
 
-exports.setEmail = async ( user, password, callback ) => {
+exports.verifyEmail = async ( user, password, callback ) => {
     /* sets and verifies gmail logins */
     try {
+        if( !files.checkExists ( 'email' )) {
+            files.createFolder ( 'email', err => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+            })
+        }
         let text = 'success!'
         let subject = 'this is a test email'
         let recepient = user
+        let credentials = {
+            'user' : user,
+            'password' : password,
+        }
+
+        let mapped = Object.entries ( credentials )
+
+        for ( const [ key, value ] of mapped ) {
+            files.writeVal ( `email/${ key }`, value, ( err, res ) => {
+                if ( err ) {
+                    console.log ( err )
+                }
+            })
+        }
 
         this.email ( recepient, subject, text, ( err, res )  => {
             if ( err ) {
                 callback ( err, null )
             }
             else {
-                if( !files.checkExists ( 'email' )) {
-                    files.createFolder ( 'email', err => {
-                        if ( err ) {
-                            callback ( err, null )
-                        }
-                    })
-                }
-
-                let credentials = {
-                    'user' : user,
-                    'password' : password,
-                }
-
-                let mapped = Object.entries ( credentials )
-
-                for ( const [ key, value ] of mapped ) {
-                    files.writeVal ( `email/${ key }`, value, ( err ) => {
-                        if ( err ) {
-                            console.log ( err )
-                        }
-                    })
-                }
-
-                callback (null, res )
+                callback ( null, res )
             }
         })
+
+        /*
+        let mapped = Object.entries ( credentials ).map (( [ key, value ] ) => {
+            return (
+                new Promise (( resolve, reject ) => {
+                    files.writeVal ( `email/${ key }`, value, ( err, res ) => {
+                        if ( err ) {
+                            reject ( err )
+                        }
+                        else {
+                            resolve ( res )
+                        }
+                    })
+                })
+            )
+        })
+        Promise.all ( mapped ).then ( _=> {
+            this.email ( recepient, subject, text, ( err, res )  => {
+                if ( err ) {
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, res )
+                }
+            })
+        }).catch ( err => {
+            callback ( err, null )
+        })
+        */
     }
     catch ( err ) {
         callback ( err, null )
@@ -166,7 +195,7 @@ exports.email = async ( recepient, subject, text, callback ) => {
                 
                 let mailOptions = {
                     from: 'reel',
-                    to: recepient,
+                    to: recepient || res[0],
                     subject: subject,
                     text: text
                 }

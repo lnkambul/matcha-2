@@ -45,15 +45,19 @@ router.post ( '/signup', ( req, res ) => {
 /* setup routes */
 
 router.get ( '/dbconfigs', ( req, res ) => {
-    res.render ( 'configs', { layout: 'setup' })
+    res.render ( 'dbconfigs', { layout: 'setup' })
 })
 
 router.post ( '/dbconfigs', ( req, res ) => {
-    config.mysqlLogin ( req.body, ( page, layout ) => { res.render (page, { layout : layout }) })
+    config.mysqlLogin ( req.body, ( page, layout ) => { res.render ( page, { layout : layout }) })
 })
 
 router.get ( '/emailconfigs', ( req, res ) => {
-    res.render ( 'configs', { layout: 'setup' })
+    res.render ( 'emailconfigs', { layout: 'setup' })
+})
+
+router.post ('/emailconfigs', ( req, res ) => {
+    config.setEmail ( req.body, ( page, layout ) => { res.render ( page, { layout : layout }) })
 })
 
 router.get ( '/info', ( req, res ) => {
