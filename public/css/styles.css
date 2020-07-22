@@ -19,6 +19,12 @@
 .navbar {
     text-align: right;
 }
+.formContainer {
+    text-align: center;
+}
+.heading {
+    text-align: center;
+}
 header, footer, nav {
     display: block;
     min-width: 300px;
@@ -33,7 +39,7 @@ html, body {
 }
 body {
 	color: #666666;
-	background-color: #f9f8f6;
+    background-image: linear-gradient(to bottom, #30cfd0 0%, #09203f 100%);
     background-position: center;
     display: flex;
     flex-direction: column;
