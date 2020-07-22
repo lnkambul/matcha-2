@@ -82,9 +82,9 @@ exports.connection = async ( callback ) => {
             }
             else {
                 let connection = mysql.createConnection ({
-                    user: res[0],
-                    password : res[1],
-                    host: res[2],
+                    user: res [ 0 ],
+                    password : res [ 1 ],
+                    host: res [ 2 ],
                 })
 
                 connection.connect ( err => {
@@ -139,35 +139,6 @@ exports.verifyEmail = async ( user, password, callback ) => {
                 callback ( null, res )
             }
         })
-
-        /*
-        let mapped = Object.entries ( credentials ).map (( [ key, value ] ) => {
-            return (
-                new Promise (( resolve, reject ) => {
-                    files.writeVal ( `email/${ key }`, value, ( err, res ) => {
-                        if ( err ) {
-                            reject ( err )
-                        }
-                        else {
-                            resolve ( res )
-                        }
-                    })
-                })
-            )
-        })
-        Promise.all ( mapped ).then ( _=> {
-            this.email ( recepient, subject, text, ( err, res )  => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    callback ( null, res )
-                }
-            })
-        }).catch ( err => {
-            callback ( err, null )
-        })
-        */
     }
     catch ( err ) {
         callback ( err, null )
@@ -188,8 +159,8 @@ exports.email = async ( recepient, subject, text, callback ) => {
                 let transporter = nodemailer.createTransport ({
                     service: 'gmail',
                     auth: {
-                    user: res[0],
-                    pass: res[1]
+                    user: res [ 0 ],
+                    pass: res [ 1 ]
                     }
                 })
                 

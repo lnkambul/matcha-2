@@ -38,6 +38,8 @@ exports.validate = async ( form, callback ) => {
                     })
                     hashed.then ( _=> {
                         callback ( null, user )
+                    }).catch ( err => {
+                        callback ( err, null )
                     })
                 }
             })
@@ -112,7 +114,7 @@ exports.capture = async ( user, callback ) => {
                 callback ( err, null )
             }
             else {
-                callback ( null, res )
+                callback ( null, user.username )
             }
         })
     }

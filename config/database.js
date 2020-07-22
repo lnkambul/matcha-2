@@ -83,18 +83,28 @@ exports.createTables = async( callback ) => {
 exports.initDb = async ( callback ) => {
     /* initializes the app database and accompanying tables */
     try {
-        this.createDb (( err, res ) => {
-            if ( err ) {
-                callback ( err )
-            }
+        let db = new Promise (( resolve, reject ) => {
+            this.createDb (( err, res ) => {
+                if ( err ) {
+                    reject ( err )
+                }
+                else {
+                    resolve ( res )
+                }
+            })    
         })
-        this.createTables (( err, res ) => {
-            if ( err ) {
-                callback ( err )
-            }
-            else {
-                console.log ( `tables created` )
-            }
+        db.then ( db => {
+            this.createTables (( err, res ) => {
+                if ( err ) {
+                    callback ( err )
+                }
+                else {
+                    callback ( null, [ db, res ])
+                }
+            })
+        
+        }).catch ( err => {
+            callback ( err, null )
         })
     }
     catch ( err ) {

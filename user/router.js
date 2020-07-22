@@ -10,13 +10,13 @@ exports.main = async ( form, next ) => {
                 next ( 'signup', 'anon' )
             }
             else {
-                creation.capture ( res, ( err, rows ) => {
+                creation.capture ( res, ( err, user ) => {
                     if ( err ) {
                         console.log ( 'input capture error:', err )
                         next ( 'signup', 'anon' )
                     }
                     else {
-                        console.log ( rows )
+                        console.log ( `user ${ user } created` )
                         next ( 'login', 'anon' )
                     }
                 })

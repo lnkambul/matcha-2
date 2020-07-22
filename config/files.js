@@ -39,11 +39,10 @@ exports.writeVal = ( file, val, callback ) => {
 exports.getFileContents = ( fpath, callback ) => {
     /* reads in contents of specified file */
     try {
-        let filePath = path.join ( fpath )
         if ( !this.checkExists ( fpath )) {
             callback ( `${ fpath } not found`, null )
         }
-        fs.readFile ( path.join ( __dirname, filePath ), 'utf-8', ( err, data ) => {
+        fs.readFile ( path.join ( __dirname, fpath ), 'utf-8', ( err, data ) => {
             if ( err ) {
                 callback ( err, null )
             }

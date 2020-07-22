@@ -42,6 +42,8 @@ exports.mysqlLogin = async ( form, next ) => {
 exports.testEmail = async ( next ) => {
     /* verifies gmail logins */
     try {
+        let subject = 'this is a test email'
+        let text = 'success!'
         credentials.email ( null, subject, text, err => {
             if ( err ) {
                 next ( 'emailconfigs', 'setup' )
@@ -52,7 +54,7 @@ exports.testEmail = async ( next ) => {
         })
     }
     catch ( err ) {
-        console.log ( 'gmail logins error:', err )
+        console.log ( 'gmail config error:', err )
         next ( 'emailconfigs', 'setup' )
     }
 }
