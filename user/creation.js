@@ -110,13 +110,15 @@ exports.capture = async ( user, callback ) => {
             if ( err ) {
                 callback ( err, null )
             }
-        })
-        query.create ( 'users', user, ( err, res ) => {
-            if ( err ) {
-                callback ( err, null )
-            }
             else {
-                callback ( null, user.username )
+                query.create ( 'users', user, ( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        callback ( null, user.username )
+                    }
+                })
             }
         })
     }
@@ -174,7 +176,7 @@ exports.saveToken = async ( table, user, token, callback ) => {
             callback ( err, null )
         }
         else {
-            query.create ( table, { user : res[0] }, token, ( err, res ) => {
+            query.create ( table, { user : res[0].id, token : token }, ( err, res ) => {
                 if ( err ) {
                     callback ( err, null )
                 }

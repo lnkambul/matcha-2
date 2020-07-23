@@ -59,32 +59,36 @@ exports.read = async ( table, columns, conditionObject, callback ) => {
             let conditions = Object.entries ( conditionObject ).map (([ key, value ]) => {
                 return (
                     new Promise ( resolve => {
-                        let condition = `${ key } = ${ value }`
+                        let condition = `${ key } = '${ value }'`
                         resolve ( condition )
                     })
                 )
             })
             Promise.all ( conditions ).then ( conditions => {
-                let joined = conditions.join ( ' AND ' )
-                let sql = `SELECT ${ columns } `
-                        + `FROM ${ dbname }.${ table } `
-                        + `WHERE ${ joined }`
-                credentials.connection (( err, res ) => {
-                    if ( err ) {
-                        callback ( err, null )
-                    }
-                    else {
-                        res.query ( sql, ( err, rows ) => {
-                            if ( err ) {
-                                callback ( err, null )
-                            }
-                            else {
-                                console.log ( 'wtf ')
-                                callback ( null, rows )
-                            }
-                        })
-                    }
-                })    
+                let connection = new Promise (( resolve, reject ) => {
+                    credentials.connection (( err, res ) => {
+                        if ( err ) {
+                            reject ( err )
+                        }
+                        else {
+                            resolve ( res )
+                        }
+                    })
+                })
+                connection.then ( res => {
+                    let joined = conditions.join ( ' AND ' )
+                    let sql = `SELECT ${ columns } `
+                            + `FROM ${ dbname }.${ table } `
+                            + `WHERE ${ joined }`
+                    res.query ( sql, ( err, rows ) => {
+                        if ( err ) {
+                            callback ( err, null )
+                        }
+                        else {
+                            callback ( null, rows )
+                        }
+                    })
+                })
             }).catch ( err => {
                 callback ( err, null )
             })
