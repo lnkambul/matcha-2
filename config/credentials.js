@@ -168,7 +168,7 @@ exports.email = async ( recepient, subject, text, callback ) => {
                     from: 'reel',
                     to: recepient || res[0],
                     subject: subject,
-                    text: text
+                    html: text
                 }
                 
                 transporter.sendMail (mailOptions, ( err, info ) => {

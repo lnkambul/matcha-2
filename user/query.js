@@ -15,7 +15,7 @@ exports.create = async ( table, object, callback ) => {
             })
         })
         promise.then ( dbname => {
-            let values = Object.values ( object ).map ( key => { return ( key = `'${key}'` ) } )
+            let values = Object.values ( object ).map ( value => { return ( value = `'${ value }'` ) } )
             let sql = `INSERT INTO ${ dbname }.${ table } ( ${ Object.keys ( object ) } ) `
                     + `VALUES ( ${ values } )`
             credentials.connection (( err, res ) => {
@@ -42,7 +42,7 @@ exports.create = async ( table, object, callback ) => {
     }
 }
 
-exports.read = async ( table, object, condition, callback ) => {
+exports.read = async ( table, columns, conditionObject, callback ) => {
     /* fetches a row from the database */
     try {
         let promise = new Promise (( resolve, reject ) => {
@@ -56,24 +56,37 @@ exports.read = async ( table, object, condition, callback ) => {
             })
         })
         promise.then ( dbname => {
-            let values = Object.values ( object ).map ( key => { return ( key = `'${key}'` ) } )
-            let sql = `SELECT ( ${ Object.keys ( object ) } ) `
-                    + `FROM ${ dbname }.${ table }`
-                    + `WHERE ( ${ condition } )`
-            credentials.connection (( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    res.query ( sql, ( err, rows ) => {
-                        if ( err ) {
-                            callback ( err, null )
-                        }
-                        else {
-                            callback ( null, rows )
-                        }
+            let conditions = Object.entries ( conditionObject ).map (([ key, value ]) => {
+                return (
+                    new Promise ( resolve => {
+                        let condition = `${ key } = ${ value }`
+                        resolve ( condition )
                     })
-                }
+                )
+            })
+            Promise.all ( conditions ).then ( conditions => {
+                let joined = conditions.join ( ' AND ' )
+                let sql = `SELECT ${ columns } `
+                        + `FROM ${ dbname }.${ table } `
+                        + `WHERE ${ joined }`
+                credentials.connection (( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        res.query ( sql, ( err, rows ) => {
+                            if ( err ) {
+                                callback ( err, null )
+                            }
+                            else {
+                                console.log ( 'wtf ')
+                                callback ( null, rows )
+                            }
+                        })
+                    }
+                })    
+            }).catch ( err => {
+                callback ( err, null )
             })
         }).catch ( err => {
             callback ( err, null )
@@ -84,7 +97,7 @@ exports.read = async ( table, object, condition, callback ) => {
     }
 }
 
-exports.update = async ( table, object, condition, callback ) => {
+exports.update = async ( table, object, conditionObject, callback ) => {
     /* updates an existing row in the database */
     try {
         let promise = new Promise (( resolve, reject ) => {
@@ -98,24 +111,47 @@ exports.update = async ( table, object, condition, callback ) => {
             })
         })
         promise.then ( dbname => {
-            let values = Object.values ( object ).map ( key => { return ( key = `'${key}'` ) } )
-            let sql = `UPDATE ${ dbname }.${ table } `
-                    + `SET ( ${ Object.keys ( object ) } ) `
-                    + `WHERE ( ${ condition } )`
-            credentials.connection (( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    res.query ( sql, ( err, rows ) => {
-                        if ( err ) {
-                            callback ( err, null )
-                        }
-                        else {
-                            callback ( null, rows )
-                        }
+            let conditions = Object.entries ( conditionObject ).map (([ key, value ]) => {
+                return (
+                    new Promise ( resolve => {
+                        let condition = `${ key } = ${ value }`
+                        resolve ( condition )
                     })
-                }
+                )
+            })
+            Promise.all ( conditions ).then ( conditions => {
+                let joined = conditions.join ( ' AND ' )
+                let updated = Object.entries ( object ).map (([ key, value ]) => {
+                    return (
+                        new Promise (( resolve, reject ) => {
+                            let sql = `UPDATE ${ dbname }.${ table } `
+                                    + `SET ${ key } = ${ value } `
+                                    + `WHERE ${ joined }`
+                            credentials.connection (( err, res ) => {
+                                if ( err ) {
+                                    callback ( err, null )
+                                }
+                                else {
+                                    res.query ( sql, ( err, rows ) => {
+                                        if ( err ) {
+                                            reject ( err )
+                                        }
+                                        else {
+                                            resolve ( rows )
+                                        }
+                                    })
+                                }
+                            })
+                        })
+                    )
+                })
+                Promise.all ( updated ).then ( rows => {
+                    callback ( null, rows )
+                }).catch ( err => {
+                    callback ( err, null )
+                })    
+            }).catch ( err => {
+                callback ( err, null )
             })
         }).catch ( err => {
             callback ( err, null )
@@ -126,7 +162,7 @@ exports.update = async ( table, object, condition, callback ) => {
     }
 }
 
-exports.delete = async ( table, condition, callback ) => {
+exports.delete = async ( table, conditionObject, callback ) => {
     /* deletes a row from the database */
     try {
         let promise = new Promise (( resolve, reject ) => {
@@ -140,23 +176,35 @@ exports.delete = async ( table, condition, callback ) => {
             })
         })
         promise.then ( dbname => {
-            let values = Object.values ( object ).map ( key => { return ( key = `'${key}'` ) } )
-            let sql = `DELETE FROM ${ dbname }.${ table } `
-                    + `WHERE ( ${ Object.keys ( condition ) } )`
-            credentials.connection (( err, res ) => {
-                if ( err ) {
-                    callback ( err, null )
-                }
-                else {
-                    res.query ( sql, ( err, rows ) => {
-                        if ( err ) {
-                            callback ( err, null )
-                        }
-                        else {
-                            callback ( null, rows )
-                        }
+            let conditions = Object.entries ( conditionObject ).map (([ key, value ]) => {
+                return (
+                    new Promise ( resolve => {
+                        let condition = `${ key } = ${ value }`
+                        resolve ( condition )
                     })
-                }
+                )
+            })
+            Promise.all ( conditions ).then ( conditions => {
+                let joined = conditions.join ( ' AND ' )
+                let sql = `DELETE FROM ${ dbname }.${ table } `
+                        + `WHERE ${ joined }`
+                credentials.connection (( err, res ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        res.query ( sql, ( err, rows ) => {
+                            if ( err ) {
+                                callback ( err, null )
+                            }
+                            else {
+                                callback ( null, rows )
+                            }
+                        })
+                    }
+                })    
+            }).catch ( err => {
+                callback ( err, null )
             })
         }).catch ( err => {
             callback ( err, null )

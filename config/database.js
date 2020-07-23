@@ -144,11 +144,11 @@ exports.setDbName = ( dbname ) => {
         }
         files.writeVal ( 'mysql/dbname', dbname, ( err ) => { 
             if ( err ) {
-                console.log ( 'write database name error:', err )
+                console.log ( `write database name error: ${ err }` )
             }
          })
     }
     catch {
-        console.log ( 'set database name error thrown:', err )
+        console.log ( `set database name error thrown: ${ err }` )
     }
 }

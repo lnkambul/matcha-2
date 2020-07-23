@@ -5,7 +5,7 @@ exports.main = async ( next ) => {
     try {
         credentials.connection ( err => {
             if ( err ) {
-                console.log ('mysql connection error:', err )
+                console.log ( `mysql connection error: ${ err }` )
                 next ( 'dbconfigs', 'setup' )
             }
             else {
@@ -14,7 +14,7 @@ exports.main = async ( next ) => {
         })
     }
     catch( err ) { 
-        console.log ( 'database error:', err )
+        console.log ( `database error: ${ err }` )
         next ( 'dbconfigs', 'setup' )
     }
 }
@@ -25,7 +25,7 @@ exports.mysqlLogin = async ( form, next ) => {
         let hostname = form.hostname || 'localhost'
         credentials.verifyDb ( form.username, form.password, hostname, ( err ) => {
             if ( err ) {
-                console.log ( 'mysql login details error:', err )
+                console.log ( `mysql login details error: ${ err }` )
                 next ( 'dbconfigs', 'setup' )
             }
             else {
@@ -34,7 +34,7 @@ exports.mysqlLogin = async ( form, next ) => {
         })
     }
     catch ( err ) {
-        console.log ( 'mysql login error:', err )
+        console.log ( `mysql login error: ${ err }` )
         next ( 'dbconfigs', 'setup' )
     }
 }
@@ -54,7 +54,7 @@ exports.testEmail = async ( next ) => {
         })
     }
     catch ( err ) {
-        console.log ( 'gmail config error:', err )
+        console.log ( `gmail config error: ${ err }` )
         next ( 'emailconfigs', 'setup' )
     }
 }
@@ -64,7 +64,7 @@ exports.setEmail = async ( form, next ) => {
     try {
         credentials.verifyEmail( form.email, form.password, err => {
             if ( err ) {
-                console.log ( 'gmail login error:', err )
+                console.log ( `gmail login error: ${ err }` )
                 next ( 'emailconfigs', 'setup' )
             }
             else {
@@ -73,7 +73,7 @@ exports.setEmail = async ( form, next ) => {
         })
     }
     catch ( err ) {
-        console.log ( 'email setup error:', err )
+        console.log ( `email setup error: ${ err }` )
         next ( 'emailconfigs', 'setup' )
     }
 }
