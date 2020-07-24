@@ -1,5 +1,6 @@
 const creation = require ( './creation' )
 const session = require ( './session' )
+const { callbackPromise } = require('nodemailer/lib/shared')
 
 exports.main = async ( req, next ) => {
     /* checks database login credentials */
@@ -7,8 +8,7 @@ exports.main = async ( req, next ) => {
         let validated = new Promise (( resolve, reject ) => {
             creation.validate ( req.body, ( err, res ) => {
                 if ( err ) {
-                    console.log ( `input validation error: ${ err }` )
-                    next ( 'signup', 'anon' )
+                    reject ( err )
                 }
                 else {
                     resolve ( res )
@@ -22,7 +22,7 @@ exports.main = async ( req, next ) => {
                     next ( 'signup', 'anon' )
                 }
                 else {
-                    creation.verificationLink ( req, ( error, rows ) => {
+                    creation.verificationLink ( req, error => {
                         if ( err ) {
                             console.log ( `verification link error ${ error }` )
                             next ( 'signup', 'anon' )
@@ -48,19 +48,43 @@ exports.main = async ( req, next ) => {
 exports.mail = async ( form, next ) => {
     /* sends email with password reset link */
     try {
-        session.forgotPassword ( form, ( err, res ) => {
+        session.forgotPassword ( form, err => {
             if ( err ) {
                 console.log ( 'err' )
-                next ( 'login', 'anon' )
+                next ( 'forgot-password', 'anon' )
             }
             else {
-                console.log ( res )
-                next ( 'index', 'main' )
+                next ( 'reset-password', 'anon' )
             }
         })
     }
     catch ( err ) {
         console.log ( `email configuration error: ${ err }` )
         next ( 'login', 'anon' )
+    }
+}
+
+exports.verify = async ( originalURL, next ) => {
+    /* verifies user creation token */
+    try {
+        if ( originalURL.indexOf ( 'token' ) < 7 ) {
+            next ( 'login', 'anon' )
+        }
+        else {
+            token = originalURL.slice( originalURL.indexOf ( 'token' ) + 6 )
+            creation.validateToken ( token, err => {
+                if ( err ) {
+                    console.log ( `token validation error: ${ err }` )
+                    next ( 'signup', 'anon' )
+                }
+                else {
+                    next ( 'index', 'main' )
+                }
+            })
+        }
+    }
+    catch ( err ) {
+        console.log ( `token validation error: ${ err }` )
+        next ( 'signup', 'anon' )
     }
 }

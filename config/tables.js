@@ -61,7 +61,7 @@ exports.tablesArray = async ( callback ) => {
                         +`FOREIGN KEY (user) REFERENCES ${ dbname }.users(id)`
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
 
-            let pokens = `CREATE TABLE IF NOT EXISTS ${ dbname }.pokens (`
+            let tokens = `CREATE TABLE IF NOT EXISTS ${ dbname }.tokens (`
                         +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
                         +`user int(12) UNSIGNED NOT NULL, `
                         +`token varchar(60) NOT NULL, `
@@ -69,16 +69,8 @@ exports.tablesArray = async ( callback ) => {
                         +`FOREIGN KEY (user) REFERENCES ${ dbname }.users(id)`
                         +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
 
-            let vokens = `CREATE TABLE IF NOT EXISTS ${ dbname }.vokens (`
-                        +`id int(12) UNSIGNED NOT NULL AUTO_INCREMENT, `
-                        +`user int(12) UNSIGNED NOT NULL, `
-                        +`token varchar(60) NOT NULL, `
-                        +`PRIMARY KEY (id), `
-                        +`FOREIGN KEY (user) REFERENCES ${ dbname }.users(id)`
-                        +`) ENGINE=InnoDB DEFAULT CHARSET=utf8`
-
-
-            let tables = [ users, likes, blocks, location, pokens, vokens ]
+            
+            let tables = [ users, likes, blocks, location, tokens ]
             callback ( null, tables )
         })
     }

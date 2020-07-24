@@ -177,7 +177,7 @@ exports.saveToken = async ( table, user, token, callback ) => {
             callback ( err, null )
         }
         else {
-            query.create ( table, { user : res[0].id, token : token }, ( err, res ) => {
+            query.create ( table, { user : res [ 0 ].id, token : token }, ( err, res ) => {
                 if ( err ) {
                     callback ( err, null )
                 }
@@ -204,6 +204,44 @@ exports.hash = async ( key, callback ) => {
                     else {
                         callback ( null, hash )
                     }
+                })
+            }
+        })
+    }
+    catch ( err ) {
+        callback ( err, null )
+    }
+}
+
+exports.validateToken = async ( token, callback ) => {
+    /* validates user and deletes token from the database if token is valid */
+    try {
+        query.read ( 'vokens', 'user', { token : token }, ( err, res ) =>{
+            if ( err ) {
+                callback ( err, null )
+            }
+            else {
+                let updated = new Promise (( resolve, reject ) => {
+                    query.update ( 'users', { verified : 1 }, { id : res [ 0 ].user }, ( err, res ) => {
+                        if ( err ) {
+                            reject ( err )
+                        }
+                        else {
+                            resolve ( res )
+                        }
+                    })
+                })
+                updated.then ( _=> {
+                    query.delete ( 'tokens', { token : token }, ( err, res ) => {
+                        if ( err ) {
+                            callback ( err, null )
+                        }
+                        else {
+                            callback ( null, res )
+                        }
+                    })
+                }).catch ( err => {
+                    callback ( err, null )
                 })
             }
         })

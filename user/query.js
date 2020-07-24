@@ -118,7 +118,7 @@ exports.update = async ( table, object, conditionObject, callback ) => {
             let conditions = Object.entries ( conditionObject ).map (([ key, value ]) => {
                 return (
                     new Promise ( resolve => {
-                        let condition = `${ key } = ${ value }`
+                        let condition = `${ key } = '${ value }'`
                         resolve ( condition )
                     })
                 )
@@ -183,7 +183,7 @@ exports.delete = async ( table, conditionObject, callback ) => {
             let conditions = Object.entries ( conditionObject ).map (([ key, value ]) => {
                 return (
                     new Promise ( resolve => {
-                        let condition = `${ key } = ${ value }`
+                        let condition = `${ key } = '${ value }'`
                         resolve ( condition )
                     })
                 )

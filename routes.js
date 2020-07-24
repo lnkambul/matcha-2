@@ -24,8 +24,9 @@ router.get ( '/chat', ( req, res ) => {
 /* logged out routes */
 
 router.get ( '/login', ( req, res ) => {
-    res.render ( 'login', { layout: 'anon' })
+    user.verify ( req.originalUrl, ( page, layout ) => { res.render ( page, { layout : layout }) })
 })
+
 router.get ( '/forgot-password', ( req, res ) => {
     res.render ( 'forgot-password', { layout: 'anon' })
 })
