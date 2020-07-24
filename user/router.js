@@ -1,11 +1,11 @@
 const creation = require ( './creation' )
 const session = require ( './session' )
 
-exports.main = async ( form, next ) => {
+exports.main = async ( req, next ) => {
     /* checks database login credentials */
     try {
         let validated = new Promise (( resolve, reject ) => {
-            creation.validate ( form, ( err, res ) => {
+            creation.validate ( req.body, ( err, res ) => {
                 if ( err ) {
                     console.log ( `input validation error: ${ err }` )
                     next ( 'signup', 'anon' )
@@ -22,13 +22,12 @@ exports.main = async ( form, next ) => {
                     next ( 'signup', 'anon' )
                 }
                 else {
-                    creation.verificationLink ( form, ( error, rows ) => {
+                    creation.verificationLink ( req, ( error, rows ) => {
                         if ( err ) {
                             console.log ( `verification link error ${ error }` )
                             next ( 'signup', 'anon' )
                         }
                         else {
-                            console.log ( `${ rows }` )
                             console.log ( `user ${ user } created` )
                             next ( 'login', 'anon' )
                         }
@@ -47,6 +46,7 @@ exports.main = async ( form, next ) => {
 }
 
 exports.mail = async ( form, next ) => {
+    /* sends email with password reset link */
     try {
         session.forgotPassword ( form, ( err, res ) => {
             if ( err ) {

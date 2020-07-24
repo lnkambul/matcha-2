@@ -5,6 +5,7 @@ const credentials = require ( '../config/credentials' )
 const query = require ( './query' )
 
 exports.validate = async ( form, callback ) => {
+    /* validates signup form */
     try {
         let user = {
             'username' : form.username,
@@ -127,11 +128,11 @@ exports.capture = async ( user, callback ) => {
     }
 }
 
-exports.verificationLink = async ( form, callback ) => {
+exports.verificationLink = async ( req, callback ) => {
     /* sends a user verification link */
     try {
         let token = new Promise (( resolve, reject ) => {
-            this.hash ( form.email, ( err, res ) => {
+            this.hash ( req.body.email, ( err, res ) => {
                 if ( err ) {
                     reject ( err )
                 }
@@ -141,21 +142,21 @@ exports.verificationLink = async ( form, callback ) => {
             })
         })
         token.then ( hash => {
-            let link = `'./login/${ hash }`
+            let link = `${ req.protocol }://${ req.get( 'host' )}/login?token=${ hash }`
             let subject = 'verification link'
             let text = `click <a href="${ link }" style="text-decoration: none;">here</a> `
-                        +`to reset your reel password`    
-            credentials.email ( form.email, subject, text, ( err, res ) => {
+                        +`to verify your reel account`
+            credentials.email ( req.body.email, subject, text, ( err, res ) => {
                 if ( err ) {
                     callback ( err, null )
                 }
                 else {
-                    this.saveToken ( 'vokens', form.username, hash, ( error, rows ) => {
+                    this.saveToken ( 'vokens', req.body.username, hash, ( error, rows ) => {
                         if ( error ) {
                             callback ( error, null )
                         }
                         else {
-                            callback ( null, [ res, rows ] )
+                            callback ( null,  rows )
                         }
                     })
                 }
@@ -165,7 +166,7 @@ exports.verificationLink = async ( form, callback ) => {
         })
     }
     catch ( err ) {
-
+        callback ( err, null )
     }
 }
 

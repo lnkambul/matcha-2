@@ -72,6 +72,7 @@ exports.verifyDb = async ( user, password, hostname, callback ) => {
 }
 
 exports.connection = async ( callback ) => {
+    /* returns a database connection object */
     try {
         let params = [ 'user', 'password', 'hostname' ]
         let folder = 'mysql'

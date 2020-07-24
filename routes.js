@@ -39,7 +39,7 @@ router.get ( '/signup', ( req, res ) => {
 })
 
 router.post ( '/signup', ( req, res ) => {
-    user.main ( req.body, ( page, layout ) => { res.render ( page, { layout : layout }) })
+    user.main ( req, ( page, layout ) => { res.render ( page, { layout : layout }) })
 })
 
 /* setup routes */
