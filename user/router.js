@@ -88,3 +88,23 @@ exports.verify = async ( originalURL, next ) => {
         next ( 'signup', 'anon' )
     }
 }
+
+exports.login = async ( form, next ) => {
+    /* logs a validated user in */
+    try {
+    session.validate ( form, err => {
+        if ( err ) {
+            console.log ( `user validation error ${ err }` )
+            next ( 'login', 'anon' )
+        }
+        else {
+            console.log ( `${ form.username } logged in` )
+            next ( 'index', 'main' )
+        }
+    })
+    }
+    catch ( err ) {
+        console.log ( `user login error ${ err }` )
+        next ( 'login', 'anon' )
+    }
+}

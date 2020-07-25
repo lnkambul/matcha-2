@@ -5,30 +5,38 @@ const router = express.Router ()
 
 /* logged in routes */
 
-router.get ( '/', ( req, res ) => {
-    config.main (( page, layout ) => { res.render ( page, { layout : layout }) })
+router.get ( '/home', ( req, res ) => {
+    res.render ( 'index', { layout : 'main' })
 })
 
 router.get ( '/profile', ( req, res ) => {
-    res.render ( 'index', { layout: 'main' })
+    res.render ( 'index', { layout : 'main' })
 })
 
 router.get ( '/notifications', ( req, res ) => {
-    res.render ( 'index', { layout: 'main' })
+    res.render ( 'index', { layout : 'main' })
 })
 
 router.get ( '/chat', ( req, res ) => {
-    res.render ( 'index', { layout: 'main' })
+    res.render ( 'index', { layout : 'main' })
 })
 
 /* logged out routes */
+
+router.get ( '/', ( req, res ) => {
+    config.main (( page, layout ) => { res.render ( page, { layout : layout }) })
+})
 
 router.get ( '/login', ( req, res ) => {
     user.verify ( req.originalUrl, ( page, layout ) => { res.render ( page, { layout : layout }) })
 })
 
+router.post ( '/login', ( req, res ) => {
+    user.login ( req.body, ( page, layout ) => { res.render ( page, { layout : layout }) })
+})
+
 router.get ( '/forgot-password', ( req, res ) => {
-    res.render ( 'forgot-password', { layout: 'anon' })
+    res.render ( 'forgot-password', { layout : 'anon' })
 })
 
 router.post ( '/forgot-password', ( req, res ) => {
@@ -36,7 +44,7 @@ router.post ( '/forgot-password', ( req, res ) => {
 })
 
 router.get ( '/signup', ( req, res ) => {
-    res.render ( 'signup', { layout: 'anon' })
+    res.render ( 'signup', { layout : 'anon' })
 })
 
 router.post ( '/signup', ( req, res ) => {
@@ -46,7 +54,7 @@ router.post ( '/signup', ( req, res ) => {
 /* setup routes */
 
 router.get ( '/dbconfigs', ( req, res ) => {
-    res.render ( 'dbconfigs', { layout: 'setup' })
+    res.render ( 'dbconfigs', { layout : 'setup' })
 })
 
 router.post ( '/dbconfigs', ( req, res ) => {
@@ -54,7 +62,7 @@ router.post ( '/dbconfigs', ( req, res ) => {
 })
 
 router.get ( '/emailconfigs', ( req, res ) => {
-    res.render ( 'emailconfigs', { layout: 'setup' })
+    res.render ( 'emailconfigs', { layout : 'setup' })
 })
 
 router.post ('/emailconfigs', ( req, res ) => {
@@ -62,7 +70,7 @@ router.post ('/emailconfigs', ( req, res ) => {
 })
 
 router.get ( '/info', ( req, res ) => {
-    res.render ( 'info', { title: 'reel info', layout : 'setup' })
+    res.render ( 'info', { layout : 'setup' })
 })
 
 module.exports = router
