@@ -216,7 +216,7 @@ exports.hash = async ( key, callback ) => {
 exports.validateToken = async ( token, callback ) => {
     /* validates user and deletes token from the database if token is valid */
     try {
-        query.read ( 'vokens', 'user', { token : token }, ( err, res ) =>{
+        query.read ( 'tokens', 'user', { token : token }, ( err, res ) =>{
             if ( err ) {
                 callback ( err, null )
             }

@@ -1,4 +1,5 @@
 const credentials = require ( './credentials' )
+const database = require ( './database' )
 
 exports.main = async ( next ) => {
     /* checks database login credentials */
@@ -29,7 +30,16 @@ exports.mysqlLogin = async ( form, next ) => {
                 next ( 'dbconfigs', 'setup' )
             }
             else {
-                next ( 'login', 'anon' )
+                database.initDb (( err, res ) => {
+                    if ( err ) {
+                        console.log ( `database initialization error ${ err }` )
+                        next ( 'dbconfigs', 'setup' )
+                    }
+                    else {
+                        console.log ( 'database initialized' )
+                        next ( 'login', 'anon' )
+                    }
+                })
             }
         })
     }

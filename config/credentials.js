@@ -33,37 +33,56 @@ exports.getLogins = async ( array, folder, callback ) => {
 exports.verifyDb = async ( user, password, hostname, callback ) => {
     /* verifies mysql logins */
     try {
-        this.connection (( err, connection ) => {
-            if ( err ) {
-                callback ( err, null )
+        let folder = new Promise (( resolve, reject ) => {
+            if( !files.checkExists ( 'mysql' )) {
+                files.createFolder ( 'mysql', ( err, res ) => {
+                    if ( err ) {
+                        reject ( err )
+                    }
+                    else {
+                        resolve ( res )
+                    }
+                })
             }
             else {
-                if( !files.checkExists ( 'mysql' )) {
-                    files.createFolder ( 'mysql', err => {
-                        if ( err ) {
-                            callback ( err, null )
-                        }
-                    })
-                }
-
-                let credentials = {
-                    'user' : user,
-                    'password' : password,
-                    'hostname' : hostname
-                }
-
-                let mapped = Object.entries ( credentials )
-
-                for ( const [ key, value ] of mapped ) {
-                    files.writeVal ( `mysql/${ key }`, value, ( err ) => {
-                        if ( err ) {
-                            console.log ( err )
-                        }
-                    })
-                }
-
-                callback ( null, connection )
+                resolve ()
+            }  
+        })
+        folder.then ( _=> {
+            let credentials = {
+                'user' : user,
+                'password' : password,
+                'hostname' : hostname
             }
+    
+            let mapped = Object.entries ( credentials ).map (([ key, value ]) => {
+                return (
+                    new Promise (( resolve, reject ) => {
+                        files.writeVal ( `mysql/${ key }`, value, ( err, res )  => {
+                            if ( err ) {
+                                reject ( err )
+                            }
+                            else {
+                                resolve ( res )
+                            }
+                        })
+                    })
+                )
+            })
+            Promise.all ( mapped ).then ( _=> {
+                this.connection (( err, connection ) => {
+                    if ( err ) {
+                        callback ( err, null )
+                    }
+                    else {
+                        callback ( null, connection )
+                    }
+                })
+            }).catch ( err => {
+                callback ( err, null )
+            })
+        }).catch ( err => {
+            callback ( err, null )
         })
     }
     catch ( err ) {

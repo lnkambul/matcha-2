@@ -67,7 +67,7 @@ exports.mail = async ( form, next ) => {
 exports.verify = async ( originalURL, next ) => {
     /* verifies user creation token */
     try {
-        if ( originalURL.indexOf ( 'token' ) < 7 ) {
+        if ( originalURL.indexOf ( 'token' ) != 7 ) {
             next ( 'login', 'anon' )
         }
         else {
@@ -75,7 +75,7 @@ exports.verify = async ( originalURL, next ) => {
             creation.validateToken ( token, err => {
                 if ( err ) {
                     console.log ( `token validation error: ${ err }` )
-                    next ( 'signup', 'anon' )
+                    next ( 'login', 'anon' )
                 }
                 else {
                     next ( 'index', 'main' )
@@ -92,16 +92,16 @@ exports.verify = async ( originalURL, next ) => {
 exports.login = async ( form, next ) => {
     /* logs a validated user in */
     try {
-    session.validate ( form, err => {
-        if ( err ) {
-            console.log ( `user validation error ${ err }` )
-            next ( 'login', 'anon' )
-        }
-        else {
-            console.log ( `${ form.username } logged in` )
-            next ( 'index', 'main' )
-        }
-    })
+        session.validate ( form, err => {
+            if ( err ) {
+                console.log ( `user validation error ${ err }` )
+                next ( 'login', 'anon' )
+            }
+            else {
+                console.log ( `${ form.username } logged in` )
+                next ( 'index', 'main' )
+            }
+        })
     }
     catch ( err ) {
         console.log ( `user login error ${ err }` )
