@@ -25,7 +25,7 @@ exports.main = async ( req, next ) => {
                     creation.verificationLink ( req, error => {
                         if ( err ) {
                             console.log ( `verification link error ${ error }` )
-                            next ( 'signup', 'anon' )
+                            next ( 'emailconfigs', 'setup' )
                         }
                         else {
                             console.log ( `user ${ user } created` )

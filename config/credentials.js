@@ -141,23 +141,31 @@ exports.verifyEmail = async ( user, password, callback ) => {
             'password' : password,
         }
 
-        let mapped = Object.entries ( credentials )
-
-        for ( const [ key, value ] of mapped ) {
-            files.writeVal ( `email/${ key }`, value, ( err, res ) => {
+        let mapped = Object.entries ( credentials ).map (([ key, value ]) => {
+            return (
+                new Promise (( resolve, reject ) => {
+                    files.writeVal ( `email/${ key }`, value, ( err, res )  => {
+                        if ( err ) {
+                            reject ( err )
+                        }
+                        else {
+                            resolve ( res )
+                        }
+                    })
+                })
+            )
+        })
+        Promise.all ( mapped ).then ( _=> {
+            this.email ( recepient, subject, text, ( err, res )  => {
                 if ( err ) {
-                    console.log ( err )
+                    callback ( err, null )
+                }
+                else {
+                    callback ( null, res )
                 }
             })
-        }
-
-        this.email ( recepient, subject, text, ( err, res )  => {
-            if ( err ) {
-                callback ( err, null )
-            }
-            else {
-                callback ( null, res )
-            }
+        }).catch ( err => {
+            callback ( err, null )
         })
     }
     catch ( err ) {

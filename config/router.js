@@ -37,7 +37,7 @@ exports.mysqlLogin = async ( form, next ) => {
                     }
                     else {
                         console.log ( 'database initialized' )
-                        next ( 'login', 'anon' )
+                        next ( 'signup', 'anon' )
                     }
                 })
             }

@@ -151,7 +151,7 @@ exports.verificationLink = async ( req, callback ) => {
                     callback ( err, null )
                 }
                 else {
-                    this.saveToken ( 'vokens', req.body.username, hash, ( error, rows ) => {
+                    this.saveToken ( 'tokens', req.body.username, hash, ( error, rows ) => {
                         if ( error ) {
                             callback ( error, null )
                         }
