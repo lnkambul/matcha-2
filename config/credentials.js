@@ -45,7 +45,7 @@ exports.verifyDb = async ( user, password, hostname, callback ) => {
                 })
             }
             else {
-                resolve ()
+                resolve ( 'folder exists' )
             }  
         })
         folder.then ( _=> {

@@ -24,23 +24,30 @@ exports.mysqlLogin = async ( form, next ) => {
     /* captures and processes mysql login credentials */
     try {
         let hostname = form.hostname || 'localhost'
-        credentials.verifyDb ( form.username, form.password, hostname, ( err ) => {
-            if ( err ) {
-                console.log ( `mysql login details error: ${ err }` )
-                next ( 'dbconfigs', 'setup' )
-            }
-            else {
-                database.initDb (( err, res ) => {
-                    if ( err ) {
-                        console.log ( `database initialization error ${ err }` )
-                        next ( 'dbconfigs', 'setup' )
-                    }
-                    else {
-                        console.log ( 'database initialized' )
-                        next ( 'signup', 'anon' )
-                    }
-                })
-            }
+        let db = new Promise (( resolve, reject ) => {
+            credentials.verifyDb ( form.username, form.password, hostname, ( err, connection ) => {
+                if ( err ) {
+                    reject ( err )
+                }
+                else {
+                    resolve ( connection )
+                }      
+            })  
+        })
+        db.then ( _=> {
+            database.initDb ( err => {
+                if ( err ) {
+                    console.log ( `database initialization error ${ err }` )
+                    next ( 'dbconfigs', 'setup' )
+                }
+                else {
+                    console.log ( 'database initialized' )
+                    next ( 'signup', 'anon' )
+                }
+            })
+        }).catch ( err => {
+            console.log ( `mysql login error: ${ err }` )
+            next ( 'dbconfigs', 'setup' )
         })
     }
     catch ( err ) {

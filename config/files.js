@@ -4,13 +4,13 @@ const path = require ( 'path' )
 exports.createFolder = ( folder, callback ) => {
     /* creates folder */
     try {
-        fs.mkdirSync ( path.join( __dirname, folder ), err =>{
-            if ( err ) {
-                callback ( err, null )
-            }
-            else {
-                callback ( null, `${ folder } created` )
-            }
+        let dir = new Promise (( resolve, reject ) => {
+            resolve ( fs.mkdirSync ( path.join( __dirname, folder )))
+        })
+        dir.then ( _=> {
+            callback ( null, `${ folder } created` )
+        }).catch ( err => {
+            callback ( err, null )
         })
     }
     catch ( err ) {
